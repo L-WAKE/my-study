@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>-飘哥-</title>
+</head>
+
+<body>
+  <script>
+    // 如何让a等于什么的时候打印输出成功?
+    var a = {
+      i: 1,
+      toString: function () {
+        return a.i++
+      }
+    };
+
+    // var a = [1, 2, 3]
+    // a.join = a.shift
+    if (a == 1 && a == 2 && a == 3) {
+      console.log("输出成功");
+    }
+  </script>
+</body>
+
+</html>

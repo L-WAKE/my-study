@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>访问者模式</title>
+</head>
+
+<body>
+    <p>
+        访问者模式是一种将算法与对象结构分离的设计模式，通俗点讲就是：访问者模式让我们能够在不改变一个对象结构的前提下能够给该对象增加新的逻辑，新增的逻辑保存在一个独立的访问者对象中。访问者模式常用于拓展一些第三方的库和工具。
+
+        访问者模式的实现有以下几个要素：
+
+        Visitor Object：访问者对象，拥有一个 visit() 方法
+        Receiving Object：接收对象，拥有一个 accept() 方法
+        visit(receivingObj)：用于Visitor接收一个Receiving Object
+        accept(visitor)：用于Receving Object接收一个Visitor，并通过调用Visitor的 visit() 为其提供获取Receiving Object数据的能力
+    </p>
+</body>
+<script>
+    class Employee{
+        constructor(name,salary){
+            this.name=name
+            this.salary=salary
+        }
+        getSalary(){
+            return this.salary
+        }
+        setSalary(salary){
+            this.salary=salary
+        }
+        accepy(visitor){
+            visitor.visit(this)
+        }
+    }
+    class Visitor{
+        visit(employee){
+            employee.setSalary(employee.getSalary()*2)
+        }
+    }
+    const employee=new Employee('lisi',1000)
+    const visitor=new Visitor()
+    employee.accepy(visitor)
+    console.log(employee.getSalary())
+</script>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>
+        在中介者模式中，中介者（Mediator）包装了一系列对象相互作用的方式，使得这些对象不必直接相互作用，而是由中介者协调它们之间的交互，从而使它们可以松散偶合。当某些对象之间的作用发生改变时，不会立即影响其他的一些对象之间的作用，保证这些作用可以彼此独立的变化。
+
+中介者模式和观察者模式有一定的相似性，都是一对多的关系，也都是集中式通信，不同的是中介者模式是处理同级对象之间的交互，而观察者模式是处理Observer和Subject之间的交互。中介者模式有些像婚恋中介，相亲对象刚开始并不能直接交流，而是要通过中介去筛选匹配再决定谁和谁见面。中介者模式比较常见的应用比如聊天室，聊天室里面的人之间并不能直接对话，而是通过聊天室这一媒介进行转发。一个简易的聊天室模型可以实现如下：
+    </p>
+</body>
+<script>
+    class Member{
+        constructor(name){
+            this.name=name
+            this.chatroom=null
+        }
+        send(message,toMember){
+            this.chatroom.send(message,this,toMember)
+        }
+        receive(message,fromMember){
+            console.log(`${fromMember.name} to ${this.name}:${message}`)
+        }
+    }
+    class Chatroom{
+        constructor(){
+            this.members={}
+        }
+        addMember(member){
+            this.members[member.name]=member
+            member.chatroom=this
+        }
+        send(message,fromMember,toMember){
+            toMember.receive(message,fromMember)
+        }
+    }
+    const chatroom=new Chatroom()
+    const lisi=new Member('李四')
+    const zhangsan=new Member('张三')
+    chatroom.addMember(lisi)
+    chatroom.addMember(zhangsan)
+    lisi.send('你好，张三',zhangsan)
+</script>
+</html>

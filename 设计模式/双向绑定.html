@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="inputText" value="" /><br>
+    <span id="spanText"></span>
+</body>
+<script>
+    let reactive = {}
+    let input = document.querySelector('#inputText')
+    let spanText = document.querySelector('#spanText')
+    // input.addEventListener('input', function () {
+    //     let val = input.value
+    //     reactive.inputVal=val
+    //     Object.defineProperty(reactive, 'inputVal', {
+    //         get: function () {
+    //             return val
+    //         },
+    //         set: function (newValue) {
+    //             val=newValue
+    //             spanText.innerHTML = newValue
+    //         }
+    //     })
+    // })
+    input.addEventListener('input', function () {
+       
+        // let val = input.value
+        // reactive.inputVal=val
+        // console.log(val)
+        // let proxy=new Proxy(reactive,{
+        //     get(obejct,key){
+        //         return obejct[key]
+        //     },
+        //     set(object,key,value){
+        //        obejct[key]=value
+        //     }
+        // })
+    })
+</script>
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web worker</title>
+</head>
+
+<body>
+    <h1>web worker</h1>
+</body>
+<script>
+    var x = { name: 'niaho' }
+    console.log(x)
+    let worker = new Worker('./work.js')
+    worker.postMessage('hello')
+    worker.onmessage = (e) => {
+        console.log(e.data)
+        doSomething()
+    }
+    worker.onerror = e => {
+        console.log(e)
+    }
+    function doSomething() {
+        console.log('做了一些事情')
+    }
+
+</script>
+
+</html>

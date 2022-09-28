@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+
+            function mind(nums1, nums2) {
+                if (nums1.length == null && nums2.length == 1) return nums2
+                if (nums2.length == null && nums1.length == 1) return nums1
+                let newArr = nums1.concat(nums2)
+                newNum = newArr.sort((a, b) => { return a - b })
+                if (newNum.length % 2 !== 0) {
+                    return newNum[Math.ceil(newNum.length / 2) - 1]
+                } else {
+                    return (newNum[newNum.length / 2] + newNum[newNum.length / 2 - 1]) / 2
+                }
+            }
+            console.log(mind([2, 3, 1], [9, 6, 8]))
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+            //1.每秒一次输出1-9
+            //1.1 let 关键字
+            function shuchu() {
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => {
+                        console.log(i)
+                    }, i * 1000)
+                }
+            }
+            //1.2 立即执行函数
+            function shuchu2() {
+                for (var i = 0; i < 10; i++) {
+                    (function (i) {
+                        setTimeout(() => {
+                            console.log(i)
+                        }, i * 1000)
+                    })(i)
+                }
+            }
+            // shuchu()
+
+            //2. 如何使a == 1 && a == 2 && a == 3
+            function panduan() {
+                let a = {
+                    i: 1,
+                    toString: function () {
+                        return a.i++
+                    }
+                }
+                if (a == 1 && a == 2 && a == 3) {
+                    console.log("输出成功")
+                }
+            }
+            panduan()
+        }
+    </script>
+</body>
+
+</html>

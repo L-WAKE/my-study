@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+            // 判断一个字符串中是否有重复值
+            function repeat(str) {
+                let newArr = str.split('')
+                for (i = 0; i < str.length; i++) {
+                    if (str.indexOf(str[i], i + 1) != -1) return false // indexOf(a, b)  a:要查找的字符  b:从下标为b的位置开始查找  
+                }
+                return true
+            };
+            // console.log(repeat('asdffff'))  // false
+
+
+            // 递归乘法
+            function recursion(a, b) {
+                if (a == 0 || b == 0) return 0
+                if (a < b) return b + recursion(a - 1, b)
+                return a + recursion(a, b - 1)
+            }
+            // console.log(recursion(9, 3)) //27
+            /*
+                f(3 , 9)
+                = 9 + f( 3-1 , 9 )
+                = 9 + ( 9 + f(2-1,9) )
+                = 9 + ( 9+ (9 + f(1-1 ,9)) ) 
+            */
+
+            // 递归阶乘
+            function jieChen(n) {
+                return n != 1 ? jieChen(n - 1) * n : 1
+            }
+            // console.log(jieChen(4)) //24
+            /*
+                f(4)  
+                = 4 * f(4-1)
+                = 4 * (3 * f(3-1))
+                = 4 * (3 * (2 * f(2-1)))
+                = 4 * (3 * (2 *( 1 * f(1))))    // f(1),n = 1 不满足条件，停止调用
+            */
+
+
+            // 最小k个数
+            function minNum(arr, k) {
+                let newArr = arr.sort((a, b) => a - b)
+                let nuArr = []
+                for (let i in newArr) {
+                    newArr[i] <= k ? nuArr.push(newArr[i]) : ''
+                }
+                return nuArr
+            }
+            // console.log(minNum([1, 3, 5, 7, 2, 4, 6, 8], 7))
+
+
+            // 不用临时变量交换两个值
+            function jiaoHuan(num) {
+                num[0] = num[0] + num[1]
+                num[1] = num[0] - num[1]
+                num[0] = num[0] - num[1]
+                return num
+            }
+            // console.log(jiaoHuan([3, 4]))
+
+
+            // 输入一个整数n 求从0-n中数字2出现的次数
+            function ciShu(n) {
+                let num = 0
+                let regex = new RegExp('2', 'g');
+                for (let i = 0; i <= n; i++) {
+                    let arr = i.toString().match(regex)
+                    arr != null ? num += arr.length : ''
+                }
+                return num
+            }
+            // console.log(ciShu(25))
+
+
+            //压缩字符串 例：aaacbbddd   log: a3c1b2d3
+            function strCom(S) {
+                let arr = []
+                let cur = S[0]
+                let count = 0
+                for (let i = 0; i < S.length; i++) {
+                    if (S[i] === cur) {
+                        count === 0 ? arr.push(cur) : ''
+                        count++
+                    } else {
+                        cur = S[i]
+                        arr.push(count)
+                        arr.push(cur)
+                        count = 1
+                    }
+                }
+                count ? arr.push(count) : ''
+                let l = arr.join('')
+                return l.length < S.length ? l : S
+            }
+            // console.log(strCom('aaacbbddd'))
+
+
+
+            /*
+                给你一个整数数组 nums，请你返回其中位数为 偶数 的数字的个数。
+                输入：nums = [12,345,2,6,7896]
+                输出：2 
+                12 和 7896 是位数为偶数的数字
+            */
+            function evenNum(nums) {
+                let number = 0
+                for (let i of nums) {
+                    // let len = i.toString().length
+                    let len = 0
+                    while (i >= 1) {
+                        i = i / 10
+                        len++
+                    }
+                    len % 2 == 0 ? number++ : ''
+                }
+                return number
+            }
+            // console.log(evenNum([555, 9001, 4822, 1771]))
+
+
+            // 给定一个数组和一个整数  输出数组里面某两个数相加等于这个整数的下标
+            function sumArr(nums, target) {
+                for (let i = 0; i < nums.length; i++) {
+                    for (let j = 0; j < i; j++) {
+                        if (nums[i] + nums[j] === target) return [j, i]
+                    }
+                }
+            }
+            console.log(sumArr([2, 7, 11, 15, 10], 12))
+
+
+
+            // 冒泡排序
+            function sort(arr) {
+                let mind;
+                for (let i = 0; i < arr.length - 1; i++) {
+                    for (let j = 0; j < arr.length - 1 - i; j++) {
+                        if (arr[j] > arr[j + 1]) {
+                            mind = arr[j]
+                            arr[j] = arr[j + 1]
+                            arr[j + 1] = mind
+                        }
+                    }
+                }
+                return arr
+            }
+            // console.log(sort([4, 5, 2, -1, 0]))
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello world</h1>
+    <script>
+        const res = {
+            code: 200,
+            message: '操作成功',
+            data: {
+                entity: {
+                    tableHeads: [
+                        {
+                            titleName: '年份',
+                            titleCode: 'info_year',
+                        },
+                        {
+                            titleName: '图书期刊查阅（余人次）',
+                            titleCode: 'index0001',
+                        },
+                        {
+                            titleName: '新图书入架（余册）',
+                            titleCode: 'index0002',
+                        },
+                        {
+                            titleName: '论文/著作（篇）',
+                            titleCode: 'index0003',
+                        },
+                        {
+                            titleName: '书籍/期刊（本）',
+                            titleCode: 'index0004',
+                        },
+                        {
+                            titleName: '省部级课题（项）',
+                            titleCode: 'index0005',
+                        },
+                    ],
+                    pager: {
+                        pageNumber: 1,
+                        pageSize: 10,
+                        totalCount: 8,
+                        pageCount: 1,
+                        property: '',
+                        keyword: '',
+                        orderBy: 'info_year',
+                        orderConvert: false,
+                        map: '',
+                        orderType: 'asc',
+                        list: [
+                            {
+                                info_year: 2013,
+                                index0001: 32467,
+                                index0002: 12324,
+                                index0003: 3245,
+                                index0004: 4353,
+                                index0005: 4566,
+                            },
+                            {
+                                info_year: 2015,
+                                index0001: '',
+                                index0002: '',
+                                index0003: 150,
+                                index0004: 16,
+                                index0005: 21,
+                            },
+                            {
+                                info_year: 2017,
+                                index0001: 14350,
+                                index0002: 1800,
+                                index0003: 158,
+                                index0004: '',
+                                index0005: 20,
+                            },
+                            {
+                                info_year: 2018,
+                                index0001: 2000,
+                                index0002: '',
+                                index0003: 125,
+                                index0004: 15,
+                                index0005: 12,
+                            },
+                            {
+                                info_year: 2019,
+                                index0001: '',
+                                index0002: '',
+                                index0003: 125,
+                                index0004: 22,
+                                index0005: 26,
+                            },
+                            {
+                                info_year: 2020,
+                                index0001: 2545357,
+                                index0002: 1200,
+                                index0003: 82,
+                                index0004: 14,
+                                index0005: 23,
+                            },
+                            {
+                                info_year: 2021,
+                                index0001: 2000,
+                                index0002: 1100,
+                                index0003: 121,
+                                index0004: 16,
+                                index0005: 23,
+                            },
+                            {
+                                info_year: 2022,
+                                index0001: 11,
+                                index0002: 111,
+                                index0003: 11,
+                                index0004: 11,
+                                index0005: 1,
+                            },
+                        ],
+                        noPage: false,
+                        previousPageNo: 1,
+                        nextPageNo: 1,
+                    },
+                },
+            },
+        };
+
+        // [2012, 2013]
+        const aAxisData = res.data.entity.pager.list.map(item => item.info_year);
+
+        /* 
+          [
+            {
+              name: [titleName],
+              type: 'line',
+              stack: 'Total',
+              data: []
+            }
+          ]
+        */
+
+
+        const series = res.data.entity.tableHeads.map(item => {
+            return {
+                name: item.titleName,
+                type: 'line',
+                stack: 'Total',
+                data: res.data.entity.pager.list.map(
+                    subItem => subItem[item.titleCode] || 0,
+                ),
+            };
+        });
+        series.splice(0, 1)
+        console.log(res, aAxisData, series);
+
+    </script>
+</body>
+
+</html>

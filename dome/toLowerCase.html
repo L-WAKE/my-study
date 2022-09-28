@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * @param {string} str
+         */
+        function toLowerCase(str) {
+            // ASCII 编码大写小写相差32
+            let arr = str.split('');
+            let AscCode;
+            let maxCode = 'Z'.charCodeAt();
+            let minCode = 'A'.charCodeAt();
+            for (let i = 0; i < arr.length; i++) {
+                // 转换为ASCII码
+                AscCode = arr[i].charCodeAt();
+                // 大写字母，转小写
+                if (maxCode >= AscCode && minCode <= AscCode) {
+                    arr[i] = String.fromCharCode(AscCode + 32);
+                }
+            }
+            const newStr = arr.join('');
+            console.log(newStr)
+        };
+        toLowerCase('hAgRTYjl')
+    </script>
+</body>
+
+</html>

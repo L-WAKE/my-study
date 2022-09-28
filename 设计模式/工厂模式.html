@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工厂模式</title>
+</head>
+
+<body>
+    什么场景适合应用工厂模式而不是直接 new 一个对象呢？
+    当构造函数过多不方便管理，且需要创建的对象之间存在某些关联（有同一个父类、实现同一个接口等）时，
+    不妨使用工厂模式。工厂模式提供一种集中化、统一化的方式，避免了分散创建对象导致的代码重复、灵活性差的问题。
+</body>
+<script>
+    function Car1(color) {
+        this.color = color
+        this.brand = 'BMW'
+    }
+    function Car2(color) {
+        this.color = color
+        this.brand = 'BYD'
+    }
+    function Car3(color) {
+        this.color = color
+        this.brand = 'Red flag'
+    }
+    function Factory() {
+        this.create = function (brand, color) {
+            switch (brand) {
+                case 'BMW':
+                    return new Car1(color)
+                case 'BYD':
+                    return new Car2(color)
+                case 'Red flag':
+                    return new Car3(color)
+                default:
+                    break;
+            }
+        }
+    }
+    let carFactory=new Factory()
+    let cars=[]
+    cars.push(carFactory.create('BMW','red'))
+    cars.push(carFactory.create('BYD','green'))
+    cars.push(carFactory.create('Red flag','blue'))
+    
+    function say(){
+        console.log(`Hi, I am a ${this.color} ${this.brand} car`);
+    }
+    cars.forEach(item=>{
+        say.call(item)
+    })
+</script>
+
+</html>

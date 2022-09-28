@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    // let params = new Promise((resolve, reject) => {
+    //     let xhr = new XMLHttpRequest()                                  //创建一个异步对象
+    //     xhr.open('GET', 'https://9c5fdc3e-e3a8-4713-a44a-d12353a32330.mock.pstmn.io/pop/?name=张三&age=20', true)//设置请求方式/地址/是否异步
+    //     xhr.onreadystatechange = function () {                          //监听请求
+    //         if (xhr.readyState === 4) {            //判断是否请求成功            
+    //             if (xhr.status === 200) {
+    //                 resolve(xhr.responseText)       //做逻辑处理
+    //             } else {
+    //                 reject('error')
+    //             }
+    //         }
+    //     }
+    //     xhr.send()
+    // })
+    // params.then(res => {
+    //     console.log(res)
+    // }).catch(e => {
+    //     console.log(e)
+    // })
+
+    let promis = new Promise((resolve, reject) => {
+        console.log('1111')
+        resolve('2222')
+        console.log('3333')
+    })
+    promis.then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+    console.log('4444')
+</script>
+
+</html>

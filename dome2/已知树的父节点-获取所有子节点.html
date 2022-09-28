@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let datasource = [
+            {
+                path: "/nested",
+                title: "Nested",
+                children: [
+                    {
+                        path: "/nested/menu1",
+                        title: "Menu1",
+                        children: [
+                            {
+                                path: "/nested/menu1/menu1-1",
+                                title: "Menu1-1"
+                            },
+                            {
+                                path: "/nested/menu1/menu1-2",
+                                title: "Menu1-2"
+                            },
+                            {
+                                path: "/nested/menu1/menu1-3",
+                                title: "Menu1-3"
+                            },
+                        ]
+                    },
+                    {
+                        path: "/nested/menu2",
+                        title: "Menu2",
+                    }
+                ]
+            }
+        ]
+        const targetData = {};
+        function loops(data = [], parent) {
+            return data.map(({ children, title: value }) => {
+                const node = {
+                    value,
+                    parent
+                }
+                targetData[value] = node;
+                node.children = loops(children, node);
+                return
+            })
+        }
+        function getNode(value) {
+            let node = [];
+            let currentNode = targetData[value];
+            node.push(currentNode.value);
+            if (currentNode.parent) {
+                node = [...getNode(currentNode.parent.value), ...node];
+            }
+            return node
+        }
+        loops(datasource)
+        //获取父节点
+        const target = getNode('Menu1-3')
+        console.log('获取父节点', target)
+
+
+        function getChild(nodes, item, arr) {
+            for (let el of nodes) {
+                if (el.title === item) {
+                    arr.push(el.title);
+                    if (el.children) {
+                        this.childNodesDeep(el.children, arr);
+                    }
+                } else if (el.children) {
+                    this.getChild(el.children, item, arr);
+                }
+            }
+            return arr;
+        }
+        function childNodesDeep(nodes, arr) {
+            if (nodes)
+                nodes.forEach((ele) => {
+                    arr.push(ele.title);
+                    if (ele.children) {
+                        this.childNodesDeep(ele.children, arr);
+                    }
+                });
+        }
+        console.log('所有子节点',getChild(datasource, 'Menu1', []));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    Array.prototype.myFilter = function (fn) {
+        let context=this
+        let result=[]
+        if(!context.length){
+            return 
+        }
+        for(let i=0;i<context.length;i++){
+            console.log(context[i],i,context)
+            // console.log(fn.call(fn,context[i],i,context))
+            if(fn.call(fn,context[i],i,context)){
+                result.push(context[i])
+            }
+        }
+        return result
+    }
+    let arr = [1, 2, 3,5]
+    let res=arr.myFilter((item) => {
+        return item>2
+    })
+    Array.prototype.myMap=function(fn){
+        let context=this
+        if(!context.length){
+            return 
+        }
+        let res=[]
+        for(let i=0;i<context.length;i++){
+            result.push(fn.call(fn,context[i],i,context))
+        }
+        return res
+    }
+    Array.prototype.myReduce=function(fn,initial){
+        let context=this
+        let init=initial||context[0]
+        let index=init===context[0]?1:0
+
+        for(let i=index;i<context.length;i++){
+           init=fn.call(null,context[i],init)
+        }
+        return init
+    }
+    let res={
+        data:{
+            //返回一个列表
+            list:[{},{},{}],
+            name:'',
+            age:''
+        },
+        //举例，我印象中是这样
+        headers:{},
+        code:'',
+    }
+</script>
+
+</html>

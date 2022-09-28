@@ -1,0 +1,63 @@
+import java.util.*:
+enum PieceColor ｛BLACK，WHITE｝／／棋子颜色
+class PiecePos｛／／棋子位置
+private intx;
+private int y:
+pubic PiecePos(int a,int b){x=a;y=b;}
+public int getX0{retun x;}
+public int getYO{return y;}
+}
+abstract class Piece｛／／棋子定义
+protected PieceColor m＿color；／／颜色
+protected Piecemopos m＿pos；／／位置
+public Piece(PieceColor,color PiecePos
+pos){m color=color;
+{:sod=sod u
+(1);
+}
+class BlackPiece extends Piece{
+public BlackPiece(PieceColor
+color,PiecePos pos){super(color,pos);}
+public void drawO{
+System out println("draw a black
+piece");}
+}
+class WhitePiece extends Piece{
+public WhitePiece(PieceColor
+color,PiecePos pos){super(c
+olor,pos):}
+public void draw0{
+System.out.println("draw a white
+piece");
+}
+{
+class PieceBoard{
+／／棋盘上已有的棋子
+private static final
+ArrayList<(2)>m_arrayPiece=new Arra
+    yList
+    private String m＿blackName；／／黑方名称
+    private String m＿whiteName；／／白方名称
+    public PieceBoard(String black,String
+    white){
+    m_blackName=black;m_whiteName=white;
+    }
+    ／／一步棋，在棋盘上放一颗棋子
+    public void SetePiece(PieceColor
+    color,PiecePos pos){
+    (3)piece=null;
+    if（color＝＝PieceColor.BLACK）（／／放黑子
+    piece＝new BlackPiece（color，pos）；／／获取一颗黑子
+    System．out．println（m＿blackName＋＂在位置（＂＋pos．getX0）
+    +","+pos.getYO+")");
+    (4):
+    {
+    else｛／／放白子
+    piece＝new WhitePiece（color，pos）；／／获取一颗白子
+    System．out．println（m whiteName＋＂在位置（＂＋pos．getX0）＋
+    ","+pos.getYO+")");
+    (5):
+    }
+    m_arrayPiece.add(piece);
+    }
+    }

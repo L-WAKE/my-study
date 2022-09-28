@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <p id="test" style="width: 200px;height: 200px;background-color: pink;"></p>
+    </div>
+    <script>
+        window.onload = function () {
+            /*
+                 1.用最精炼的代码实现数组非零非负最小值 index
+                 例如：[10,21,0,-7,35,7,9,23,18] 输出 5, 7 最小
+            */
+            function getIndex(arr) {
+                let index = null;
+                let part = arr[0]
+                for (let i = 1; i < arr.length; i++) {
+                    if (part > arr[i] && arr[i] > 0) {
+                        part = arr[i]
+                        index = i
+
+                    }
+                    // part > arr[i] && arr[i] > 0 ? part = arr[i] : ''
+                }
+                return index;
+            }
+            // console.log(getIndex([10, 2, 0, -7, 35, 7, 9, 23, 18]))
+
+
+            /*
+                2.输出以下代码运行结果，为什么？如果希望每隔 1s 输出一个结果
+                应该如何改造？注意不可改动 square 方法
+            */
+            const list = [1, 2, 3]
+            const square = num => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(num * num)
+                    }, 1000)
+                })
+            }
+            // function test() {
+            //     list.forEach(async x => {
+            //         const res = await square(x)
+            //         console.log(res)
+            //     })
+            // }
+            async function test() {
+                for (let x of list) {
+                    const res = await square(x)
+                    console.log(res)
+                }
+            }
+            // test()
+
+
+            /*
+                3.实现 Promise.retry，成功后 resolve 结果，失败后重试，尝试超过一定次数才真正的 reject 
+            */
+            function getData() {
+                let p = new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        var num = Math.ceil(Math.random() * 20); //生成1-10的随机数
+                        console.log('随机数生成的值：', num)
+                        if (num <= 10) {
+                            console.log('符合条件，值为' + num)
+                            resolve(num);
+                        }
+                        else {
+                            reject('数字大于10了执行失败');
+                        }
+                    }, 2000);
+                })
+                return p
+            }
+            function myGetData(getData, times, delay) {
+                return new Promise(function (resolve, reject) {
+                    function attempt() {
+                        getData().then(resolve).catch(function (erro) {
+                            console.log(`还有 ${times} 次尝试`)
+                            if (0 == times) {
+                                reject(erro)
+                            } else {
+                                times--
+                                setTimeout(attempt(), delay)
+                            }
+                        })
+                    }
+                    attempt()
+                })
+            }
+            // myGetData(getData, 5, 1000)
+
+
+            /*
+                4. 数组扁平化去重排序 例如：[2, 2, 1, [3, 4]]  输出：[1, 2, 3, 4]
+            */
+            function flatten(arr) {
+                // 循环展开嵌套的数组，直到没有嵌套
+                // while (arr.some(item => Array.isArray(item))) {
+                //     arr = [].concat(...arr);
+                // }
+
+                var res = [];
+                arr.map(item => {
+                    if (Array.isArray(item)) {
+                        res = res.concat(flatten(item));
+                    } else {
+                        res.push(item);
+                    }
+                });
+                return res;
+
+                // let start = arr.flat(Infinity)
+                // let newArr = Array.from(new Set(start))
+                // let arrNew = newArr.sort((a, b) => a - b)
+
+                // let newArr = Array.from(new Set(arr.flat(Infinity))).sort((a, b) => a - b)
+                // return newArr;
+            }
+            // console.log(flatten([2, 4, [1, 2, [5, 1]], [3, 4]]))
+
+
+            // 利用indexOf实现数组去重  
+            function setChong(arr) {
+                let newArr = []
+                for (let i = 0; i < arr.length; i++) {
+                    if (newArr.indexOf(arr[i]) === -1) {
+                        newArr.push(arr[i])
+                    }
+                }
+                return newArr
+            }
+            // console.log(setChong([2, 3, 3, 4, 5, 2]))
+
+            // 递归去重
+            function removal(arr) {
+                let len = arr.length
+                let arra = arr
+                arra.sort((a, b) => a - b)
+                function loop(index) {
+                    if (index >= 1) {
+                        if (arra[index] == arra[index - 1]) arra.splice(index, 1)
+                        loop(index - 1)
+                    }
+                }
+                loop(len - 1)
+                return arra
+            }
+            //console.log(removal([2, 3, 3, 4, 4, 5, 2]))
+
+            //节流
+            function throttle(fn, delay) {
+                let time = null
+                return function () {
+                    let args = arguments
+                    if (!time) {
+                        time = setTimeout(function () {
+                            fn.apply(this, args)
+                            clearTimeout(time)
+                            time = null
+                        }, delay)
+                    }
+                }
+            }
+
+            //防抖
+            function debounce(fu, delay) {
+                let time = null
+                return function () {
+                    let args = arguments
+                    if (time) clearTimeout(time)
+                    time = setTimeout(function () {
+                        fu.apply(this, args)
+                    }, delay)
+                }
+            }
+
+            function testThrottle(params, two) {
+                console.log(params, '测试1')
+                console.log(two, '测试2')
+            }
+            let thFun = debounce(testThrottle, 500)
+            let testId = document.getElementById("test")
+            testId.onclick = function (e) {
+                thFun(e.type, '第二个参数')
+            }
+        }
+    </script>
+</body>
+
+</html>

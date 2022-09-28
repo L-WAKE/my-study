@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id='app'></div>
+</body>
+<script>
+    var a = '10'
+    function test(x) {
+        console.log(x)
+        var x = 20
+        function x() { }
+        console.log(x)
+    }
+    test(320)
+    let extendCom = {
+        data() {
+            return {
+                name: 'extend'
+            }
+        },
+        created() {
+            console.log('extend')
+        }
+    }
+    let mixinA = {
+        data() {
+            return {
+                name: 'mixin A'
+            }
+        },
+        created() {
+            console.log('mixin A')
+        }
+    }
+    let mixinB = {
+        data() {
+            return {
+                name: 'mixin B'
+            }
+        },
+        created() {
+            console.log('mixin B')
+        }
+    }
+    let vue = new Vue({
+        el: '#app',
+        extends: extendCom,
+        mixins: [mixinA, mixinB],
+        created() {
+            console.log('vue created')
+            console.log(this.name)
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const objTest = {
+            test_name: '张三',
+            test_age: 20,
+            test_pop: '打篮球',
+            test_phone: 110,
+            two_name: '测试欧',
+            sex: '男'
+        }
+        const arrKeys = Object.keys(objTest)
+        let keys = null
+        for (let key of arrKeys) {
+            if (key.indexOf('name') != -1) {
+                keys = key
+                break
+            }
+        }
+        let value = null
+        keys && (value = objTest[keys])
+
+        console.log('keys', keys)
+        console.log('value', value)
+
+        console.log('arrKeys', arrKeys)
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 原型继承
+        function father() {
+            this.name = "liujin";
+        }
+        function child() {
+            this.age = "22";
+        }
+        child.prototype = new father();
+        let dome = new child();
+        //console.log(dome.name)
+        //console.log(dome.age)
+
+        // 构造函数继承
+        class Dog {
+            constructor(name) {
+                this.name = name;
+            }
+        }
+        class Hashiqi extends Dog {
+            constructor(name, size) {
+                super(name);
+                this.size = size;
+            }
+        }
+        let dome2 = new Hashiqi("taidi", 50);
+        //console.log(dome2.name)
+        //console.log(dome2.size)
+
+        // call继承
+        function Person(name, age) {
+            this.name = name
+            this.age = age
+        }
+        function Son(name, age) {
+            Person.call(this, name, age)
+        }
+        let dome3 = new Son('老王2', 28)
+        //console.log(dome3.name)
+
+        const arr = [1, 22, 3, 44, 5, 66, 7, 88, 9];
+        const max = Math.max.apply(Math, arr);
+        //console.log(max);
+        
+    </script>
+</body>
+
+</html>

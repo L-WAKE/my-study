@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>享学课堂-飘哥-15300310090</title>
+  </head>
+  <body>
+    <script>
+      //example 1
+      let a = {},
+          b = '0',
+          c = 0;
+      a[b] = '享学';
+      a[c] = '课堂';
+      console.log(a[b]);//课堂
+      ​
+      //example 2
+      let a = {},
+          b = Symbol('1'),
+          c = Symbol('1');
+      a[b] = '享学';
+      a[c] = '课堂';
+      console.log(a[b]);//享学
+      ​
+      //example 3
+      let a = {},
+          b = {n : '1'},
+          c = {m : '2'};
+      a[b] = '享学';
+      a[c] = '课堂';
+      console.log(a[b]);//课堂
+    </script>
+  </body>
+</html>

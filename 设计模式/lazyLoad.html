@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .div1 {
+            width: 100vw;
+            height: 100vh;
+            background-color: aqua;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="div1"></div>
+    <img id='lazyImg'  />
+</body>
+<script>
+    let img = document.getElementById('lazyImg')
+    console.dir(img.dataset.src)
+    img.dataset.src='nihao'
+    console.dir(img.dataset.src)
+    function isIn(el) {
+        var bound = el.getBoundingClientRect();
+        var clientHeight = window.innerHeight;
+        console.log(clientHeight,bound.top)
+        return bound.top <= clientHeight;
+    }
+    
+    function load(){
+        if(!img.src){
+            img.src='https://cdn.nlark.com/yuque/0/2021/png/2636565/1630031721646-5ab9e60c-5d70-4866-abcc-0678ae74b2e9.png'
+        }
+    }
+    window.onscroll = function () {
+        if(isIn(img)){
+            load()
+        }
+    }
+</script>
+
+</html>

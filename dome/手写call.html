@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+            Function.prototype.myCall = function (obj, ...arg) {
+                //1.判断有无传入参数，没有则默认指向window对象
+                obj = obj ? Object(obj) : window
+                //2.给形参对象obj新增属性指向window对象
+                obj.addAttr = this
+                //3.接收剩余参数
+                const res = obj.addAttr(...arg)
+                //4.删除这个新增的属性
+                delete addAttr
+                return res
+            }
+            const person = { name: '张三' }
+            window.name = '李四'
+
+            function test(param) {
+                console.log(this.name)
+                console.log(param)
+            }
+            // test('20岁了')
+            test.myCall(person, '18岁了')
+        }
+    </script>
+</body>
+
+</html>

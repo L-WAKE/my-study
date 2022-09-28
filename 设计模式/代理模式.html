@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代理模式</title>
+</head>
+
+<body>
+    <h2>代理模式</h2>
+    <p>可以解决的问题：</p>
+    <ul>
+        <li>增加对一个对象的访问控制</li>
+        <li>当访问一个对象的过程总需要增加额外的逻辑</li>
+    </ul>
+    <p>实现代理需要3个部分</p>
+    <ul>
+        <li>真实对象</li>
+        <li>代理对象</li>
+        <li>subject接口</li>
+    </ul>
+    <p>比如proxy，defineProperty</p>
+</body>
+<script>
+    //一个股票查询接口
+    function StockPriceAPI() {
+        this.getValue = function (stock, callback) {
+            console.log('Calling external API ... ');
+            setTimeout(() => {
+                switch (stock) {
+                    case 'GOOGL':
+                        callback('$1265.23');
+                        break;
+                    case 'AAPL':
+                        callback('$287.05');
+                        break;
+                    case 'MSFT':
+                        callback('$173.70');
+                        break;
+                    default:
+                        callback('');
+                }
+            }, 2000)
+        }
+    }
+    //增加缓存机制，当有缓存的时候从缓存中获取，没有再去请求远程接口
+    function StockPriceAPIProxy() {
+        this.cache = {}
+        this.realApi = new StockPriceAPI()
+        this.getValue = function (stock, callback) {
+            const cachedPrice = this.cache[stock]
+            if (cachedPrice) {
+                console.log('Got price from cache')
+                callback(cachedPrice)
+            } else {
+                this.realApi.getValue(stock, (price) => {
+                    this.cache[stock] = price
+                    callback(price)
+                })
+            }
+        }
+    }
+    const api = new StockPriceAPIProxy();
+    api.getValue('GOOGL', (price) => { console.log(price) });
+    api.getValue('AAPL', (price) => { console.log(price) });
+    api.getValue('MSFT', (price) => { console.log(price) });
+
+    setTimeout(() => {
+        api.getValue('GOOGL', (price) => { console.log(price) });
+        api.getValue('AAPL', (price) => { console.log(price) });
+        api.getValue('MSFT', (price) => { console.log(price) });
+    }, 3000)
+
+    let obj = {}
+    let objProxy = new Proxy(obj, {
+        get(target, property) {
+            console.log('我在proxy的get')
+            return target[property]
+        },
+        set(target, property, value) {
+            console.log('我在proxy的set')
+            target[property] = value
+        }
+    })
+    objProxy.name = '张三'
+    console.log(objProxy.name)
+    let obj2 = {
+        name:'李四'
+    }
+    Object.defineProperties(obj2, {
+        name: {
+            get() {
+               return this.name
+            },
+            set(value) {
+               this.name=value
+            }
+        }
+    })
+    obj2.name = '里斯'
+    console.log(obj2.name)
+</script>
+
+</html>

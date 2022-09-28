@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>-飘哥-</title>
+</head>
+
+<body>
+  <script>
+    function fun(n, o) {
+      console.log(o);
+      return {
+        fun: function (m) {
+          return fun(m, n);
+        },
+      };
+    }
+
+    // 第一个例子
+    var a = fun(0); // 返回 undefined
+    a.fun(1); // 返回 0
+    a.fun(2); // 返回 0
+    a.fun(3); // 返回 0
+
+    // 第二个例子
+    var b = fun(0).fun(1).fun(2).fun(3); //undefined,0,1,2
+
+    // 第三个例子
+    var c = fun(0).fun(1);
+    c.fun(2);
+    c.fun(3); //undefined,0,1,1
+  </script>
+</body>
+
+</html>

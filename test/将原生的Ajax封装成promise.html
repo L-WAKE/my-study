@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var myNewAjax = function (url) {
+            return new Promise(function (resolve, reject) {
+                let xhr = new XMLHttpRequest()
+                xhr.open('get', url) // xhr.open('get', "/api/test?name=张三&age=22")
+                xhr.onreadystatechange = function () {
+                    if (xhr.status === 200 && xhr.readyState === 4) {
+                        let json = JSON.parse(xhr.responseText)
+                        resolve(json)
+                    } else if (xhr.status != 200 && xhr.readyState != 4) {
+                        reject('error')
+                    }
+                }
+                xhr.send()// get 传参通过url    post传参通过send("name=张三&age=22")
+            })
+        }
+    </script>
+</body>
+
+</html>

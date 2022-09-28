@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>-飘哥-</title>
+</head>
+
+<body>
+  <script>
+    // 请问以下代码输出什么?如何修改成我可能期望的样子?
+    function outer() {
+      var arr = [];
+      for (var i = 0; i < 5; i++) {
+        arr[i] = function () {
+          console.log(i);
+        };
+      }
+      return arr;
+    }
+
+    let result = outer();
+    result[0]();//5
+    result[1]();//5
+    result[2]();//5
+    result[3]();//5
+    result[4]();//5
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="p1">
+        <div class="c1">1</div>
+        <div class="c2">2</div>
+    </div>
+    <style>
+        .c1 {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: red;
+        }
+
+        .c2 {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: pink;
+        }
+    </style>
+    <script>
+        /*判断数组的三种方法*/
+        /*
+            let arr = []
+            let isArr = Array.isArray(arr)
+            let isArr = arr instanceof Array
+            let isArr = arr.constructor === Array
+            console.log(isArr)
+        */
+        /*提取字符串中的年份*/
+        const arr = ['[正式]2021年1月1日交易', '[模拟]2021年10月10日交易', '[正式]2021年10月15多日交易']
+        const setArr = arr.map(item => {
+            let newArr = item.match(/\d+(\.\d+)?/g)
+            return newArr.join('-')
+        });
+        console.log(setArr)
+    </script>
+</body>
+
+</html>

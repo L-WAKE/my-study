@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const is = (x, y) => {
+            if (x === y) {
+                // +0和-0应该不相等
+                return x !== 0 || y !== 0 || 1 / x === 1 / y;
+            } else {
+                return x !== x && y !== y;
+            }
+        }
+        console.log(is(-0, +0))
+    </script>
+</body>
+
+</html>

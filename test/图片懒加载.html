@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <img src="./img/1.jpg" data-src="./img/1.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/2.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/3.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/4.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/5.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/6.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/7.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/8.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/9.jpg" alt="">
+        <img src="./img/1.jpg" data-src="./img/10.jpg" alt="">
+    </div>
+</body>
+<script>
+    window.onload = () => {
+        // 获取某节点与浏览器顶部的距离
+        function getTop(e) {
+            if (!e) return
+            return e.offsetTop
+        }
+        let imgs = document.getElementsByTagName('img')
+        function lazyLoading(imgs) {
+            // 可视区域高度
+            let innerHeight = window.innerHeight;
+            // 滚动区域高度
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            for (let i = 0; i < imgs.length; i++) {
+                // 图片距离顶部的距离大于可视区域和滚动区域之和时加载
+                if (scrollTop + innerHeight > getTop(imgs[i])) {
+                    imgs[i].src = imgs[i].getAttribute('data-src')
+                }
+            }
+        }
+        lazyLoading(imgs)
+        window.onscroll = () => {
+            lazyLoading(imgs)
+        }
+    }
+</script>
+
+</html>

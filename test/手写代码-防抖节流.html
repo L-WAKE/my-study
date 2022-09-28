@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        window.onload = function () {
+            //防抖
+            function fangD(fn, shijian) {
+                let valid = null
+                return () => {
+                    if (valid) {
+                        clearTimeout(valid)
+                        valid = setTimeout(fn, shijian)
+                    } else {
+                        valid = setTimeout(fn, shijian)
+                    }
+                }
+            }
+            function funC() {
+                console.log("防抖")
+            }
+            // fangD(funC, 1000)()
+
+            //节流
+            function jieLiu(fn, shijian) {
+                let valid = null
+                return () => {
+                    if (valid) return false
+                    valid = true
+                    setTimeout(() => {
+                        fn()
+                        valid = false
+                    }, shijian);
+                }
+            }
+            function funA() {
+                console.log("节流")
+            }
+            // jieLiu(funA, 2000)()
+
+            //ajax
+            let xhr = new XMLHttpRequest()                                  //创建一个异步对象
+            xhr.open('GET', 'https://7f7429a8-f8a1-43fa-9ae8-69f553b819c8.mock.pstmn.io/userList', true)//设置请求方式/地址/是否异步
+            xhr.setRequestHeader('Content-Type', 'application/json');       //如果后台接收的是json格式数据，需要这样设置请求头
+            xhr.onreadystatechange = function () {                          //监听请求
+                if (xhr.readyState === 4 && xhr.status === 200) {            //判断是否请求成功
+                    console.log(JSON.parse(xhr.responseText))                           //做逻辑处理
+                }
+            }
+            xhr.send()                                                      //发送请求
+
+
+            // var xhr = new XMLHttpRequest(); // IE8/9需用window.XDomainRequest兼容
+            // // 前端设置是否带cookie
+            // xhr.withCredentials = true;
+            // xhr.open('post', 'www.baidu.com', true);
+            // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            // xhr.send('user=admin');
+            // xhr.onreadystatechange = function () {
+            //     if (xhr.readyState == 4 && xhr.status == 200) {
+            //         console.log(xhr.responseText)
+            //     }
+            // };
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            width: 300px;
+            height: 300px;
+            background-color: blueviolet;
+        }
+
+        .div1 {
+            height: 50px;
+            background-color: brown;
+        }
+
+        .div2 {
+            height: 50px;
+            background-color: rosybrown;
+        }
+
+        .div1~.div2 {
+            background-color: royalblue;
+        }
+
+        .shan {
+            width: 0;
+            height: 0;
+            border: 50px solid transparent;
+            border-top-color: rebeccapurple;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="div1">FIRST</div>
+        <div class="div2">SECOND</div>
+        <div class="div2">FIRTST</div>
+    </div>
+    <div class='shan'></div>
+</body>
+<script>
+    let emptyArr = []
+    let Arr = [1, 2, 3.2, 'nihao']
+    let emptyObj = {}
+    let Obj = { name: 'age', say: () => { console.log('say') } }
+    let x = 2.3
+    let y = -2.3
+    let n = 'a1'
+    let m = '1n'
+    // console.log(typeof emptyArr=='object') //期望：true
+    // console.log(typeof emptyObj=='object') //期望：true
+
+    console.log(Arr.toString())  // 1,2,3.2,nihao
+    // console.log(Arr.valueOf()) // [1, 2, 3.2, 'nihao']
+    // console.log(Obj.toString()) //[object Object]
+    // console.log(Obj.valueOf()) // {name:'age',say:()=>{console.log('say')}}
+
+    console.log(emptyArr.toString())
+    // console.log(emptyArr.valueOf()) // []
+    // console.log(emptyObj.toString()) //[object Object]
+    // console.log(emptyObj.valueOf()) //{}
+
+    console.log(undefined == null)  //true
+    console.log(undefined === null) //false
+    console.log(([1, 2] == true))
+    const promise1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('success')
+  }, 1000)
+})
+const promise2 = promise1.then(() => {
+  throw new Error('error!!!')
+})
+console.log('promise1', promise1)
+console.log('promise2', promise2)
+setTimeout(() => {
+  console.log('promise1', promise1)
+  console.log('promise2', promise2)
+}, 2000)
+</script>
+
+</html>

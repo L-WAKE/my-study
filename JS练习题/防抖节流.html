@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <input type="text">
+        <div id="test" style="width: 200px;height: 200px;background-color: pink;"></div>
+    </div>
+</body>
+<script>
+    window.onload = function () {
+
+        /***************防抖**************/
+
+        let inp = document.querySelector('input')
+        // let time = null
+        // inp.oninput = function (e) {
+        //     if (time !== null) {
+        //         clearTimeout(time)
+        //     }
+        //     time = setTimeout(() => {
+        //         console.log(e.target.value)
+        //     }, 500)
+        // }
+        inp.oninput = debounce(function () {
+            console.log(this.value)
+        }, 500)
+
+        function debounce(fn, delay) {
+            let t = null
+            return function () {
+                if (t) clearTimeout(t)
+                let args = arguments;
+                t = setTimeout(() => {
+                    fn.apply(this, args)
+                }, delay)
+            }
+        }
+        //节流
+        function throttle(func, wait) {
+            let time = null;
+            return function () {
+                let args = arguments;
+                if (!time) {
+                    time = setTimeout(function () {
+                        func.apply(this, args)
+                        clearTimeout(time)
+                        time = null;
+                    }, wait)
+                }
+            }
+        }
+        function testThrottle(content) { console.log(content, 'content'); }
+        let testThrottleFn = throttle(testThrottle, 500); // 节流函数
+
+        let testId = document.getElementById("test")
+        testId.onclick = function (e) {
+            testThrottleFn(e.type); // 给节流函数传参
+        }
+    }
+</script>
+
+</html>

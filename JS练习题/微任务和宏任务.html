@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div></div>
+    <script>
+        new Promise((resolve) => {
+            console.log('外层宏事件2');
+            resolve()
+        }).then(() => {
+            console.log('微事件1');
+        }).then(() => {
+            console.log('微事件2')
+        })
+        console.log('外层宏事件1');
+        setTimeout(() => {
+            //执行后 回调一个宏事件
+            console.log('内层宏事件3')
+        }, 0)
+    </script>
+</body>
+
+</html>

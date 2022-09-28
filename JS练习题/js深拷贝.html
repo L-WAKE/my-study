@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let obj = {
+            name: '张三',
+            age: 23,
+            sex: '男',
+            hobby: {
+                option: '打篮球',
+                option2: '打乒乓球',
+                option3: '打羽毛球'
+            }
+        }
+        // 方法1：使用递归遍历
+        function deepClone(obj) {
+            let objClone = Array.isArray(obj) ? [] : {}
+            if (obj && typeof obj === 'object') {
+                for (key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        if (obj[key] && typeof obj[key] === "object") {
+                            objClone[key] = deepClone(obj[key])
+                        } else {
+                            objClone[key] = obj[key]
+                        }
+                    }
+                }
+            }
+            return objClone
+        }
+        // console.log(deepClone(obj))
+
+        // 方法2：使用json
+        function deepJson(obj) {
+            let objClone = JSON.parse(JSON.stringify(obj))
+            return objClone
+        }
+
+        // 标准深度克隆
+        function deepCloneMax(obj) {
+            if ([null, undefined, NaN, false].includes(obj)) return obj
+            if (typeof obj !== "object" && typeof obj !== "function") return obj
+            let newObj = Array.isArray(obj) ? [] : {}
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    newObj[key] = typeof obj == "object" ? deepCloneMax(obj[key]) : obj[key]
+                }
+            }
+            return newObj
+        }
+
+        console.log(deepCloneMax(obj))
+
+
+
+        function test(obj) {
+            
+            // for (Object.keys) {
+            //     console.log('key', key)
+            //     console.log('val', val)
+            // }
+        }
+        console.log(Object.keys(obj))
+
+    </script>
+</body>
+
+</html>

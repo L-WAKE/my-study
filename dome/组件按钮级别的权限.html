@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const CREATE = 0b0001 //新增
+        const DELETE = 0b0010 //删除
+        const UPDATE = 0b0100 //修改
+        const DETAIL = 0b1000 //查看
+
+        // 如某个角色拥有新增和删除权限 或运算
+        const result = CREATE | DETAIL
+        console.log(result.toString(2))
+
+        // 判定是否拥有某个权限  且运算
+        const havePower = (result & DELETE) == DELETE
+        console.log(havePower)
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function add(x, y) {
+            console.log(x + y)
+        }
+        function minus(x, y) {
+            console.log(x - y)
+        }
+        // add.call(minus, 1, 1) //2
+
+        let test = { name: "张三" }
+        let test_1 = { age: 21 }
+        function test_2(param) {
+            console.log(this.name)
+            console.log(param)
+        }
+        // test_2(22)                //22
+        // test_2.call(test, 23)     //张三   23
+
+        let person1 = { name: 'liya' }
+        let person2 = { name: 'mike' }
+
+        function ren(sex, age) {
+            console.log(`${this.name}今年${age}岁了，性别${sex}`)
+        }
+        ren.bind(person1, '男', 22)()
+        ren.call(person2, '男', 23)
+        ren.apply(person1, ['女', 18])
+
+
+    </script>
+</body>
+
+</html>

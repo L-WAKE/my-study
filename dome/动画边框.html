@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="content">
+        <div class="btm">
+            边框按钮
+        </div>
+    </div>
+    <style>
+        .content{
+            width: calc(100vw - 20px);
+            height: calc(100vh - 20px);
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btm{
+            width: 100px;
+            padding: 10px 20px;
+            color: rgba(24, 144, 255, 1);
+            font-size: 24px;
+            background-color: black;
+            cursor: pointer;
+            z-index: 1;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btm::before{
+            content: "";
+            position: absolute;
+            background: rgba(24, 144, 255, 1);
+            width: 200%;
+            height: 200%;
+            z-index: -2;
+            left: 50%;
+            top: 50%;
+            transform-origin: 0 0;
+            animation: rotate 3s infinite linear;
+        }
+        .btm::after{
+            content: "";
+            position: absolute;
+            background: black;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            left: 2px;
+            top: 2px;
+            border-radius: 10px;
+            z-index: -1;
+        }
+        @keyframes rotate{
+            to{
+                transform: rotate(1turn);
+            }
+        }
+    </style>
+</body>
+
+</html>

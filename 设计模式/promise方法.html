@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    let promise1 = new Promise((res, rej) => {
+        res('success')
+    })
+    let promise2 = new Promise((res, rej) => {
+        rej('fail')
+    })
+    Promise.allSettled([promise1, promise2]).then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+    // console.log()
+    Promise.all = function (arr) {
+        let result = []
+        let len = arr.length
+        let index = 0
+        return new Promise((res, rej) => {
+            arr.forEach(item => {
+                Promise.resolve(item).then(res => {
+                    result.push(res)
+                    index++
+                    if (index === len) {
+                        res(result)
+                    }
+                }).catch(err => {
+                    rej(err)
+                })
+            });
+        })
+    }
+    Promise.race = function (arr) {
+        return new Promise((res, rej) => {
+            arr.forEach(item => {
+                Promise.resolve(item).then(data => {
+                    res(data)
+                }).catch(err => {
+                    console.log(err)
+                })
+            })
+        })
+    }
+    Promise.allSettled = function (arr) {
+        let result = []
+        return new Promise((res, rej) => {
+            arr.forEach(item => {
+                Promise.resolve(item).then(res => {
+                    result.push({
+                        status: "fulfilled",
+                        value: res
+                    })
+                }).catch(err => {
+                    result.push({
+                        status: "rejected",
+                        reason: err
+                    })
+                })
+            })
+            res(result)
+        })
+    }
+    Promise.allSettled([promise1, promise2]).then(res => {
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+</script>
+
+</html>

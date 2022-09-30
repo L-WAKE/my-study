@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let initArr = [5, 9, 3, 6, 1, 2, 8, 4]
+        /*冒泡排序*/
+        function bubbling(arr) {
+            //判空和是否为数组
+            if (arr.length <= 1 || !Array.isArray(arr)) return arr;
+            for (let i = 0; i < arr.length - 1; i++) {
+                for (let j = 0; j < arr.length - 1 - i; j++) {
+                    arr[j] > arr[j + 1] && ([arr[j], arr[j + 1]] = [arr[j + 1], arr[j]])
+                }
+            }
+            return arr
+        }
+        console.log('冒泡排序：', bubbling(initArr))
+
+        function quickSort(arr) {
+            if (arr.length <= 1 || !Array.isArray(arr)) return arr;
+            const num = arr[0];
+            let left = [], right = [];
+            for (let i = 1; i < arr.length; i++) {
+                arr[i] <= num ? left.push(arr[i]) : right.push(arr[i])
+            }
+            return quickSort(left).concat([num], quickSort(right));
+        }
+        console.log('快速排序：', quickSort(initArr))
+
+    </script>
+</body>
+
+</html>

@@ -24,6 +24,7 @@
         }
         console.log('冒泡排序：', bubbling(initArr))
 
+
         function quickSort(arr) {
             if (arr.length <= 1 || !Array.isArray(arr)) return arr;
             const num = arr[0];
@@ -34,6 +35,22 @@
             return quickSort(left).concat([num], quickSort(right));
         }
         console.log('快速排序：', quickSort(initArr))
+
+
+        const insertionSort = (arr) => {
+            for (let i = 1; i < arr.length; i++) {
+                let j = i - 1
+                let tmp = arr[i]
+                while (j >= 0 && arr[j] > tmp) {
+                    arr[j + 1] = arr[j]
+                    j--
+                }
+                arr[j + 1] = tmp
+            }
+            return arr
+        }
+        console.log('插入排序：', insertionSort(initArr))
+
 
     </script>
 </body>

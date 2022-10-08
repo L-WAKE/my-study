@@ -17,9 +17,9 @@
         // }
         // console.log(num);
 
-        var numberList = 1000000000;
+        let numberList = 1000000000;
 
-        var worker = new Worker('./testWork.js');
+        let worker = new Worker('./testWork.js');
         worker.postMessage(numberList);
         worker.onmessage = function (event) {
             console.log(event.data);

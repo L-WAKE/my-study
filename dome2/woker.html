@@ -17,7 +17,7 @@
         // }
         // console.log(num);
 
-        let numberList = 1000000000;
+        let numberList = BigInt(1000000000);
 
         let worker = new Worker('./testWork.js');
         worker.postMessage(numberList);

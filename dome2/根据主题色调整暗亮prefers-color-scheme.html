@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    :root {
+        --bg: #fff;
+        --text-color: #222;
+        --link-color: #0033cc;
+    }
+
+    body {
+        --duration: 0.5s;
+        --timing: ease;
+        color: var(--text-color);
+        background-color: var(--bg);
+        text-align: center;
+        transition: background-color var(--duration) var(--timing), color var(--duration) var(--timing);
+    }
+
+    body a {
+        color: var(--link-color);
+    }
+
+    /* light dark */
+    @media (prefers-color-scheme:dark) {
+        :root {
+            --bg: #121212;
+            --text-color: #eee;
+            --link-color: red;
+        }
+    }
+</style>
+
+<body>
+    <div>
+        <h1>测试</h1>
+        <a href="#">百度一下</a>
+    </div>
+</body>
+
+</html>

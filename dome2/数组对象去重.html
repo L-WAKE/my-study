@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let arr = [{
+            id: '1',
+            key: '1',
+            value: '明月'
+        }, {
+            id: '3',
+            key: '2',
+            value: '可欣'
+        }, {
+            id: '2',
+            key: '3',
+            value: '小红'
+        }, {
+            id: '1',
+            key: '1',
+            value: '小馨'
+        }, {
+            id: '1',
+            key: '2',
+            value: '小静'
+        }]
+
+        function setArr(arr) {
+            let newArr = [];
+            let obj = {};
+            for (let i = 0; i < arr.length; i++) {
+                if (!obj[arr[i].key]) {
+                    newArr.push(arr[i])
+                    obj[arr[i].key] = true
+                }
+            }
+            console.log('arr', newArr);
+        }
+        setArr(arr)
+
+        function setArr2(arr) {
+            let map = new Map();
+            for (let item of arr) {
+                map.set(item.id, item);
+            }
+            arr = [...map.values()];
+            console.log('arr2', arr)
+        }
+        setArr(arr)
+
+    </script>
+</body>
+
+</html>

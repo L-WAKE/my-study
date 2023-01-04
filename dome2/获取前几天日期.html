@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>日期操作</title>
+    <script>
+        function getDate(day) {
+            let date1 = new Date();
+            let oneDay = 24 * 3600 * 1000;
+            let base = new Date(date1).getTime() - oneDay;
+            let date = [];
+            let data = [Math.random() * 300];
+            let time = new Date(base);
+            date.push([time.getFullYear(), time.getMonth() + 1, time.getDate()].join('/'));
+            for (let i = 1; i < day; i++) {//控制需要的天数
+                let now = new Date(base -= oneDay); //这里控制往前一周还是往后一周
+                date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+                data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+            }
+            let newdate = date.reverse(); //往后一周的话需要将数组倒叙，完后不需要
+            console.log(newdate);
+            console.log(newdate[0]);//需要哪天直接下标取就行了
+
+            //数据插入table显示，可忽略
+            let str = "";
+            for (let i = 0; i < newdate.length; i++) {
+                str += '<tr>' + newdate[i] + '</tr></br>';
+            };
+            console.log(str);
+            document.getElementById("time").innerHTML = str;//拼接完字符串数组后用innerHTML把它渲染到页面中
+        }
+        function getMon(day) {
+            let d = new Date();
+            let oneM = 30 * 24 * 3600 * 1000;
+            let base = new Date(d).getTime() - oneM;
+            let date = [];
+            let data = [Math.random() * 300];
+            let time = new Date(base);
+            let mon = (time.getMonth() + 1) < 10 ? '0' + (time.getMonth() + 1) : (time.getMonth() + 1)
+            date.push([time.getFullYear(), mon].join(''));
+            for (let i = 1; i < day; i++) {
+                let now = new Date(base -= oneM);
+                let monN = (now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : (now.getMonth() + 1)
+                date.push([now.getFullYear(), monN].join(''));
+                data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+            }
+            let newdate = date.reverse();
+            console.log(newdate);
+            console.log(newdate[0]);
+
+            //数据插入table显示，可忽略
+            let str = "";
+            for (let i = 0; i < newdate.length; i++) {
+                str += '<tr>' + newdate[i] + '</tr></br>';
+            };
+            console.log(str);
+            document.getElementById("time").innerHTML = str;//拼接完字符串数组后用innerHTML把它渲染到页面中
+        }
+    </script>
+</head>
+
+<body>
+    <button id="Timer" onclick="getMon(5)">获取任意时间(此处获取前5天时间)</button>
+    <table id="time">
+    </table>
+</body>
+
+</html>

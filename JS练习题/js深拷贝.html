@@ -51,13 +51,13 @@
             let newObj = Array.isArray(obj) ? [] : {}
             for (let key in obj) {
                 if (obj.hasOwnProperty(key)) {
-                    newObj[key] = typeof obj == "object" ? deepCloneMax(obj[key]) : obj[key]
+                    newObj[key] = typeof obj[key] == "object" ? deepCloneMax(obj[key]) : obj[key]
                 }
             }
             return newObj
         }
 
-        console.log(deepCloneMax(obj))
+        console.log('deepCloneMax',deepCloneMax(obj))
 
 
 
@@ -68,7 +68,7 @@
             //     console.log('val', val)
             // }
         }
-        console.log(Object.keys(obj))
+        // console.log(Object.keys(obj))
 
     </script>
 </body>

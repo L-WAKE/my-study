@@ -30,7 +30,7 @@
         //     }, 500)
         // }
         inp.oninput = debounce(function () {
-            console.log(this.value)
+            console.log('防抖', this.value)
         }, 500)
 
         function debounce(fn, delay) {
@@ -57,7 +57,7 @@
                 }
             }
         }
-        function testThrottle(content) { console.log(content, 'content'); }
+        function testThrottle(content) { console.log('节流', content); }
         let testThrottleFn = throttle(testThrottle, 500); // 节流函数
 
         let testId = document.getElementById("test")

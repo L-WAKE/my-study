@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D旋转立体相册源码（送给那个她）</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="shortcut icon" href="https://www.xfabe.com/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <!-- 自动循环播放音乐（谷歌浏览器内核除外） -->
+    <audio src="https://links.xfyun.club/xfyun/fansisi.mp3" autoplay="autoplay" loop="loop" controls="controls"></audio>
+    <!-- 3d旋转的盒子 -->
+    <div class="xf_3d_box">
+        <!-- 内部 -->
+        <ul class="xf_rotate_1">
+            <!-- 这里修改照片路径 -->
+            <li><img src="img/xw1.jpg" alt="女友照片"></li>
+            <li><img src="img/xw2.jpg" alt="女友照片"></li>
+            <li><img src="img/xw3.jpg" alt="女友照片"></li>
+            <li><img src="img/xw4.jpg" alt="女友照片"></li>
+            <li><img src="img/xw5.jpg" alt="女友照片"></li>
+            <li><img src="img/xw6.jpg" alt="女友照片"></li>
+        </ul>
+        <!-- 外部 -->
+        <ul class="xf_rotate_2">
+            <li><img src="img/xw1.jpg" alt="女友照片"></li>
+            <li><img src="img/xw2.jpg" alt="女友照片"></li>
+
+            <!-- 第三个和第四个隐藏了 -->
+            <li><img src="img/xw3.jpg" alt="女友照片"></li>
+            <li><img src="img/xw4.jpg" alt="女友照片"></li>
+
+            <li><img src="img/xw5.jpg" alt="女友照片"></li>
+            <li><img src="img/xw6.jpg" alt="女友照片"></li>
+        </ul>
+    </div>
+    <script>
+        let div = document.querySelector('.xf_3d_box')
+        let ul = document.querySelector('.xf_rotate_2')
+        let xfhusband = false
+        div.addEventListener('click', function () {
+            xfhusband = !xfhusband
+            if (xfhusband) {
+                ul.style.opacity = 1
+            }
+            else {
+                ul.style.opacity = 0
+            }
+            console.log((xfhusband));
+        })
+    </script>
+</body>
+
+</html>

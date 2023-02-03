@@ -34,7 +34,16 @@
                 }
                 return R - L - 1;
             }
-            console.log(longestPalindrome('uiasa'))
+            // console.log(longestPalindrome('uiasa'))
+            function switchVal(a, b) {
+                console.log('交换前', a, b)
+                // a = a + b
+                // b = a - b
+                // a = a - b
+                [a, b] = [b, a]
+                console.log('交换后', a, b)
+            }
+            switchVal(8, 5)
         }
     </script>
 </body>

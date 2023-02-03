@@ -32,25 +32,32 @@
         // console.log('script end');
 
         async function async1() {
-            console.log("async1start");
+            console.log("async1start");//2
             await async2();
-            console.log("async1end")
+            console.log("async1end")//6
+            new Promise(function (resolve) {
+                console.log("promise3");//7
+                resolve()
+            }).then(function () {
+                console.log("promise4")//10
+            });
+            console.log('scripttest')//8
         }
         async function async2() {
-            console.log("async2")
+            console.log("async2")//3
         }
-        console.log("scriptstart");
+        console.log("scriptstart");//1
         setTimeout(function () {
-            console.log("setTimeout")
+            console.log("setTimeout")//11
         }, 0);
         async1();
         new Promise(function (resolve) {
-            console.log("promise1");
+            console.log("promise1");//4
             resolve()
         }).then(function () {
-            console.log("promise2")
+            console.log("promise2")//9
         });
-        console.log("scriptend");
+        console.log("scriptend");//5
 
 
 

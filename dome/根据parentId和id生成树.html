@@ -62,7 +62,8 @@
         function getAllTree(ary) {
             const setTree = (parentArr, ary) => {
                 parentArr.forEach(item => {
-                    item.children = ary.filter(child => child.parent_id == item.id) || []
+                    let children = ary.filter(child => child.parent_id == item.id) || []
+                    if (children.length > 0) item.children = children
                     if (item.children && item.children.length > 0) setTree(item.children, ary)
                 })
                 return parentArr

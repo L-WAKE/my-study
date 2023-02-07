@@ -19,6 +19,17 @@
             { id: '12', name: '11-12', parent_id: '1' },
             { id: '21', name: '22-21', parent_id: '2' },
             { id: '31', name: '33-31', parent_id: '3' },
+            { id: '111', name: '1-11', parent_id: '11' },
+        ]
+        const ary2 = [
+            { id: '1', name: '11', parent_id: '' },
+            { id: '2', name: '22', parent_id: '' },
+            { id: '3', name: '33', parent_id: '' },
+            { id: '11', name: '11-11', parent_id: '1' },
+            { id: '12', name: '11-12', parent_id: '1' },
+            { id: '21', name: '22-21', parent_id: '2' },
+            { id: '31', name: '33-31', parent_id: '3' },
+            { id: '111', name: '1-11', parent_id: '11' },
         ]
 
         /**
@@ -32,20 +43,39 @@
             if (!pid) {
                 // 如果没有父id（第一次递归的时候）将所有父级查询出来
                 return ary.filter(item => !item.parent_id).map(item => {
-                    // 通过父节点ID查询所有子节点
-                    item.children = getTrees(item.id)
+                    let children = getTrees(item.id) || []
+                    children.length > 0 && (item.children = children)
                     return item
                 })
             } else {
                 return ary.filter(item => item.parent_id === pid).map(item => {
                     // 通过父节点ID查询所有子节点
-                    item.children = getTrees(item.id)
+                    let children = getTrees(item.id) || []
+                    children.length > 0 && (item.children = children)
                     return item
                 })
             }
         }
+        console.log('高级生成', getTrees())
 
-        console.log(getTrees())
+
+        function getAllTree(ary) {
+            //获取顶层父节点
+            const getTop = () => {
+                let parentArr = ary.filter(item => !item.parent_id)
+                return parentArr || []
+            }
+            const setTree = (parentArr, ary) => {
+                parentArr.forEach(item => {
+                    item.children = ary.filter(child => child.parent_id == item.id) || []
+                    if (item.children && item.children.length > 0) setTree(item.children, ary)
+                })
+                return parentArr
+            }
+            let treeList = setTree(getTop(), ary)
+            return treeList
+        }
+        console.log('生成的树', getAllTree(ary2))
     </script>
 </body>
 

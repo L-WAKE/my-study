@@ -60,11 +60,6 @@
 
 
         function getAllTree(ary) {
-            //获取顶层父节点
-            const getTop = () => {
-                let parentArr = ary.filter(item => !item.parent_id)
-                return parentArr || []
-            }
             const setTree = (parentArr, ary) => {
                 parentArr.forEach(item => {
                     item.children = ary.filter(child => child.parent_id == item.id) || []
@@ -72,7 +67,8 @@
                 })
                 return parentArr
             }
-            let treeList = setTree(getTop(), ary)
+            let parentArr = ary.filter(item => !item.parent_id) || []
+            let treeList = setTree(parentArr, ary)
             return treeList
         }
         console.log('生成的树', getAllTree(ary2))

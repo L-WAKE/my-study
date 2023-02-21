@@ -63,8 +63,10 @@
             const setTree = (parentArr, ary) => {
                 parentArr.forEach(item => {
                     let children = ary.filter(child => child.parent_id == item.id) || []
-                    if (children.length > 0) item.children = children
-                    if (item.children && item.children.length > 0) setTree(item.children, ary)
+                    if (children.length > 0) {
+                        item.children = children
+                        setTree(item.children, ary)
+                    }
                 })
                 return parentArr
             }

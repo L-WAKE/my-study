@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const obj = {
+            "0": "数据源",
+            "1": "新建数据源",
+            "2": "我的数据源",
+            "3": "请输入内容",
+            "4": "添加分类",
+            "5": "文件空间",
+            "6": "本地数据源",
+            "7": "上传文件",
+            "8": "创建数据集",
+            "9": "数据更新时间",
+            "10": "刷新状态",
+            "11": "大小",
+            "12": "备注",
+            "13": "更新",
+            "14": "同步",
+            "15": "查看日志",
+            "16": "刷新",
+            "17": "详情",
+            "18": "数据源模块",
+            "19": "未同步",
+            "20": "等待同步",
+            "21": "正在同步",
+            "22": "同步成功",
+            "23": "同步失败",
+            "24": "拼命加载中",
+            "25": "新建数据集",
+            "26": "表详情",
+            "27": "选取文件",
+            "28": "修改数据源",
+            "29": "树节点点击事件",
+            "30": "获取数据源目录",
+            "31": "查询目录出错！",
+            "32": "数据源分类树",
+            "33": "初始化加载文本空间",
+            "34": "确认删除该数据源",
+            "35": "删除数据源成功",
+            "36": "请先配置",
+            "37": "确认删除该分类",
+            "38": "可创建数据集数量达到上限！",
+            "39": "删除数据源：",
+            "40": "提交成功，正在同步",
+        }
+        const uuid = () => {
+            const tempUrl = URL.createObjectURL(new Blob());
+            const uuid = tempUrl.toString();
+            URL.revokeObjectURL(tempUrl);  // 释放这个url
+            return uuid.substring(uuid.lastIndexOf("/") + 1)
+        }
+        let newObj = (Object.keys(obj)).map(item =>{
+            let key = uuid()
+            // let 
+            return {
+                
+            }
+        })
+    </script>
+</body>
+
+</html>

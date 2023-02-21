@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let setArr = [[6, 2, 1], 2, 2, 5, 6, 4, 1, 4, [5, 4]]
+        let hanldArr = Array.from(new Set(setArr.flat(Infinity).sort((a, b) => a - b)))
+        // let flatArr = setArr.flat(Infinity)
+        // let settArr = new Set(setArr)
+        // let sortArr = Array.from(settArr)
+        // console.log('settArr', settArr)
+        // console.log('sortArr', sortArr)
+        // console.log('flatArr', flatArr)
+        console.log('hanldArr', hanldArr)
+    </script>
+</body>
+
+</html>

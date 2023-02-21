@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    //http://www.esjson.com/jsontoexcel.html
+    let jsobj = {
+        inputUrlError: '请输入菜单url地址!',
+        inputDescError: '请输入备注说明！',
+        typeNameError: '分类名称不能为空！',
+        nameDescError: '名称和描述不应为空',
+        effectTimeError: '请选择有效日期',
+        shareError: '请选择分享对象',
+    }
+
+    let enjsobj = {
+        projectName: 'Self-service data retrieval',
+        createTime: 'Create time',
+        updateTime: 'Update time',
+        completionTime: 'Completion time',
+        operation: 'Operation',
+        name: 'Name',
+    }
+    let data = (Object.keys(jsobj)).map(item => {
+        return {
+            '英文': item,
+            '中文': jsobj[item]
+        }
+    })
+
+    let endata = (Object.keys(enjsobj)).map(item => {
+        return {
+            '英文转换': enjsobj[item]
+        }
+    })
+
+    console.log(JSON.stringify(endata))
+</script>
+
+</html>

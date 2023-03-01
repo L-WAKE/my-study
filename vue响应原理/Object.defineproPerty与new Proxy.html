@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <button onClick="changeNumber()">点击修改Property </button>
+        <button onClick="changeProxy()">点击修改Proxy </button>
+    </div>
+    <script>
+        // Object.defineproperty 的作用就是直接在一个对象上定义一个新属性，
+        // 或者修改一个已经存在的属性
+        let number = 18
+        let nameStr = '王五'
+        let person = {
+            name: '张三',
+            sex: '女'
+        }
+        Object.defineProperty(person, 'byname', {
+            // value: 18, // 属性值
+            // enumerable: true, //控制属性是否可以枚举，默认值是false
+            // writable: true, //控制属性是否可以被修改，默认值是false
+            // configurable: true, //控制属性是否可以被删除，默认值是false
+            get() {
+                console.log('有人读取byname属性了')
+                return nameStr
+            },
+            //当有人修改person的age属性时，set函数(setter)就会被调用，且会收到修改的具体值
+            set(value) {
+                console.log('有人修改了byname属性,且值是', value)
+                nameStr = value
+            }
+        })
+        console.log('person', person)
+        function changeNumber() {
+            // number = number+1
+            // person.age = person.age+1
+            // console.log('number', number)
+
+            person.byname = '曹贼'
+            // nameStr = '李四'
+            console.log('nameStr', nameStr)
+            console.log('person', person)
+        }
+
+        console.log('----------------------------------分隔符---------------------------------------')
+        // Proxy 对象是ES6新出的一个特性，用于创建一个对象的代理，从而实现基本操作的
+        // 拦截和自定义Proxy可以直接监听整个对象而非属性，可以监听数组的变化，具有多达13中拦截方法。
+        let dog = 18
+        let color = 'yellow'
+        let animal = {
+            cat: 'cats',
+            pig: 'pigs'
+        }
+        let Anima = new Proxy(animal, {
+            //读取时调用
+            get(target, propName) {
+                console.log(`有人读取了Anima身上的${propName}属性`)
+                return target[propName]
+            },
+            //修改和增加时调用
+            set(target, propName, value) {
+                console.log(`有人修改或新增了Anima身上的${propName},属性，我要去更新界面了`)
+                target[propName] = value
+            },
+            //删除时
+            deleteProperty(target, key) {
+                console.log(`有人删除了Anima身上的${key}属性，我要去更新界面了`)
+                return delete target[key]
+            },
+        })
+        console.log('animal11', Anima)
+        function changeProxy() {
+            Anima.color = 'red'
+            // delete Anima.cat
+            console.log('animal222', Anima)
+            console.log('color', color)
+        }
+
+    </script>
+</body>
+
+</html>

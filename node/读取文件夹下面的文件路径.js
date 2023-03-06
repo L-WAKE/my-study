@@ -8,7 +8,7 @@
 const fs = require('fs');
 // node path模块
 const path = require('path');
-// 收集所有的文件路径
+// 1. 收集所有的文件路径
 const arr = [];
 let timer = null;
 const fileDisplay = (url, cb) => {
@@ -45,8 +45,8 @@ const fileDisplay = (url, cb) => {
 // })
 
 
-//读取目录下的所有文件
-const readAllFile = (url, cb) => {
+// 2. 读取目录下的所有文件的名字
+const readAllFileName = (url, cb) => {
     const filePath = path.resolve(url);
     //根据文件路径读取文件，返回文件列表
     fs.readdir(filePath, (err, files) => {
@@ -58,10 +58,12 @@ const readAllFile = (url, cb) => {
         cb(files)
     });
 }
-// readAllFile('../dome3', (files) => {
+// readAllFileName('../dome3', (files) => {
 //     console.log('files', files)
 // })
 
+
+// 3. 以行的方式读取文件
 const readFile = (url) => {
     let lineReader = require('readline').createInterface({
         input: fs.createReadStream(url)
@@ -74,4 +76,4 @@ const readFile = (url) => {
     })
 
 }
-readFile('D:/stydy/html/dome3/test.txt')
+// readFile('D:/stydy/html/dome3/test.txt')

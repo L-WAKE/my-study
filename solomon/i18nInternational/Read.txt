@@ -1,0 +1,1894 @@
+<template>
+    <div class="content" style="overflow-y: hidden;overflow-x: auto;" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+        <div class="titleBox">
+            <span class="title alignLeft" >{{$t('cube')}}</span>
+            <div class="alignCenter">
+                <span :class="{active:isAllData==0}" @click="dataTypeChange(0)">{{$t('my')}}</span>
+                <span :class="{active:isAllData==1}" @click="dataTypeChange(1)">{{$t('systemReport')}}</span>
+<!--                <span :class="{active:isAllData==2}" @click="dataTypeChange(2)">下载</span>-->
+            </div>
+            <div class="alignRight">
+                <el-select v-model="filterReportType" slot="prepend" :placeholder="$t('pleaseSelect')" style="width:110px" size="small" @change="changeShowData">
+                    <el-option :label="$t('all')" value="-1"></el-option>
+                    <el-option :label="$t('accessReport')" value="0"></el-option>
+                    <el-option :label="$t('specialReport')" value="1"></el-option>
+                </el-select>
+                <el-input @input="freshPageData" @propertychange="freshPageData" prefix-icon="el-icon-search" :placeholder="$t('pleaseEnterContent')"
+                          v-model="filterValue" size="small" class="input-with-select baseInput" style="width:220px;vertical-align:middle">
+                    <el-select v-model="filterType" slot="prepend" :placeholder="$t('pleaseSelect')" style="width:80px" @change="changeFilterType">
+                        <el-option :label="$t('name')" value="dir"></el-option>
+                        <el-option :label="$t('creator')" value="owner"></el-option>
+                    </el-select>
+                </el-input>
+                <!-- <el-button slot="append" size="mini" icon="el-icon-refresh" type="primary" class="baseBtn"
+                           @click="freshPageData">刷新
+                </el-button> -->
+                <el-button @click="addRdvClsaaName" icon="el-icon-plus" size="mini" type="primary" class="baseBtn"
+                           name="cube_addClass" v-if="$common.jurisdictionSys('cube_addClass','FRONT_WEB_MENU_FUNCTION')"
+                           style="margin-left:5px">{{ $t('newCategory') }}
+                </el-button>
+                <el-button @click="openNewRepWindow('0')" icon="el-icon-plus" class="baseBtn" size="mini" type="success"
+                           name="cube_addReport" v-if="$common.jurisdictionSys('cube_addReport','FRONT_WEB_MENU_FUNCTION')"
+                           plain>{{ $t('newReport') }}
+                </el-button>
+                <el-button @click="openNewRepWindow('1')" icon="el-icon-s-goods" class="baseBtn" size="mini" type="info"
+                           name="cube_addReport" v-if="$common.jurisdictionSys('cube_addReport','FRONT_WEB_MENU_FUNCTION')"
+                           plain>{{ $t('newTopic') }}
+                </el-button>
+                <el-button @click="openNewBiWindow" icon="el-icon-data-analysis" class="baseBtn" size="mini" type="info"
+                           name="cube_bi"
+                           plain>{{ $t('selfServiceAnalysis') }}
+                </el-button>
+            </div>
+        </div>
+        <div class="dataSourceBody">
+            <!-- <div class="ctrlsBar">
+                <div class="inners">
+                    <el-radio-group @change="dataTypeChange" v-model="isAllData" size="mini" class="dataTypeChangeStyle">
+                        <el-radio-button label="全部"></el-radio-button>
+                        <el-radio-button label="我的"></el-radio-button>
+                        <el-radio-button label="下载"></el-radio-button>
+                    </el-radio-group>
+                </div>
+                <div class="inners">
+                    <el-input placeholder="请输入内容" v-model="filterValue"
+                              class="baseInput input-with-select input-filter-valueClass">
+                        <el-select v-model="filterType" style="width: 120px;" slot="prepend" placeholder="请选择">
+                            <el-option label="名称" value="dir"></el-option>
+                            <el-option label="创建者" value="owner"></el-option>
+                        </el-select>
+                        <el-button slot="append" icon="el-icon-search" @click="changeShowData"></el-button>
+                    </el-input>
+                </div>
+                <div class="inners">
+                    <el-button style="margin-top: 5px;display: flex;float: right;margin-right: 150px;" icon="el-icon-plus"
+                               type="primary" size="mini" round
+                               @click="addRdvClsaaName">新建分类
+                    </el-button>
+                    <el-button @click="openNewRepWindow" style="margin-top: 5px;display: flex;float: right;margin-right: -220px;"
+                               icon="el-icon-document" type="primary" size="mini" round>
+                        <a target="_blank" style="color: #ffffff" >新建报表</a>
+                    </el-button>
+                </div>
+            </div>
+            <div class="underLinStyle"></div> -->
+            <!--仪表盘管理-->
+            <!-- <div id="folderViewTitie">
+                <span class="viewTitle" @click="showAllData">根目录</span><span
+                    v-if="showItem && this.isAllData != '下载'">></span><span
+                    @click="openFolder({dir_ID:folderViewObj.folderId,dir_NAME:folderViewObj.folderName})"
+                    v-if="showItem && this.isAllData != '下载'" class="viewTitle">{{showItemName}}</span>
+            </div> -->
+            <!-- <div style="margin-bottom: 5px;margin-left: 5px;margin-top: 15px;">
+                <el-button slot="append" size="mini" icon="el-icon-refresh" type="primary" @click="freshPageData">刷新</el-button>
+                <span class="viewTitle" @click="showAllData">根目录</span>
+                <span v-if="showItem && this.isAllData != '下载'">></span>
+                <span class="viewTitle" v-if="showItem && this.isAllData != '下载'">
+                    {{showItemName}}
+                </span>
+            </div> -->
+
+            <!-- <el-table class="dataSetTable" size="medium"
+                      :data="showBoardData"
+                      style="width: 100%"
+                      :height="mainTableHeight(210)"
+            >
+                <el-table-column prop="dirName" width="450" label="名称" sortable align="left">
+                    <template slot-scope="scope">
+                        <div class="folderBox" v-if="showButtonGorup && isAllData != '下载'">
+                            <div class="folderIcon">
+                                <i style="color:#FEC332" class="iconfont icon-wenjianjia1"></i>
+                            </div>
+                            <div @click="dataClumClick(scope.row)" class="folderName">
+                                {{scope.row.dirName}}
+                            </div>
+                        </div>
+                        <div class="folderBox bg" v-else>
+                            <div class="folderIcon">
+                                <i class="iconfont icon-baobiao"></i>
+                            </div>
+                            <div class="folderName">
+                                {{scope.row.dirName}}
+                            </div>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="dirCreator"
+                        align="center"
+                        sortable
+                        label="创建者">
+                </el-table-column>
+                <el-table-column v-if="isAllData != '下载'" align="center" sortable width="150" label="创建时间">
+                    <template slot-scope="scope">
+                        <div class="cellBox">{{scope.row.createTime}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="isAllData != '下载'"
+                                 prop="type"
+                                 align="center"
+                                 sortable
+                                 label="权限">
+                </el-table-column>
+              <el-table-column v-if="!showButtonGorup&&isAllData != '下载'"
+                               prop="reptypeName"
+                               align="center"
+                               sortable
+                               label="报表类型">
+              </el-table-column>
+                <el-table-column v-if="isAllData == '下载'"
+                                 prop="download_file_type_cn"
+                                 align="center"
+                                 sortable
+                                 width="150"
+                                 label="文件类型">
+                </el-table-column>
+                <el-table-column v-if="isAllData == '下载'"
+                                 style="width: 100px;"
+                                 prop="download_method_cn"
+                                 align="center"
+                                 sortable
+                                 width="150"
+                                 label="下载类型">
+                </el-table-column>
+                <el-table-column v-if="isAllData == '下载'"
+                                 prop="download_pro_state_cn"
+                                 align="center"
+                                 sortable
+                                 label="状态">
+
+
+                    <template slot-scope="scope">
+                        <i v-if="scope.row.download_pro_state!='3'" @click="showDownLoadMsg(scope)"
+                           :class="scope.row.download_pro_state=='3'?'redLabelStyle':'greenLabelStyle'">{{scope.row.download_pro_state_cn}}</i>
+                        <u v-if="scope.row.download_pro_state=='3'" @click="showDownLoadMsg(scope)"
+                           :class="scope.row.download_pro_state=='3'?'redLabelStyle':'greenLabelStyle'">{{scope.row.download_pro_state_cn}}</u>
+                    </template>
+                </el-table-column>
+
+                <el-table-column v-if="isAllData == '下载'" align="center" width="150" sortable label="完成时间">
+                    <template slot-scope="scope">
+                        <div class="cellBox">{{scope.row.download_pro_end_time}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="isAllData == '下载'" align="center" sortable width="150" label="创建时间">
+                    <template slot-scope="scope">
+                        <div class="cellBox">{{scope.row.download_time}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="操作" :width="isAllData=='下载'?'320px':'500px'" align="right">
+                    <template slot-scope="scope">
+                        <el-button type="text" v-if="showButtonGorup && isAllData != '下载'"
+                                   @click.stop="reSetRdvClsaaName(scope)" size="mini" icon="iconfont icon-rename">重命名
+                        </el-button>
+                        <el-button type="text" v-if="showButtonGorup && isAllData != '下载'"
+                                   @click.stop="deleteClsaaName(scope)" size="mini" icon="iconfont icon-shanchu">删除
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != '下载'" @click.stop="showRep(scope)"
+                                   size="mini" icon="el-icon-view">查看
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != '下载'" @click.stop="copyEdit(scope)" size="mini"
+                                   icon="el-icon-edit">复制并编辑
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != '下载'" @click.stop="editRep(scope)"
+                                   size="mini" icon="el-icon-edit">编辑
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != '下载'" @click.stop="editRepMsg(scope)"
+                                   size="mini" icon="iconfont icon-wenjian">属性
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != '下载'" @click.stop="shareRepData(scope)"
+                                   size="mini" icon="el-icon-share">分享
+                        </el-button>
+                        <el-button type="text" v-if="isAllData == '下载' && scope.row.download_pro_state=='2'"
+                                   @click.stop="downData(scope)" size="mini" icon="el-icon-download">下载
+                        </el-button>
+                        <el-button type="text" v-if="isAllData == '下载' && scope.row.download_obj_type!=4" @click.stop="refreshDownData(scope)" size="mini"
+                                   icon="el-icon-refresh">重新生成
+                        </el-button>
+                        <el-button type="text" v-if="isAllData == '下载'" @click.stop="deleteDownData(scope)" size="mini"
+                                   icon="iconfont icon-shanchu">删除
+                        </el-button>
+                        <el-dropdown v-if="showItem && isAllData != '下载'" trigger="hover" size="small"
+                                     @command="commandFun">
+                                <span class="el-dropdown-link">
+                                    <el-button type="text" size="mini" icon="iconfont icon-gengduo">更多</el-button>
+                                </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item :command="{type:'share',param:scope}"><i class="el-icon-share"></i>公开
+                                </el-dropdown-item>
+                              <el-dropdown-item :command="{type:'download',param:scope}"><i class="el-icon-download"></i>下载
+                              </el-dropdown-item>
+                                <el-dropdown-item :command="{type:'move',param:scope}"><i
+                                        class="iconfont icon-yidong"></i>移动到
+                                </el-dropdown-item>
+                                <el-dropdown-item :command="{type:'delete',param:scope}"><i
+                                        class="iconfont icon-shanchu"></i>{{ $t('delete') }}
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+
+                </el-table-column>
+            </el-table> -->
+            <div class="cube-home">
+        <div class="cube-home-tree" v-if="isAllData!=2">
+            <div class="titleBox" style="margin:0">
+                <!-- <el-input prefix-icon="el-icon-search"
+                     v-model="cubeTreeFilter" placeholder="请输入内容"
+                     style="margin-right:10px;vertical-align:middle;width:292px;"
+                    class="baseInput cubeTreeFilter-input">
+                </el-input>
+                <el-button type="primary" class="baseBtn" size="mini" icon="el-icon-search">查询</el-button> -->
+                <span class="title alignLeft" style="width:220px">{{ $t('reportDirectoryTree') }}</span>
+            </div>
+
+          <div class="cube-home-tree-main">
+            <el-tree
+                ref="selectTree"
+                :data="cubeDirTreeData"
+                :props="defaultProps"
+                :node-key="defaultProps.key"
+                @node-click="treeDataItemClick"
+                :filter-node-method="filterNode"
+                accordion>
+            <span slot-scope="{ node, data }">
+              <span :class="(dirFormData && data.dir_id == dirFormData.dir_id) ?'nodeLabelActive nodeLabel':'nodeLabel'" :title="node.label">
+              {{ node.label }}</span>
+            <el-tooltip  style="position: absolute;right: 30px" effect="odark" :content="$t('edit')" v-if="data.dir_creator == ssa_user_id"
+                         placement="top">
+              <i class="colapseBtn header-icon el-icon-edit" v-if="data.dir_creator==ssa_user_id" @click.stop="reSetRdvClsaaName(data)"></i>
+            </el-tooltip>
+            <el-tooltip  style="position: absolute;right: 5px" effect="odark" :content="$t('delete')" v-if="data.dir_creator == ssa_user_id"
+                         placement="top">
+              <i class="colapseBtn header-icon el-icon-delete" @click.stop="deleteClsaaName(data)"></i>
+            </el-tooltip>
+            </span>
+            </el-tree>
+          </div>
+        </div>
+        <div class="cube-home-table">
+            <div class="titleBox" style="margin:0;">
+          <span class="title alignLeft" style="width:120px">{{ $t('reportList') }}</span>
+                <!-- <div class="alignRight" style="width:calc(100% - 120px)">
+                    <el-input prefix-icon="el-icon-search"
+                        v-model="cubeListFilter" placeholder="请输入内容"
+                        class="baseInput cubeTreeFilter-input">
+                    </el-input>
+                    <el-button type="primary" size="mini">查询</el-button>
+                </div> -->
+            </div>
+          <div ref="tableFater" style="height: calc(100% - 42px);padding:10px;box-sizing:border-box">
+            <el-table class="baseTable" style="width:100%;height:100%;" fit stripe  size="small"
+            :data="folderViewObj.folderList"
+            :height="mainTableHeight"
+            v-if="folderViewObj.folderList.length>0">
+                <el-table-column  prop="repName" width="300" :label="$t('name')" fixed="left" sortable align="left">
+                    <template slot-scope="scope">
+                        <div class="folderBox bg">
+                            <div class="folderIcon">
+                                <i class="iconfont icon-baobiao"></i>
+                            </div>
+                            <div :title="scope.row.repName" class="folderName">
+                                {{scope.row.repName}}
+                            </div>
+                        </div>
+                    </template>
+                </el-table-column>
+<!--                 <el-table-column
+                        prop="repDutyDept"
+                        align="center"
+                        width="120"
+                        sortable
+                        label="责任部门">
+                </el-table-column>
+                 <el-table-column
+                        prop="repDutyUser"
+                        align="center"
+                        width="120"
+                        sortable
+                        label="责任人">
+                </el-table-column>-->
+                <el-table-column prop="dirName" align="left" width="120" :label="$t('catalogue')">
+                    <template slot-scope="scope">
+                        <div>
+                            {{isAllData==1?scope.row.sysDirName:scope.row.dirName}}
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="dirCreator"
+                        align="center"
+                        width="120"
+                        sortable
+                        :label="$t('creator')">
+                </el-table-column>
+                <el-table-column v-if="isAllData != 2" align="center" sortable width="180" :label="$t('createTime')" prop="createTime">
+                    <template slot-scope="scope">
+                        <div class="cellBox">{{scope.row.createTime}}</div>
+                    </template>
+                </el-table-column>
+              <el-table-column v-if="isAllData != 2" align="center" sortable width="180" :label="$t('updateTime')" prop="repUpdateTime">
+                <template slot-scope="scope">
+                  <div class="cellBox">{{scope.row.repUpdateTime}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column v-if="isAllData != 2" align="center"  width="180" :label="$t('devOpsPersonnel')">
+                <template slot-scope="scope">
+                  <div class="cellBox">{{scope.row.repDevUser}}</div>
+                </template>
+              </el-table-column>
+                <el-table-column v-if="isAllData != 2"
+                                 prop="type"
+                                 align="center"
+                                 sortable
+                                 width="150"
+                                 :label="$t('limitsOfAuthority')">
+                </el-table-column>
+              <el-table-column v-if="!showButtonGorup&&isAllData != 2"
+                               prop="reptypeName"
+                               align="center"
+                               width="120"
+                               sortable
+                               :label="$t('reportType')">
+              </el-table-column>
+                <el-table-column v-if="isAllData == 2"
+                                 prop="download_file_type_cn"
+                                 align="center"
+                                 sortable
+                                 width="150"
+                                 :label="$t('fileType')">
+                </el-table-column>
+                <el-table-column v-if="isAllData == 2"
+                                 style="width: 100px;"
+                                 prop="download_method_cn"
+                                 align="center"
+                                 sortable
+                                 width="150"
+                                 :label="$t('downloadType')">
+                </el-table-column>
+                <el-table-column v-if="isAllData == 2"
+                                 prop="download_pro_state_cn"
+                                 align="center"
+                                 sortable
+                                 :label="$t('state')">
+
+
+                    <template slot-scope="scope">
+                        <i v-if="scope.row.download_pro_state!='3'" @click="showDownLoadMsg(scope)"
+                           :class="scope.row.download_pro_state=='3'?'redLabelStyle':'greenLabelStyle'">{{scope.row.download_pro_state_cn}}</i>
+                        <u v-if="scope.row.download_pro_state=='3'" @click="showDownLoadMsg(scope)"
+                           :class="scope.row.download_pro_state=='3'?'redLabelStyle':'greenLabelStyle'">{{scope.row.download_pro_state_cn}}</u>
+                    </template>
+                </el-table-column>
+
+                <el-table-column v-if="isAllData == 2" align="center" width="150" sortable :label="$t('completionTime')">
+                    <template slot-scope="scope">
+                        <div class="cellBox">{{scope.row.download_pro_end_time}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="isAllData == 2" align="center" sortable width="150" :label="$t('createTime')">
+                    <template slot-scope="scope">
+                        <div class="cellBox">{{scope.row.download_time}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        :label="$t('operation')" :width="isAllData==2?'270px':'450px'" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" v-if="showItem && isAllData != 2" @click.stop="showRep(scope)"
+                                   size="mini" icon="el-icon-view">{{ $t('check') }}
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != 2 && scope.row.reptype!==2" @click.stop="copyEdit(scope)" size="mini"
+                                   icon="el-icon-edit">{{ $t('copyAndEdit') }}
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != 2" @click.stop="editRep(scope)"
+                                   size="mini" icon="el-icon-edit">{{ $t('edit') }}
+                        </el-button>
+                        <el-button type="text" v-if="showItem && isAllData != 2" @click.stop="editRepMsg(scope)"
+                                   size="mini" icon="iconfont icon-wenjian">{{ $t('attribute') }}
+                        </el-button>
+<!--                        <el-button type="text" v-if="showItem && isAllData != 2" @click.stop="shareRepData(scope)"
+                                   size="mini" icon="el-icon-share">分享
+                        </el-button>-->
+                        <el-button type="text" v-if="isAllData == 2 && scope.row.download_pro_state=='2'"
+                                   @click.stop="downData(scope)" size="mini" icon="el-icon-download">{{ $t('download') }}
+                        </el-button>
+                        <el-button type="text" v-if="isAllData == 2 && scope.row.download_obj_type!=4" @click.stop="refreshDownData(scope)" size="mini"
+                                   icon="el-icon-refresh">{{ $t('rebuild') }}
+                        </el-button>
+                        <el-button type="text" v-if="isAllData == 2" @click.stop="deleteDownData(scope)" size="mini"
+                                   icon="iconfont icon-shanchu">{{ $t('delete') }}
+                        </el-button>
+                        <el-dropdown v-if="showItem && isAllData != 2&&isAllData!=1" trigger="hover" size="small"
+                                     @command="commandFun">
+                                <span class="el-dropdown-link">
+                                    <el-button type="text" size="mini" icon="iconfont icon-gengduo">{{ $t('more') }}</el-button>
+                                </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item v-if="scope.row.reptype!==2" :command="{type:'share',param:scope}"><i class="el-icon-share"></i>{{ $t('disclosure') }}
+                                </el-dropdown-item>
+<!--                              <el-dropdown-item :command="{type:'download',param:scope}"><i class="el-icon-download"></i>{{ $t('delete') }}
+                              </el-dropdown-item>-->
+                                <el-dropdown-item :command="{type:'move',param:scope}"><i
+                                        class="iconfont icon-yidong"></i>{{ $t('moveTo') }}
+                                </el-dropdown-item>
+                                <el-dropdown-item :command="{type:'delete',param:scope}"><i
+                                        class="iconfont icon-shanchu"></i>{{ $t('delete') }}
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+
+                </el-table-column>
+            </el-table>
+          </div>
+        </div>
+
+      </div>
+        </div>
+        <cubeOpenWindow :showRdvClassWindowParam="showRdvClassWindowParam" :sysParam="sysParam"></cubeOpenWindow>
+        <!--更多-->
+        <el-popover
+                ref="popover4"
+                placement="right"
+                width="400"
+                content="asdk eif skd s fishadflsf"
+                trigger="click">
+        </el-popover>
+        <!--下载错误弹出提示框-->
+        <el-dialog
+                :title="$t('downloadLog')"
+                :visible.sync="showDownLoadErrorMsgWindow"
+                width="30%"
+        >
+            <span>{{showDownLoadErrorMsgWindowMsg}}</span>
+            <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="showDownLoadErrorMsgWindow = false">{{$t('confirm')}}</el-button>
+        </span>
+        </el-dialog>
+
+
+    </div>
+
+</template>
+<script>
+    import {mapActions, mapGetters} from 'vuex'
+    import cubeOpenWindow from './cubeOpenWindow'   //弹窗组件
+
+    export default {
+        name: 'cube',
+        components: {cubeOpenWindow},
+        data() {
+            return {
+              isSuperRoleUser:false,
+                filterReportType:'-1',
+                loading:false,
+                showDownLoadErrorMsgWindow: false,
+                showDownLoadErrorMsgWindowMsg: "",
+                sysRoleId: this.sysPageParam?this.sysPageParam.roleId:"",
+                isDownLoadType: false,//当前展示的数据是否为下载
+                sysParam: {
+                    userInfo: [],
+                    roleInfo: [],
+                    areInfo: [],
+                    permissionInfo: []
+                },
+                ssa_ticket: this.$ticketUtil.getCookie("ssa_ticket"),
+                ssa_user_id: this.$ticketUtil.getCookie("user_id"),
+                showRdvClassWindowParam: {
+                    moveDirOptions:[],
+                    active_tab: "first",
+                    open: false,
+                    editRepMsgOpen: false,
+                    shareRepDataOpen: false,
+                    changeLimitTypeOpen: false,
+                    moveRepToOtherOpen: false,
+                    downLoadRepOpen: false,
+                    title: "",
+                    className: '',
+                    dirId: "",
+                    rowData: {},
+                    //报表权限信息
+                    repPermissionInfo: {
+                        userInfoPer: [],
+                        roleInfoPer: [],
+                        areInfoPer: []
+                    },
+                    user_id: this.$ticketUtil.getCookie("user_id"),
+
+                },
+                isAllData: 0,
+                showItem: true,
+                showButtonGorup: false,
+                showItemName: "",
+                showBoardData: [],
+                filterType: "dir",
+                filterValue: "",
+                filterDirId: "",//当前下钻过滤文件夹id
+                filterAim: "boardClassList",
+                boardClassList: [
+                    {
+                        dirId: "1",
+                        dirName: "啊飒飒",
+                        dirCreator: "小明",
+                        createTime: "2019-05-11",
+                        type: "常规",
+                        userId: '1',
+                    },
+                ],
+                boardList: [
+                    {
+                        dirId: "1",
+                        dirName: "仪表盘1",
+                        dirCreator: "小明",
+                        createTime: "2019-05-11",
+                        type: "常规",
+                        userId: '1',
+                        repId: "",
+                        repUrl: "",//报表访问url
+                        repPublishStartTime: "",//发布开始时间
+                        repPublishEndTime: "",//发布结束时间
+                        repPublishState: "", //0 取消发布  1 发布
+                        repLimitType: "" //公开  1  ， 私有0
+                    },
+
+                ],
+                //下载数据结合
+                downLoadDataList: [
+                    {
+                        dirName: "",  //下载名称
+                        download_name: "",//下载名称
+                        dirCreator: "",//创建者
+                        download_user_id: "",//创建者ID
+                        download_file_type: "",//文件类型
+                        download_method: "",//下载类型  即时
+                        download_res: "",//完成状态
+                        download_time: "",//创建时间
+                        download_pro_state: "",//执行状态 0：未开始 1：开始执行 2：执行成功 3：执行失败
+                        download_pro_end_time: "",//完成时间
+                        download_id: "",//下载任务ID
+                        download_obj_id: "",//所下载对应控件或报表ID
+                        file_id: "",//完成文件生成后的文件ID
+                    },
+
+                ],
+                cubeListFilter:'',
+                cubeTreeFilter:'',
+                cubeDirTreeData:[],
+                defaultProps:{
+                    children: 'children',
+                    label: 'dir_name',
+                    key:'dir_id'
+                },
+                dirFormData:undefined,
+                folderViewObj:{
+                    open:false,
+                    folderId:'',
+                    folderName:'',
+                    ticket:'',
+                    folderList:[]
+                },
+                filterColValue:'',
+                filterColName:'TABLE_NAME_CN',
+                shapeTableData:[],
+                boardListBack:[]
+            }
+        },
+        created: function () {
+          if(localStorage['roleInfo']){
+            let roleInfo = JSON.parse(localStorage['roleInfo']);
+            for(let i=0;i<roleInfo.length;i++){
+              if(roleInfo[i].role_id == 1){
+                this.isSuperRoleUser = true
+                break
+              }
+            }
+          }
+
+            this.getReportInitData(this.isAllData);//初始化页面数据
+            this.initSysData();//初始化系统用户信息
+            this.intiSysPermission();//初始化系统权限信息
+            //
+
+        },
+        watch: {
+            'sysPageParam.roleId': function (newValue, oldValue) {
+                this.sysRoleId = newValue;
+                this.getReportInitData(this.isAllData);
+                localStorage.setItem("sysRoleId",newValue);
+            }
+        },
+
+        methods: {
+            ...mapActions(['modifySysPageParam']),
+            openNewRepWindow: function (type) {
+                window.open("./cube.html?rePortType="+type);
+            },
+            openNewBiWindow(){
+                window.open("./bi.html");
+            },
+            //pageSize 改变
+            handleSizeChange: function (size) {
+                this.pageParam.dataPageSize = size;
+            },
+            //currentPage 改变
+            handleCurrentChange: function (currentPage) {
+                this.pageParam.dataPageNum = currentPage;
+            },
+            freshPageData: function () {
+                // this.getReportInitData(this.isAllData);//初始化页面数据
+                // 根据类型和关键字过滤列表数据
+                let key = '',_this=this;
+                this.boardListBack.length==0 && (this.boardListBack=JSON.parse(JSON.stringify(this.folderViewObj.folderList)));
+                this.folderViewObj.folderList = [];
+                key = this.filterType=='dir'?'repName':'dirCreator';
+                this.boardListBack.forEach(function(item){
+                    item[key].indexOf(_this.filterValue)>-1 && _this.folderViewObj.folderList.push(item);
+                })
+            },
+            changeFilterType:function(){
+                this.filterValue = '';
+                //this.folderViewObj.folderList = JSON.parse(JSON.stringify(this.boardListBack))
+                this.freshPageData()
+            },
+
+            //点击查看下载错误日志
+            showDownLoadMsg: function (rowdata) {
+                console.log("rowdata====", rowdata);
+                if (rowdata.row.download_pro_state == '3') {
+                    //失败弹出提示信息
+                    this.showDownLoadErrorMsgWindow = true;
+                    this.showDownLoadErrorMsgWindowMsg = rowdata.row.download_msg;
+                }
+            },
+
+            //初始化系统信息
+            initSysData: function () {
+                let _this = this;
+                let param = new URLSearchParams()
+                param.append('ticket', this.ssa_ticket);
+                //获取系统用户信息
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/getSysUserMsg.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if (response.data.status != 1) {
+                            _this.$message.error(response.data.msg || 'error');
+                            return;
+                        }
+                        _this.sysParam.userInfo = response.data.data ? response.data.data : [];
+                    }
+                });
+                //获取系统角色信息
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/getSysRoleMsg.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if (response.data.status != 1) {
+                            _this.$message.success(response.data.msg || 'success');
+                            return;
+                        }
+                        _this.sysParam.roleInfo = response.data.data ? response.data.data : [];
+                    }
+                });
+
+                //获取系统区域信息
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/getSysAreMsg.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if (response.data.status != 1) {
+                            _this.$message.warning(response.data.msg || 'warning');
+                            return;
+                        }
+                        _this.sysParam.areInfo = response.data.data ? response.data.data : [];
+                    }
+                });
+            },
+
+            //获取系统权限信息
+            intiSysPermission: function () {
+                let _this = this;
+                let param = new URLSearchParams()
+                param.append('ticket', this.ssa_ticket);
+                param.append('permission_obj_type', "BUS0001");
+                param.append('permission_obj_id', "");
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/getSysPermission.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if (response.data.status != 1) {
+                            _this.$message.info(response.data.msg || 'info');
+                            return;
+                        }
+                        _this.sysParam.permissionInfo = response.data.data ? response.data.data : [];
+                    }
+                });
+
+            },
+            commandFun: function (conmandObj) {
+                let _this = this;
+                if (conmandObj.type == 'delete') {
+                    _this.deleteRepDataById(conmandObj.param);
+                } else if (conmandObj.type == 'share') {
+                    _this.changeLimitType(conmandObj.param)
+                } else if(conmandObj.type == 'download'){
+                  _this.downLoadRep(conmandObj.param)
+                }else if(conmandObj.type == 'move'){
+                  _this.moveRepToOther(conmandObj.param)
+                }
+            },
+
+            /**
+             * 获取报表目录
+             */
+            getReportInitData: function (scale) {
+                let _this = this;
+                this.loading=true;
+                // let param = new URLSearchParams()
+                // param.append('ticket', this.ssa_ticket);
+                // param.append('role_id', this.sysRoleId||this.sysPageParam.roleId);
+                // param.append('scale', scale);
+                let param = {
+                    'ticket':this.ssa_ticket,
+                    'role_id':this.sysRoleId||this.sysPageParam.roleId,
+                    'scale':scale
+                }
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/reportDir.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if (response.data.status != 1) {
+                            _this.$message.error(response.data.msg || 'error');
+                            return;
+                        }
+                        let tagName = sessionStorage.getItem('tag');
+                        if(tagName){
+                            _this.isAllData = tagName;
+                            sessionStorage.removeItem('tag')
+                        }
+                        _this.boardClassList = [];
+                        _this.boardList = [];
+                        _this.downLoadDataList = [];
+                         _this.initDirOption(response.data.data);
+                        _this.cubeDirTreeData=response.data.data;
+                        if(response.data.data[0]){
+                          if(response.data.data[0].children.length>0){
+                            _this.treeDataItemClick(_this.dirFormData||response.data.data[0].children[0]);
+                          }else{
+                            _this.treeDataItemClick(_this.dirFormData||response.data.data[0]);
+                          }
+                        }
+
+                        console.log('报表目录====',_this.cubeDirTreeData);
+                        _this.loading=false;
+                    }
+                });
+            },
+
+          initDirOption:function (datas) {
+            this.showRdvClassWindowParam.moveDirOptions = []
+            for (let i = 0; i < datas.length; i++) {
+              this.showRdvClassWindowParam.moveDirOptions.push(
+                  {
+                    dirId: datas[i].dir_id,
+                    dirName: datas[i].dir_name,
+                  }
+              )
+            }
+
+          },
+
+
+
+            /**
+             * 初始化数据组装，将数据组装为统一格式 ***old
+             */
+            // initData: function (resultdir, resultReport, resultdownload) {
+            //     for (let i = 0; i < resultdir.length; i++) {
+            //         this.boardClassList.push(
+            //             {
+            //                 dirId: resultdir[i].dirid,
+            //                 dirName: resultdir[i].dirname,
+            //                 dirCreator: resultdir[i].username,
+            //                 createTime: resultdir[i].dircreatetime,
+            //                 type: resultdir[i].dirlimittype == "0" ? "私有" : "公开",
+            //                 userId: resultdir[i].dircreator,
+            //                 itemIsDir:true
+            //             }
+            //         )
+            //     }
+
+            //     for (let i = 0; i < resultReport.length; i++) {
+
+            //         this.boardList.push(
+            //             {
+            //                 dirId: resultReport[i].dirid,
+            //                 dirName: resultReport[i].repname,
+            //                 dirCreator: resultReport[i].username,
+            //                 createTime: resultReport[i].repcreatetime,
+            //                 type: resultReport[i].replimittype == "0" ? "私有" : "公开",
+            //                 userId: resultReport[i].repcreator,
+            //                 repId: resultReport[i].repid,
+            //                 repUrl: resultReport[i].repurl,//报表访问url
+            //                 repNewUrl: resultReport[i].repnewurl,//生成新连接
+            //                 repNewUrlBoolean: resultReport[i].repnewurl == "0" ? false : true,
+            //                 rep_publish_state: resultReport[i].rep_publish_state,//分享标识
+            //                 rep_publish_stateBoolean: resultReport[i].rep_publish_state == "1" ? true : false,
+            //                 repPublishStartTime: resultReport[i].reppublishstarttime,//发布开始时间
+            //                 repPublishEndTime: resultReport[i].reppublishendtime,//发布结束时间
+            //                 repPublishState: resultReport[i].reppublishstate, //0 取消发布  1 发布
+            //                 repLimitType: resultReport[i].replimittype, //公开  1  ， 私有0
+            //                 repLimitTypeBoolean: resultReport[i].replimittype == "0" ? false : true,
+            //                 repLimitEndTime: resultReport[i].replimitendtime,//公开结束时间
+            //                 repRemark: resultReport[i].repremark,//备注,
+            //                 reptype:resultReport[i].reptype,
+            //                 reptypeName:resultReport[i].reptype=="0"?"普通":"专题",
+            //             }
+            //         )
+
+            //     }
+
+            //     for (let i = 0; i < resultdownload.length; i++) {
+            //         let download_file_type_cn = "";
+            //         if (resultdownload[i].download_file_type == "0") {
+            //             download_file_type_cn = "EXCEL";
+            //         } else if(resultdownload[i].download_file_type == "2"){
+            //             download_file_type_cn = "CSV";
+            //         }
+            //         let download_method_cn = "";
+            //         if (resultdownload[i].download_method == "0") {
+            //             download_method_cn = "即时";
+            //         } else {
+            //             download_method_cn = "定时";
+            //         }
+            //         let download_pro_state_cn = "";
+            //         if (resultdownload[i].download_pro_state == "0") {
+            //             download_pro_state_cn = "未开始";
+            //         } else if (resultdownload[i].download_pro_state == "1") {
+            //             download_pro_state_cn = "开始执行";
+            //         } else if (resultdownload[i].download_pro_state == "2") {
+            //             download_pro_state_cn = "执行成功";
+            //         } else if (resultdownload[i].download_pro_state == "3") {
+            //             download_pro_state_cn = "执行失败";
+            //         }
+            //         this.downLoadDataList.push({
+            //             dirName: resultdownload[i].download_name,  //下载名称
+            //             download_name: resultdownload[i].download_name,//下载名称
+            //             dirCreator: resultdownload[i].user_name,//创建者
+            //             download_user_id: resultdownload[i].download_user_id,//创建者ID
+            //             download_file_type: resultdownload[i].download_file_type,//文件类型
+            //             download_file_type_cn: download_file_type_cn,
+            //             download_method: resultdownload[i].download_method,//下载类型  即时
+            //             download_method_cn: download_method_cn,
+            //             download_res: resultdownload[i].download_res,//完成状态
+            //             download_time: resultdownload[i].download_time,//创建时间
+            //             download_state_time: resultdownload[i].download_state_time,//开始执行时间
+            //             download_pro_state: resultdownload[i].download_pro_state,//执行状态 0：未开始 1：开始执行 2：执行成功 3：执行失败
+            //             download_pro_state_cn: download_pro_state_cn,
+            //             download_pro_end_time: resultdownload[i].download_pro_end_time,//完成时间
+            //             download_id: resultdownload[i].download_id,//下载任务ID
+            //             download_obj_id: resultdownload[i].download_obj_id,//所下载对应控件或报表ID
+            //             file_id: resultdownload[i].file_id,//完成文件生成后的文件ID
+            //             download_msg: resultdownload[i].download_msg
+            //         });
+
+            //     }
+
+            //     this.setShowData();
+            // },
+
+
+            addRdvClsaaName: function (row, event, column) {
+                this.showRdvClassWindowParam.title = this.$t('newCategory');
+                this.showRdvClassWindowParam.winType="addList"
+                this.showRdvClassWindowParam.dirId = '';
+                this.showRdvClassWindowParam.open = true;
+            },
+            //重命名分类名称
+            reSetRdvClsaaName: function (rowData) {
+                if (this.ssa_user_id != rowData.dir_creator && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                this.showRdvClassWindowParam.dirId = rowData.dir_id;
+                this.showRdvClassWindowParam.className = rowData.dir_name;
+                this.showRdvClassWindowParam.title = this.$t('renameType');
+                this.showRdvClassWindowParam.winType="resetList"
+                this.showRdvClassWindowParam.open = true;
+
+            },
+
+            //编辑仪表盘数据
+            editRepMsg: function (rowData) {
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                this.showRdvClassWindowParam.title =this.$t('attribute');
+                this.showRdvClassWindowParam.rowData = this.getClickRowData(rowData);
+                this.showRdvClassWindowParam.editRepMsgOpen = true;
+            },
+
+            /*分享*/
+            shareRepData: function (rowData) {
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                this.showRdvClassWindowParam.active_tab = "first";//默认显示第一个tab
+                this.setReppermissionInfo(rowData);
+                this.showRdvClassWindowParam.title = this.$t('share');
+                this.showRdvClassWindowParam.rowData = this.getClickRowData(rowData);
+                this.showRdvClassWindowParam.shareRepDataOpen = true;
+            },
+            //公开
+            changeLimitType: function (rowData) {
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                this.showRdvClassWindowParam.rowData = this.getClickRowData(rowData);
+                this.showRdvClassWindowParam.title = this.$t('disclosure');
+                this.showRdvClassWindowParam.changeLimitTypeOpen = true;
+            },
+
+            //移动
+            moveRepToOther: function (rowData) {
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                this.showRdvClassWindowParam.rowData = this.getClickRowData(rowData);
+                this.showRdvClassWindowParam.title = this.$t('move');
+                this.showRdvClassWindowParam.moveRepToOtherOpen = true;
+
+            },
+            //下载报表
+            downLoadRep: function (rowData) {
+                this.showRdvClassWindowParam.rowData = this.getClickRowData(rowData);
+                this.showRdvClassWindowParam.title = this.$t('download');
+                this.showRdvClassWindowParam.downLoadRepOpen = true;
+
+            },
+
+            //调整编辑页面
+            editRep: function (rowData) {
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                let reId = rowData.row.repId,reType = rowData.row.reptype;
+                if(reType==2){
+                    window.open("./bi.html?type=1&reId="+reId+"&ssa_ticket=" + this.ssa_ticket + "&flag=browse");
+                }else{
+                    window.open("./cube.html?reId=" + reId + "&ssa_ticket=" + this.ssa_ticket);
+                }
+            },
+            //复制报表并编辑
+            copyEdit:function(rowData){
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorTips'))
+                    return;
+                }
+                let reId = rowData.row.repId;
+                window.open("./cube.html?reId=" + reId + "&ssa_ticket=" + this.ssa_ticket + "&copy=1");
+            },
+            //查看报表
+            showRep: function (rowData) {
+                let reId = rowData.row.repId,reType = rowData.row.reptype;
+                if(reType==2){
+                    window.open("./bi.html?type=0&reId="+reId+"&ssa_ticket=" + this.ssa_ticket + "&flag=browse");
+                }else{
+                    window.open("./repshow.html?reId=" + reId + "&ssa_ticket=" + this.ssa_ticket + "&flag=browse");
+                }
+            },
+            //删除报表
+            deleteRepDataById: function (rowData) {
+                if (this.ssa_user_id != rowData.row.userId && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('errorDelete'))
+                    return;
+                }
+                let param = new URLSearchParams()
+                param.append('ticket', this.ssa_ticket);
+                param.append('rep_id', rowData.row.repId);
+                let _this = this;
+                this.$confirm(_this.$t('confirmDelete'), "", {type: 'warning', center: true})
+                    .then(() => {
+                        this.$common.requireBackData({
+                            type: 'post',
+                            url: '/ssa/reportManagementController/deleteRepDataById.action',
+                            param: param,
+                            successCallBack: function (response) {
+                                if (response.data.status != 1) {
+                                    _this.$message.error(response.data.msg || 'error');
+                                    return;
+                                }
+                                //记录操作
+                                let operation_records_type=3;
+                                let operation_records_obj_type=3;
+                                let operation_records_obj_name=rowData.row.dirName;
+                                let operation_records_obj_desc="删除报表："+ rowData.row.dirName;
+                                _this.$common.operation_records(operation_records_type,operation_records_obj_type,rowData.row.repId,operation_records_obj_name,operation_records_obj_desc);
+
+                                _this.deletePageData(_this.boardList, rowData.row.repId, "2");
+                                _this.setShowData();
+                                _this.handleCurrentChange(Math.ceil(_this.pageParam.dataTotal / _this.pageParam.dataPageSize));
+                            }
+                        });
+                    })
+                    .catch(() => {
+                    });
+
+
+            },
+
+            //删除下载信息
+            deleteDownData: function (rowData) {
+                if (this.ssa_user_id != rowData.row.download_user_id && !this.isSuperRoleUser) {
+                    this.$message.error(this.$t('tipsDownload'))
+                    return;
+                }
+                let param = new URLSearchParams()
+                param.append('ticket', this.ssa_ticket);
+                param.append('download_id', rowData.row.download_id);
+                let _this = this;
+                this.$confirm(_this.$t('confirmDelete'), "", {type: 'warning', center: true})
+                    .then(() => {
+                        this.$common.requireBackData({
+                            type: 'post',
+                            url: '/ssa/reportManagementController/deleteDownDataById.action',
+                            param: param,
+                            successCallBack: function (response) {
+                                if (response.data.status != 1) {
+                                    _this.$message.error(response.data.msg || 'error');
+                                    return;
+                                }
+                                _this.deletePageData(_this.downLoadDataList, rowData.row.download_id, "3");
+                                _this.setShowData();
+                                _this.handleCurrentChange(Math.ceil(_this.pageParam.dataTotal / _this.pageParam.dataPageSize));
+                            }
+                        });
+                    })
+                    .catch(() => {
+                    });
+            },
+
+            //下载报表
+            downData: function (rowData) {
+                let userInfo = eval('(' + localStorage.getItem("userInfo") + ')');
+                let userId = userInfo.user_id;
+                let fileId = rowData.row.file_id;
+                let download_id = rowData.row.download_id;
+                let download_obj_id = rowData.row.download_obj_id;
+                let configParam = {
+                    url:'/ssa/biFile/downloadFile.action?userId=' + userId + "&fileId=" + fileId + "&download_id=" + download_id+"&download_obj_id="+download_obj_id
+                }
+                this.$common.buildRequireUrl(configParam);
+
+                //记录下载操作
+                let operation_records_type=6;
+                let operation_records_obj_type=3;
+                let operation_records_obj_id=download_id;
+                let operation_records_obj_name=rowData.row.download_name;
+                let operation_records_obj_desc="数据下载";
+                this.$common.operation_records(operation_records_type,operation_records_obj_type,operation_records_obj_id,operation_records_obj_name,operation_records_obj_desc);
+                this.$common.buildRequireUrl(configParam);
+
+                window.open(configParam.url);
+            },
+            //重新生成
+            refreshDownData: function (rowDataMsg) {
+                console.log(rowDataMsg);
+                let rowData = rowDataMsg.row;
+                if (!rowData.dirName || rowData.dirName == "") {
+                    this.$message.error(this.$t('tipsPerfect'));
+                }
+                let param = new URLSearchParams()
+                param.append('ticket', this.$parent.ssa_ticket);
+                param.append('download_name', rowData.dirName);//下载名称
+                param.append('download_obj_id', rowData.download_obj_id);//所下载的报表ID
+                param.append('download_method', "1");//即时下载？
+                param.append('download_file_type', "0");//下载类型
+                param.append('download_obj_type', "0");//报表下载
+                param.append('download_id', rowData.download_id);//报表下载
+                let _this = this;
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/insertRepDownLoad.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if (response.data.status != 1) {
+                            _this.$message.error(response.data.msg || 'error');
+                            return;
+                        }
+                        if (response.data.status == 1) {
+                            _this.$message({
+                                message: _this.$t('createTips'),
+                                type: 'success'
+                            });
+                        }
+                        _this.radioEvent();
+                        _this.getReportInitData(_this.isAllData);
+                    }
+                });
+            },
+            //获取当前报表的权限信息
+            setReppermissionInfo: function (rowData) {
+                this.showRdvClassWindowParam.repPermissionInfo = {
+                    userInfoPre: [],
+                    roleInfoPre: [],
+                    areInfoPre: []
+                }
+                for (let i = 0; i < this.sysParam.permissionInfo.length; i++) {
+                    if (rowData.row.repId == this.sysParam.permissionInfo[i].permission_obj_id) {
+                        //用户
+                        if (this.sysParam.permissionInfo[i].permission_scope_obj_type == "LIM0001") {
+                            this.showRdvClassWindowParam.repPermissionInfo.userInfoPre.push(
+                                parseInt(this.sysParam.permissionInfo[i].permission_scope_obj_id + ""));
+                        }
+                        //角色
+                        if (this.sysParam.permissionInfo[i].permission_scope_obj_type == "LIM0002") {
+                            this.showRdvClassWindowParam.repPermissionInfo.roleInfoPre.push(
+                                parseInt(this.sysParam.permissionInfo[i].permission_scope_obj_id + ""));
+                        }
+                        //区域
+                        if (this.sysParam.permissionInfo[i].permission_scope_obj_type == "LIM0003") {
+                            this.showRdvClassWindowParam.repPermissionInfo.areInfoPre.push(
+                                parseInt(this.sysParam.permissionInfo[i].permission_scope_obj_id + ""));
+                        }
+                    }
+                }
+            },
+
+            //获取当前点击的行的数据包装
+            getClickRowData: function (rowData) {
+                return {
+                    dirId: rowData.row.dirId,
+                    sysDirId:rowData.row.sysDirId,
+                    dirName: rowData.row.dirName,
+                    dirCreator: rowData.row.dirCreator,
+                    createTime: rowData.row.createTime,
+                    type: rowData.row.type,
+                    userId: rowData.row.userId,
+                    repId: rowData.row.repId,
+                    repName: rowData.row.repName,
+                    repUrl: rowData.row.repNewUrl,//报表访问url
+                    repNewUrlBoolean: rowData.row.repNewUrlBoolean,//是否生成新连接
+                    repPublishStartTime: rowData.row.repPublishStartTime,//发布开始时间
+                    repPublishEndTime: rowData.row.repPublishEndTime,//发布结束时间
+                    repPublishState: rowData.row.repPublishState, //0 取消发布  1 发布
+                    repPublishState: rowData.row.repPublishState, //0 取消发布  1 发布
+                    rep_publish_stateBoolean: rowData.row.repPublishState == '1' ? true : false,
+                    repLimitType: rowData.row.repLimitType, //公开  1  ， 私有0
+                    repLimitTypeBoolean: rowData.row.repLimitTypeBoolean,
+                    repLimitEndTime: rowData.row.repLimitEndTime,//公开失效时间
+                    repRemark: rowData.row.repRemark,//备注
+                }
+            },
+
+            //删除分类
+            deleteClsaaName: function (rowData) {
+                if (this.ssa_user_id != rowData.dir_creator) {
+                    this.$message.error(this.$t('deleMenu'))
+                    return;
+                }
+                let _this = this;
+                let param = new URLSearchParams()
+                param.append('ticket', this.ssa_ticket);
+                param.append('dir_id', rowData.dir_id);
+                if (this.allowDelet(rowData)) {
+                    this.$confirm(_this.$t('confirmDelete'), "", {type: 'warning', center: true})
+                        .then(() => {
+                            this.$common.requireBackData({
+                                type: 'post',
+                                url: '/ssa/reportManagementController/deletReportDir.action',
+                                param: param,
+                                successCallBack: function (response) {
+                                    if (response.data.status != 1) {
+                                        _this.$message.error(response.data.msg || 'error');
+                                        return;
+                                    }
+                                    //记录操作
+                                    let operation_records_type=3;
+                                    let operation_records_obj_type=13;
+                                    let operation_records_obj_name=rowData.dir_name;
+                                    let operation_records_obj_id=rowData.dir_id;
+                                    let operation_records_obj_desc="删除报表目录："+operation_records_obj_name;
+                                    _this.$common.operation_records(operation_records_type,operation_records_obj_type,operation_records_obj_id,operation_records_obj_name,operation_records_obj_desc);
+
+
+
+                                    _this.$message.success(response.data.msg || _this.$t('deleteSuccess'));
+                                    _this.deletePageData(_this.boardClassList, rowData.dir_name, "1");
+                                    _this.getReportInitData(_this.isAllData);//加载数据
+                                    _this.handleCurrentChange(Math.ceil(_this.pageParam.dataTotal / _this.pageParam.dataPageSize));
+                                }
+                            });
+                        })
+                        .catch(() => {
+                        });
+                } else {
+                    _this.$message.error(_this.$t('haveReport'));
+                }
+            },
+            //前台模拟删除
+            deletePageData: function (data, deleteId, type) {
+                for (let i = 0; i < data.length; i++) {
+                    let aimId = type == "1" ? data[i].dirId : data[i].repId;
+                    aimId = type == "3" ? data[i].download_id : aimId;
+                    if (deleteId == aimId) {
+                        data.splice(i, 1);
+                        return;
+                    }
+                }
+            },
+            //检查
+            allowDelet: function (rowData) {
+                for (let i = 0; i < this.boardList.length; i++) {
+                    if (rowData.dirId == this.boardList[i].dirId) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+
+            //分类点击事件
+            // dataClumClick: function (row, event, column) {
+            //     if (this.showItem || this.isAllData == "下载") {
+            //         return;
+            //     }
+            //     this.filterAim = "boardList";
+            //     this.filterDirId = row.dirId;
+            //     this.setShowData();
+            //     this.showItem = true;
+            //     this.showItemName = row.dirName;
+            //     this.showButtonGorup = false;
+            // },
+            //根目录点击事件
+            // showAllData: function () {
+            //     this.filterAim = "boardClassList";
+            //     this.filterDirId = "";
+            //     this.setShowData();
+            //     this.showItem = false;
+            //     this.showItemName = "";
+            //     this.showButtonGorup = true;
+            // },
+            //过滤条件改变
+            changeShowData: function () {
+                this.setShowData();
+            },
+
+            //tab选中切换
+            dataTypeChange: function (type) {
+                this.isAllData = type;
+                this.dirFormData=undefined;
+                this.setShowData();
+                // this.getReportInitData(this.isAllData);
+            },
+
+            //点击事件设置数据
+            setShowData: function () {
+                // let dataList = [];
+                // if (this.filterAim == "boardClassList") {
+                //     dataList = this.getFilterBoardClassList(this.cubeDirTreeData);
+                //     console.log(this.cubeDirTreeData)
+
+                // } else if (this.filterAim == "boardList") {
+                //     dataList = this.getFilterBoardList(dataList);
+                // }
+                // //只看自己
+                // this.getAllOrMyDataList(dataList);
+                if(this.isAllData!=2){
+                    this.getReportInitData(this.isAllData);
+                }else if(this.isAllData==2){
+                    this.getDownloadFileData();
+                }
+            },
+
+            //获取自己或全部的过滤条件文件
+            getAllOrMyDataList: function (dataList) {
+                if (this.isAllData == "我的") {
+                    let newDataList = [];
+                    for (let i = 0; i < dataList.length; i++) {
+                        if (this.$ticketUtil.getCookie("user_id") == dataList[i].userId) {
+                            newDataList.push(dataList[i]);
+                        }
+                    }
+                    this.showBoardData = newDataList;
+                } else if (this.isAllData == "全部") {
+                    this.showBoardData = dataList;
+                } else if (this.isAllData == "下载") {
+                    this.showBoardData = this.getDownDataList();
+                }
+                //this.pageParam.dataTotal = this.showBoardData.length;
+            },
+
+            /**
+             * 获取下载展示的信息
+             */
+            getDownDataList: function () {
+                let dataList = [];
+                if (this.filterValue && this.filterValue != "") {
+                    for (let i = 0; i < this.downLoadDataList.length; i++) {
+                        if (this.filterType == "owner" && this.downLoadDataList[i].dirCreator.indexOf(this.filterValue) > -1) {
+                            dataList.push(this.downLoadDataList[i]);
+                        }
+                        if (this.filterType == "dir" && this.downLoadDataList[i].dirName.indexOf(this.filterValue) > -1) {
+                            dataList.push(this.downLoadDataList[i]);
+                        }
+                    }
+                } else {
+                    dataList = this.downLoadDataList;
+                }
+                return dataList;
+            },
+
+            //*****************************获取分类过滤目录
+            getFilterBoardClassList: function (list,type) {
+                for (var i = 0; i < list.length; i++) {
+                    if(list[i].children.length>0){
+                        this.getFilterBoardClassList(list[i].children,type);
+                    }
+                    if(list[i].dir_creator!=this.ssa_user_id){
+                        type==0?list[i].isShow=false:list[i].isShow=true;
+                    }else{
+                        list[i].isShow=true;
+                    }
+                }
+            },
+
+            //是否是空文件夹 并且不是自己的
+            isEmptyClass: function (boardClassItem) {
+                //自己的文件件
+                if (boardClassItem.userId == this.ssa_user_id) {
+                    return true;
+                }
+                let dir_id = boardClassItem.dirId;
+                //不是自己的文件件，但是该文件夹下有自己可见报表
+                for (var i = 0; i < this.boardList.length; i++) {
+                    if (dir_id == this.boardList[i].dirId) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+
+            //获取仪表盘清单过滤数据
+            getFilterBoardList: function (dataList) {
+                console.log("dataList=======",dataList)
+                for (var i = 0; i < this.boardList.length; i++) {
+                    if(this.filterReportType != -1 && this.filterReportType!=this.boardList[i].reptype){
+                        continue
+
+                    }
+
+                    if (this.filterDirId && this.filterDirId != "") {
+                        if (this.filterDirId == this.boardList[i].dirId) {
+                            if (this.filterType == "owner") {
+                                if (this.filterValue && this.filterValue != "") {
+                                    if (this.boardList[i].dirCreator.indexOf(this.filterValue) > -1) {
+                                        dataList.push(this.boardList[i]);
+                                    }
+                                } else {
+                                    dataList.push(this.boardList[i]);
+                                }
+                            }
+                            if (this.filterType == "dir") {
+                                if (this.filterValue && this.filterValue != "") {
+                                    if (this.boardList[i].dirName.indexOf(this.filterValue) > -1) {
+                                        dataList.push(this.boardList[i]);
+                                    }
+                                } else {
+                                    dataList.push(this.boardList[i]);
+                                }
+                            }
+                        }
+                    } else {
+                        if (this.filterType == "owner") {
+                            if (this.filterValue && this.filterValue != "") {
+                                if (this.boardList[i].dirCreator.indexOf(this.filterValue) > -1) {
+                                    dataList.push(this.boardList[i]);
+                                }
+                            } else {
+                                dataList.push(this.boardList[i]);
+                            }
+                        }
+                        if (this.filterType == "dir") {
+                            if (this.filterValue && this.filterValue != "") {
+                                if (this.boardList[i].dirName.indexOf(this.filterValue) > -1) {
+                                    dataList.push(this.boardList[i]);
+                                }
+                            } else {
+                                dataList.push(this.boardList[i]);
+                            }
+                        }
+                    }
+                }
+                return dataList;
+            },
+            /**
+             * 树节点过滤 **************************************
+             */
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.dir_name.indexOf(value) !== -1;
+            },
+            /**
+             * 树节点单击事件 ***********************************
+             */
+            treeDataItemClick: function (data,node) {
+                console.log(data)
+                this.$refs.selectTree.setChecked(data.dir_id)
+                this.$set(this, 'dirFormData', this._.cloneDeep(data))
+                this.getCubeListByClass(data)
+            },
+            /**
+             * 返回表格主体数据结构 ****************************************
+             */
+            getCubeListByClass:function(row){
+                let _this = this;
+                _this.filterColValue = '';
+                _this.filterValue='';
+                _this.isSearch = false;
+                _this.boardListBack = [];
+                _this.getCubeList(row.dir_id,function(){
+                    _this.folderViewObj.open = true;
+                    _this.folderViewObj.folderId = row.dir_id;
+                    _this.folderViewObj.folderName = row.dir_name;
+                    _this.folderViewObj.folderList = _this.boardList;
+                    _this.isFolder = true;
+                });
+                // _this.setShowData();
+            },
+            /**
+             * 获取数据报表列表 ********************************************************
+             */
+            getCubeList:function(dirId,callBack){
+                let _this = this;
+                _this.loading = true;
+                let param ={
+                    'scale':_this.isAllData,
+                    'repType':_this.filterReportType==-1?null:_this.filterReportType,
+                    'role_id':_this.sysRoleId||_this.sysPageParam.roleId,
+                    'keyword':_this.filterColValue,
+                    'dirId':dirId?dirId:''
+                }
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/pageReport.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if(response.data.status==1){
+                            callBack(_this.reportDataFormatter(response.data.data.data));
+                        }else{
+                            _this.$message.error(response.data.msg||'error');
+                        }
+                        _this.loading = false;
+                    }
+                });
+            },
+            /**
+             * 获得下载列表 ***************************************************
+             */
+            getDownloadFileData:function(){
+                let _this = this;
+                _this.loading = true;
+                let param ={
+                    'role_id':_this.sysRoleId||_this.sysPageParam.roleId,
+                    'keyword':_this.filterColValue,
+                }
+                this.$common.requireBackData({
+                    type: 'post',
+                    url: '/ssa/reportManagementController/pageReportDownLoad.action',
+                    param: param,
+                    successCallBack: function (response) {
+                        if(response.data.status==1){
+                            console.log(response);
+                            // callBack(_this.reportDataFormatter(response.data.data.data));
+                            _this.downloadFormatter(response.data.data.data);
+                            _this.folderViewObj.open = true;
+                            // _this.folderViewObj.folderId = row.dir_id;
+                            // _this.folderViewObj.folderName = row.dir_name;
+                            _this.folderViewObj.folderList = _this.boardList;
+                            _this.isFolder = true;
+                        }else{
+                            _this.$message.error(response.data.msg||'error');
+                        }
+                        _this.loading = false;
+                    }
+                });
+            },
+            /**
+             * 格式化报表数组 *************************************************************
+             */
+            reportDataFormatter:function(resultReport){
+                this.boardList =[];
+                for (let i = 0; i < resultReport.length; i++) {
+
+                    this.boardList.push(
+                        {
+                            dirId: resultReport[i].DIR_ID,
+                            dirName:resultReport[i].DIR_NAME,
+                            sysDirId:resultReport[i].SYS_DIR_ID,
+                            sysDirName:resultReport[i].SYS_DIR_NAME,
+                            repName: resultReport[i].REP_NAME,
+                            dirCreator: resultReport[i].USER_NAME,
+                            createTime: resultReport[i].REP_CREATE_TIME,
+                            type: resultReport[i].REP_LIMIT_TYPE == "0" ? "私有" : "公开",
+                            userId: resultReport[i].REP_CREATOR,
+                            repId: resultReport[i].REP_ID,
+                            repUrl: resultReport[i].repurl,//报表访问url
+                            repNewUrl: resultReport[i].REP_URL,//生成新连接
+                            repNewUrlBoolean: resultReport[i].REP_NEW_URL == "0" ? false : true,
+                            rep_publish_state: resultReport[i].REP_PUBLISH_STATE,//分享标识
+                            rep_publish_stateBoolean: resultReport[i].REP_PUBLISH_STATE == "1" ? true : false,
+                            repPublishStartTime: resultReport[i].REP_PUBLISH_START_TIME,//发布开始时间
+                            repPublishEndTime: resultReport[i].REP_PUBLISH_END_TIME,//发布结束时间
+                            repPublishState: resultReport[i].REP_PUBLISH_STATE, //0 取消发布  1 发布
+                            repLimitType: resultReport[i].REP_LIMIT_TYPE, //公开  1  ， 私有0
+                            repLimitTypeBoolean: resultReport[i].REP_LIMIT_TYPE == "0" ? false : true,
+                            repLimitEndTime: resultReport[i].REP_LIMIT_END_TIME,//公开结束时间
+                            repRemark: resultReport[i].REP_REMARK,//备注,
+                            reptype:resultReport[i].REP_TYPE,
+                            reptypeName:resultReport[i].REP_TYPE=="0"?"普通":(resultReport[i].REP_TYPE=="1"?"专题":"自助分析"),
+                            repDutyDept:resultReport[i].REP_DUTY_DEPT||'无',
+                            repDutyUser:resultReport[i].REP_DUTY_USER||'无',
+                            repUpdateTime:resultReport[i].REP_UPDATE_TIME,
+                            repDevUser:resultReport[i].REP_DEV_USER
+                        }
+                    )
+                }
+            },
+            /**
+             * 下载列表数据格式化
+             */
+            downloadFormatter:function(resultdownload){
+                this.boardList =[];
+                for (let i = 0; i < resultdownload.length; i++) {
+                    let download_file_type_cn = "";
+                    if (resultdownload[i].DOWNLOAD_FILE_TYPE == "0") {
+                        download_file_type_cn = "EXCEL";
+                    } else if(resultdownload[i].DOWNLOAD_FILE_TYPE == "2"){
+                        download_file_type_cn = "CSV";
+                    }
+                    let download_method_cn = "";
+                    if (resultdownload[i].DOWNLOAD_METHOD == "0") {
+                        download_method_cn = "即时";
+                    } else {
+                        download_method_cn = "定时";
+                    }
+                    let download_pro_state_cn = "";
+                    if (resultdownload[i].DOWNLOAD_PRO_STATE == "0") {
+                        download_pro_state_cn = "未开始";
+                    } else if (resultdownload[i].DOWNLOAD_PRO_STATE == "1") {
+                        download_pro_state_cn = "开始执行";
+                    } else if (resultdownload[i].DOWNLOAD_PRO_STATE == "2") {
+                        download_pro_state_cn = "执行成功";
+                    } else if (resultdownload[i].DOWNLOAD_PRO_STATE == "3") {
+                        download_pro_state_cn = "执行失败";
+                    }
+                    this.boardList.push({
+                        dirName: resultdownload[i].DOWNLOAD_NAME,  //下载名称
+                        download_name: resultdownload[i].DOWNLOAD_NAME,//下载名称
+                        dirCreator: resultdownload[i].USER_NAME,//创建者
+                        download_user_id: resultdownload[i].DOWNLOAD_USER_ID,//创建者ID
+                        download_file_type: resultdownload[i].DOWNLOAD_FILE_TYPE,//文件类型
+                        download_file_type_cn: download_file_type_cn,
+                        download_method: resultdownload[i].DOWNLOAD_METHOD,//下载类型  即时
+                        download_method_cn: download_method_cn,
+                        download_res: resultdownload[i].DOWNLOAD_RES,//完成状态
+                        download_time: resultdownload[i].DOWNLOAD_TIME,//创建时间
+                        download_state_time: resultdownload[i].DOWNLOAD_STATE_TIME,//开始执行时间
+                        download_pro_state: resultdownload[i].DOWNLOAD_PRO_STATE,//执行状态 0：未开始 1：开始执行 2：执行成功 3：执行失败
+                        download_pro_state_cn: download_pro_state_cn,
+                        download_pro_end_time: resultdownload[i].DOWNLOAD_PRO_END_TIME,//完成时间
+                        download_id: resultdownload[i].DOWNLOAD_ID,//下载任务ID
+                        download_obj_id: resultdownload[i].DOWNLOAD_OBJ_ID,//所下载对应控件或报表ID
+                        file_id: resultdownload[i].FILE_ID,//完成文件生成后的文件ID
+                        download_msg: resultdownload[i].DOWNLOAD_MSG
+                    });
+
+                }
+            }
+        },
+        computed: {
+            ...mapGetters(['sysPageParam']),
+            mainTableHeight() {
+                return this.$refs.tableFater.clientHeight -15
+                console.log(this.$refs.tableFater.clientHeight);
+                return function (x) {
+                  if(this.$ticketUtil.getCookie('notAppSso') == 'true'){
+                    return window.innerHeight - x - 15;
+                  }
+                  return window.innerHeight - x + 110;
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+
+    /*表格样式*/
+    /* .baseTable .el-table__header-wrapper {
+         background-color: #cdd9f7;
+     }
+     .el-table.baseTable, .baseTable .el-table__expanded-cell, .el-table.baseTable th, .el-table.baseTable tr {
+         background-color: transparent;
+         border: 2px solid transparent;
+     }
+     .colSpanBox:hover,.colSpanBox.active{background-color:red;cursor:pointer}
+     .el-table.baseTable th {
+         color: #000000;
+     }
+     .cell{
+         color: #000000;
+     }*/
+    .baseInput .el-input__inner {
+        width: 100%;
+        height: 28px;
+        background-color: #ffffff;
+        color: #ccc;
+        outline: none;
+        border: 1px solid;
+        border-radius: 0px;
+        font-size: 12px;
+    }
+
+    .input-filter-valueClass {
+        width: 400px;
+        top: 4px;
+    }
+
+    /*  .el-table--striped.baseTable .el-table__body tr.el-table__row--striped td {
+          background-color: #f1ecec;
+      }*/
+
+    .content {
+        color: #fff;
+        height: 100%;
+    }
+
+    .dataTypeChangeStyle {
+        margin-left: 10px;
+        margin-top: 5px;
+    }
+
+    .dataSourceBody {
+        height: calc(100% - 52px);
+        margin-top: 10px
+    }
+
+    .ctrlsBar {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .ctrlsBar .inners {
+        display: inline-block;
+    }
+
+    .boardTitleDiv {
+        background: #ffffff;
+        height: 50px;
+        margin: 8px;
+
+    }
+
+    .underLinStyle {
+        border: 1px solid #cdd7f7;
+        margin: 13px 8px 8px 8px;
+    }
+
+    .boardTitle {
+        font-size: 18px;
+        line-height: 50px;
+        margin-left: 10px;
+        font-weight: bold;
+        color: #809dff;
+    }
+
+    .titleBox {
+        padding: 6px 7px;
+        border-color: #cfdaf866;
+    }
+
+    .titleBox .alignLeft {
+        width: 120px;
+    }
+
+    .titleBox .alignCenter {
+        display: inline-block;
+        display: inline-block;
+        font-size: 12px;
+        margin-bottom: -8px;
+        vertical-align: middle;
+        width: 200px
+    }
+
+    .titleBox .alignCenter span {
+        display: inline-block;
+        margin-left: 20px;
+        color: #4c4c4c;
+        cursor: pointer
+    }
+
+    .titleBox .alignCenter span.active {
+        color: #000;
+        border-bottom: 2px solid #3A90F8;
+    }
+
+    .titleBox .alignRight {
+        width: calc(100% - 320px)
+    }
+
+    #folderViewTitie {
+        font-size: 12px;
+        color: #4c4c4c66;
+        margin: 10px 0 15px 0;
+    }
+
+    #folderViewTitie span {
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+    #folderViewTitie span:hover {
+        color: #3A90F8;
+    }
+
+    .controlIcon {
+        font-size: 14px;
+        color: #4c4c4c;
+        cursor: pointer;
+        margin-left: 8px
+    }
+
+    .controlIcon:hover {
+        color: #3A90F8
+    }
+
+    .folderIcon {
+        width: 40px;
+        height: 100%;
+        display: inline-block;
+        line-height: 40px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .folderBox.bg .folderIcon {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        background-color: #EABA37
+    }
+
+    .folderIcon .iconfont {
+        font-size: 36px;
+        display: block;
+        margin: 0;
+        padding: 0;
+        color: #A19BA8;
+    }
+
+    .folderBox.bg .folderIcon .iconfont {
+        font-size: 28px;
+        color: #fff
+    }
+
+    .folderName {
+        display: inline-block;
+        height: 40px;
+        max-width: calc(100% - 40px);
+        vertical-align: middle;
+        font-size: 12px;
+        line-height: 40px;
+        padding-left: 10px;
+        white-space: nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .folderBox:not(.bg) .folderName:hover {
+        color: #3A90F8;
+        cursor: pointer;
+    }
+
+    .greenLabelStyle {
+        background-color: rgba(103, 194, 58, .1);
+        border-color: rgba(103, 194, 58, .2);
+        color: #67C23A;
+        padding: 4px;
+        border-radius: 2px;
+    }
+
+    .redLabelStyle {
+        color: red;
+        background-color: rgba(103, 194, 58, .1);
+        border-color: rgba(103, 194, 58, .2);
+        padding: 4px;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    .cellBox,.dateBox{width:100%;}
+    .nodeLabel{
+      font-size: 14px;
+      width: calc(100% - 23px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .nodeLabelActive{
+      color: #00baff;
+      font-weight: bold;
+    }
+    .cube-home{
+      height: 100%;
+      display:flex;
+      align-items:flex-start;
+    }
+    .cube-home-tree{
+      height: 100%;
+      width: 400px;
+      margin-right:10px;
+      overflow-y: hidden;
+      display: inline-block;
+      background: #fff;
+    }
+    .cube-home-tree-main{
+      height: calc(100% - 40px);
+      padding: 4px;
+      overflow-y: auto;
+      background: #fff;
+
+    }
+    .cube-home-tree-main /deep/ .el-tree-node__content{
+        width: calc(100% - 45px);
+    }
+    .cube-home-tree-main /deep/ .el-tree-node__content>span:nth-child(2){
+        display: flex;
+        width: 100%;
+    }
+    .cube-home-table{
+      height: 100%;
+      /* width: calc(100% - 410px); */
+      flex:1;
+      display: inline-block;
+      overflow-x: auto;
+      overflow-y:hidden;
+      background: #fff;
+    }
+    .cubeTreeFilter-input{
+      vertical-align: middle;
+      width: 320px;
+    }
+</style>

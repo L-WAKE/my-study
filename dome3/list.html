@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let list1 = [
+            {
+                type: "pdf",
+                name: "PDF文件",
+            },
+            {
+                type: "jpg",
+                name: "图片",
+            },
+            {
+                type: "mp4",
+                name: "视频文件",
+            },
+            {
+                type: "mp3",
+                name: "ship.mp3",
+            },
+        ];
+        let list2 = {
+            pdf: "模板.pdfx.pdf",
+            jpg: "影像.png",
+            mp4: "植物大战僵尸.mp4",
+            // mp3: 'ship.mp3'
+        };
+        let arr = [
+            {
+                label: 'PDF文件',
+                value: '模板.pdfx.pdf!'
+            }
+        ]
+        let keys = Object.keys(list2)
+        console.log(keys)
+        const handleArr = list1.map((item, index) => {
+            let label = item.name
+            let values = keys.find(v => v == item.type)
+            let value = ''
+            if (item.type == values) value = list2[values]
+            else {
+                label = item.type
+                value = item.name
+            }
+            return {
+                label: label,
+                value: value,
+                disable: 1
+            }
+        })
+        console.log('handleArr', handleArr)
+    </script>
+</body>
+
+</html>

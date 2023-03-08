@@ -23,16 +23,16 @@
                 type: "mp4",
                 name: "视频文件",
             },
-            {
-                type: "mp3",
-                name: "ship.mp3",
-            },
+            // {
+            //     type: "mp3",
+            //     name: "ship.mp3",
+            // },
         ];
         let list2 = {
             pdf: "模板.pdfx.pdf",
             jpg: "影像.png",
             mp4: "植物大战僵尸.mp4",
-            // mp3: 'ship.mp3'
+            mp3: 'ship.mp3'
         };
         let arr = [
             {
@@ -42,20 +42,28 @@
         ]
         let keys = Object.keys(list2)
         console.log(keys)
-        const handleArr = list1.map((item, index) => {
-            let label = item.name
-            let values = keys.find(v => v == item.type)
-            let value = ''
-            if (item.type == values) value = list2[values]
-            else {
-                label = item.type
-                value = item.name
-            }
+        const handleArr = keys.map((item, index) => {
+            let findLabel = list1.find(v => item == v.type)
+            let label = findLabel ? findLabel.name : item
+            let value = list2[item]
             return {
                 label: label,
                 value: value,
                 disable: 1
             }
+            // let label = item.name
+            // let values = keys.find(v => v == item.type)
+            // let value = ''
+            // if (item.type == values) value = list2[values]
+            // else {
+            //     label = item.type
+            //     value = item.name
+            // }
+            // return {
+            //     label: label,
+            //     value: value,
+            //     disable: 1
+            // }
         })
         console.log('handleArr', handleArr)
     </script>

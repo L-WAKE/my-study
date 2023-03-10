@@ -2,70 +2,153 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 </head>
 
 <body>
     <script>
-        let list1 = [
+        let region = [
             {
-                type: "pdf",
-                name: "PDF文件",
+                "firstCol": 0,
+                "lastCol": 2,
+                "firstRow": 0,
+                "lastRow": 0
             },
             {
-                type: "jpg",
-                name: "图片",
+                "firstCol": 0,
+                "lastCol": 1,
+                "firstRow": 1,
+                "lastRow": 1
             },
             {
-                type: "mp4",
-                name: "视频文件",
+                "firstCol": 2,
+                "lastCol": 2,
+                "firstRow": 1,
+                "lastRow": 2
             },
-            // {
-            //     type: "mp3",
-            //     name: "ship.mp3",
-            // },
-        ];
-        let list2 = {
-            pdf: "模板.pdfx.pdf",
-            jpg: "影像.png",
-            mp4: "植物大战僵尸.mp4",
-            mp3: 'ship.mp3'
-        };
-        let arr = [
             {
-                label: 'PDF文件',
-                value: '模板.pdfx.pdf!'
-            }
+                "firstCol": 3,
+                "lastCol": 3,
+                "firstRow": 0,
+                "lastRow": 2
+            },
         ]
-        let keys = Object.keys(list2)
-        console.log(keys)
-        const handleArr = keys.map((item, index) => {
-            let findLabel = list1.find(v => item == v.type)
-            let label = findLabel ? findLabel.name : item
-            let value = list2[item]
-            return {
-                label: label,
-                value: value,
-                disable: 1
-            }
-            // let label = item.name
-            // let values = keys.find(v => v == item.type)
-            // let value = ''
-            // if (item.type == values) value = list2[values]
-            // else {
-            //     label = item.type
-            //     value = item.name
-            // }
-            // return {
-            //     label: label,
-            //     value: value,
-            //     disable: 1
-            // }
-        })
-        console.log('handleArr', handleArr)
+        let cells = [
+            [
+                {
+                    "v": "用户",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "用户",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "用户",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "城区名称",
+                    "expression": "",
+                    "properties": {}
+                },
+            ],
+            [
+                {
+                    "v": "1",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "1",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "4",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "城区名称",
+                    "expression": "",
+                    "properties": {}
+                },
+            ],
+            [
+                {
+                    "v": "2",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "3",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "4",
+                    "expression": "",
+                    "properties": {}
+                },
+                {
+                    "v": "城区名称",
+                    "expression": "",
+                    "properties": {}
+                },
+            ]
+        ]
+        const theadData = [
+            {
+                label: "用户",
+                children: [
+                    {
+                        label: "1",
+                        children: [
+                            { label: "2", children: [] },
+                            { label: "3", children: [] },
+                        ],
+                    },
+                    { label: "4", children: [] },
+                ]
+            },
+            {
+                label: "城区名称",
+                children: [],
+            },
+        ];
+        let handleArr = [
+            ['用户', '用户', '用户', '城区名称'],
+            ['1', '1', '4', '城区名称'],
+            ['2', '3', '4', '城区名称'],
+        ]
+        // let overArr = []
+
+        // const setArr = (list) => {
+        //     list.forEach((item, index) => {
+        //         overArr.push(item.label)
+        //     })
+        // }
+
+        // let level = 1
+        // const setLevel = (list) => {
+        //     let len = list.length
+        //     list.forEach((item, index) => {
+        //         item.level = level
+        //         if (item.children && item.children.length > 0) {
+        //             level = level + 1
+        //             setLevel(item.children)
+        //         }
+        //     })
+        // }
+        // setLevel(theadData)
+        console.log(theadData)
     </script>
 </body>
 

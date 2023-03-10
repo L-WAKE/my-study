@@ -10,6 +10,18 @@
 
 <body>
     <script>
+
+        function deepCloneMax(obj) {
+            if ([null, undefined, NaN, false].includes(obj)) return obj
+            if (typeof obj !== "object" && typeof obj !== "function") return obj
+            let newObj = Array.isArray(obj) ? [] : {}
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    newObj[key] = typeof obj[key] == "object" ? deepCloneMax(obj[key]) : obj[key]
+                }
+            }
+            return newObj
+        }
         let region = [
             {
                 "firstCol": 0,
@@ -107,27 +119,91 @@
         const theadData = [
             {
                 label: "用户",
+                id: 'user',
                 children: [
                     {
                         label: "1",
+                        id: 'one',
                         children: [
-                            { label: "2", children: [] },
-                            { label: "3", children: [] },
+                            { label: "2", id: 'two', children: [] },
+                            { label: "3", id: 'three', children: [] },
                         ],
                     },
-                    { label: "4", children: [] },
+                    { label: "4", id: 'four', children: [] },
                 ]
             },
             {
+                id: 'city',
                 label: "城区名称",
                 children: [],
             },
         ];
-        let handleArr = [
-            ['用户', '用户', '用户', '城区名称'],
-            ['1', '1', '4', '城区名称'],
-            ['2', '3', '4', '城区名称'],
-        ]
+
+        // 查询最深层级有多少级
+        function getMaxlevel(treeData) {
+            let level = 0
+            let maxLevel = 0
+            function loop(data, level) {
+                data.forEach(item => {
+                    item.level = level
+                    if (level > maxLevel) {
+                        maxLevel = level
+                    }
+                    if ('children' in item) {
+                        if (item.children.length > 0) {
+                            loop(item.children, level + 1)
+                        }
+                    }
+                })
+            }
+            loop(treeData, 1)
+            return maxLevel
+        }
+        let maxlevel = getMaxlevel(deepCloneMax(theadData))
+        console.log('maxlevel', maxlevel)
+
+        //先分层级 有多少级
+        const formatArrB = arr => {
+            let initArr = []
+            const format = (ar, i) => {
+                initArr[i] || (initArr[i] = [])
+                ar.forEach(val => {
+                    initArr[i].push(val)
+                    if (Array.isArray(val.children) && val.children.length > 0) {
+                        format(val.children, i + 1) // 此处不能用i++或者++i，因为循环可能还未完成
+                    }
+                })
+                return initArr
+            }
+            return format(arr, 0)
+        }
+        let format = formatArrB(deepCloneMax(theadData))
+        console.log('format', format)
+
+        let flatList = deepCloneMax(format)
+        flatList = flatList.flat()
+        console.log('flatList', flatList)
+        let cellsHand = []
+        const opreter = (list) => {
+            list.forEach(item => {
+                let rowArr = []
+                item.forEach(iv => {
+                    let level = 0
+                    if (iv.children && iv.children.length > 0) {
+                        level = getMaxlevel(iv.children)
+                    }
+                    console.log('level', level + 1)
+                })
+
+            })
+        }
+        opreter(format)
+
+        // let handleArr = [
+        //     ['用户', '用户', '用户', '城区名称'],
+        //     ['1', '1', '4', '城区名称'],
+        //     ['2', '3', '4', '城区名称'],
+        // ]
         // let overArr = []
 
         // const setArr = (list) => {
@@ -148,7 +224,7 @@
         //     })
         // }
         // setLevel(theadData)
-        console.log(theadData)
+        // console.log(theadData)
     </script>
 </body>
 

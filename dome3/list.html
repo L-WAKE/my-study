@@ -116,29 +116,58 @@
                 },
             ]
         ]
+        // const theadData = [
+        //     {
+        //         label: "用户",
+        //         id: 'user',
+        //         children: [
+        //             {
+        //                 label: "1",
+        //                 id: 'one',
+        //                 children: [
+        //                     { label: "2", id: 'two', children: [] },
+        //                     { label: "3", id: 'three', children: [] },
+        //                 ],
+        //             },
+        //             { label: "4", id: 'four', children: [] },
+        //         ]
+        //     },
+        //     {
+        //         id: 'city',
+        //         label: "城区名称",
+        //         children: [],
+        //     },
+        // ];
+
         const theadData = [
             {
                 label: "用户",
-                id: 'user',
                 children: [
                     {
-                        label: "1",
-                        id: 'one',
-                        children: [
-                            { label: "2", id: 'two', children: [] },
-                            { label: "3", id: 'three', children: [] },
-                        ],
+                        label: "11",
+                        children: [],
                     },
-                    { label: "4", id: 'four', children: [] },
+                    {
+                        label: "22",
+                        children: [],
+                    },
                 ]
             },
             {
-                id: 'city',
                 label: "城区名称",
-                children: [],
+                children: [
+                    {
+                        label: "33",
+                        children: [
+                            {
+                                label: "44",
+                                children: [],
+                            },
+                        ],
+                    },
+                ]
             },
         ];
-
 
         // 查询最深层级有多少级
         function getMaxlevel(treeData, type) {

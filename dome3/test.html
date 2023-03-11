@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 </head>
 
@@ -12,36 +12,220 @@
     <script>
         const theadData = [
             {
+                align: "left",
                 label: "用户",
-                id: 'user',
+                prop: "279_1",
+                width: "",
+                type: "dim",
+                orderType: "",
+                clumType: "dimension",
+                index: 0,
+                children: [
+                    {
+                        label: "11",
+                        isHide: false,
+                        id: 1678505728747,
+                        index: 1678505728747,
+                        children: [],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                    {
+                        label: "22",
+                        id: 1678505738212,
+                        index: 1678505738212,
+                        isHide: false,
+                        children: [],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                ],
+                isHide: false,
+                conceal: false,
+                id: 1678505700417,
+                warnEnable: false,
+                warnThresholdOperator: "==",
+            },
+            {
+                align: "left",
+                label: "城区名称",
+                prop: "280_1",
+                width: "",
+                type: "dim",
+                orderType: "",
+                clumType: "dimension",
+                index: 1,
+                children: [
+                    {
+                        label: "33",
+                        isHide: false,
+                        id: 1678505734293,
+                        index: 1678505734293,
+                        children: [
+                            {
+                                label: "44",
+                                isHide: false,
+                                id: 1678505795646,
+                                index: 1678505795646,
+                                children: [],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
+                        ],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                ],
+                isHide: false,
+                conceal: false,
+                id: 1678505700418,
+                warnEnable: false,
+                warnThresholdOperator: "==",
+            },
+        ];
+
+        const cells = [
+            [
+                {
+                    v: "用户",
+                    expression: "",
+                    properties: {},
+                },
+                {
+                    v: "用户",
+                    expression: "",
+                    properties: {},
+                },
+                {
+                    v: "城区名称",
+                    expression: "",
+                    properties: {},
+                },
+            ],
+            [
+                {
+                    v: "1",
+                    expression: "",
+                    properties: {},
+                },
+                {
+                    v: "2",
+                    expression: "",
+                    properties: {},
+                },
+                {
+                    v: "33",
+                    expression: "",
+                    properties: {},
+                },
+            ],
+            [
+                {
+                    v: "1",
+                    expression: "",
+                    properties: {},
+                },
+                {
+                    v: "2",
+                    expression: "",
+                    properties: {},
+                },
+                {
+                    v: "44",
+                    expression: "",
+                    properties: {},
+                },
+            ],
+        ];
+
+        const pop = [
+            {
+                align: "left",
+                label: "用户",
+                prop: "279_1",
+                width: "",
+                type: "dim",
+                orderType: "",
+                clumType: "dimension",
+                index: 0,
                 children: [
                     {
                         label: "1",
-                        id: 'one',
+                        isHide: false,
+                        id: 1678505728747,
+                        index: 1678505728747,
                         children: [
-                            { label: "2", id: 'two', children: [] },
-                            { label: "3", id: 'three', children: [] },
+                            {
+                                label: "2",
+                                isHide: false,
+                                id: 1678506851141,
+                                index: 1678506851141,
+                                children: [],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
+                            {
+                                label: "3",
+                                id: 1678506866991,
+                                index: 1678506866991,
+                                isHide: false,
+                                children: [],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
                         ],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
                     },
-                    { label: "4", id: 'four', children: [] },
-                ]
+                    {
+                        label: "4",
+                        id: 1678505738212,
+                        index: 1678505738212,
+                        isHide: false,
+                        children: [],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                ],
+                isHide: false,
+                conceal: false,
+                id: 1678505700417,
+                warnEnable: false,
+                warnThresholdOperator: "==",
             },
             {
-                id: 'city',
+                align: "left",
                 label: "城区名称",
+                prop: "280_1",
+                width: "",
+                type: "dim",
+                orderType: "",
+                clumType: "dimension",
+                index: 1,
                 children: [],
+                isHide: false,
+                conceal: false,
+                id: 1678505700418,
+                warnEnable: false,
+                warnThresholdOperator: "==",
             },
         ];
-        let allLeaf = []
-        const findLeaf = (list) => {
-            list.forEach(item => {
-                if (item.children && item.children.length > 0) {
-                    findLeaf(item.children)
-                } else allLeaf.push(item)
-            })
-        }
-        findLeaf(theadData)
-        console.log('allLeaf', allLeaf)
     </script>
 </body>
 

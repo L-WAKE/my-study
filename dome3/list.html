@@ -139,13 +139,14 @@
             },
         ];
 
+
         // 查询最深层级有多少级
-        function getMaxlevel(treeData) {
+        function getMaxlevel(treeData, type) {
             let level = 0
             let maxLevel = 0
             function loop(data, level) {
                 data.forEach(item => {
-                    item.level = level
+                    item[type] = level
                     if (level > maxLevel) {
                         maxLevel = level
                     }
@@ -159,8 +160,25 @@
             loop(treeData, 1)
             return maxLevel
         }
-        let maxlevel = getMaxlevel(deepCloneMax(theadData))
-        console.log('maxlevel', maxlevel)
+        let maxlevel = getMaxlevel(theadData, 'level')
+        console.log('原始数据theadData', theadData)
+        console.log('最大层级maxlevel', maxlevel)
+
+        //获取所有的叶子节点
+        const findLeaf = (list) => {
+            let allLeaf = []
+            const findf = (data) => {
+                data.forEach(item => {
+                    if (item.children && item.children.length > 0) {
+                        findf(item.children)
+                    } else allLeaf.push(item)
+                })
+            }
+            findf(list)
+            return allLeaf
+        }
+        let allDocument = findLeaf(theadData)
+        console.log('叶子节点allDocument', allDocument)
 
         //先分层级 有多少级
         const formatArrB = arr => {
@@ -178,24 +196,55 @@
             return format(arr, 0)
         }
         let format = formatArrB(deepCloneMax(theadData))
-        console.log('format', format)
+        console.log('先分层级format', format)
 
         let flatList = deepCloneMax(format)
         flatList = flatList.flat()
         console.log('flatList', flatList)
         let cellsHand = []
         const opreter = (list) => {
+            let cells = []
             list.forEach(item => {
-                let rowArr = []
-                item.forEach(iv => {
+                let itemArr = []
+                item.forEach((iv, ix) => {
+                    let itemLeaf = []//存储每一个层级元素的叶子节点
                     let level = 0
                     if (iv.children && iv.children.length > 0) {
-                        level = getMaxlevel(iv.children)
+                        level = getMaxlevel(iv.children, 'findLevel')
+                        itemLeaf = findLeaf(iv.children)
                     }
-                    console.log('level', level + 1)
+                    level = level + 1
+                    for (let i = 0; i < level; i++) {
+                        itemArr.push({
+                            "v": iv.label,
+                            "expression": "",
+                            "properties": {}
+                        })
+                    }
+                    let itemlen = item.length
+                    let arrlen = itemArr.length
+                    let alllen = allDocument.length
+                    if (ix == itemlen - 1 && arrlen < alllen) {
+                        let gapNumber = alllen - arrlen //当前节点与最大长度节点相差多少个叶子-向上查找补差额
+                        let nowLevel = iv.level
+                        for (let j = 0; j < gapNumber; j++) {
+                            let findAdd = format[nowLevel - 2 - j] // 上一层级的所有节点
+                            let findNoChild = findAdd.find(f => !(f.children && f.children.length > 0))
+                            if (findNoChild) {
+                                itemArr.push({
+                                    "v": findNoChild.label,
+                                    "expression": "",
+                                    "properties": {}
+                                })
+                            }
+                        }
+                    }
+                    console.log(iv.label + '--itemLeaf', itemLeaf)
+                    console.log(iv.label + '--level', iv.level, level)
                 })
-
+                cells.push(itemArr)
             })
+            console.log('cells9999999999', cells)
         }
         opreter(format)
 

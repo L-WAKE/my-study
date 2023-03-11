@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const theadData = [
+            {
+                label: "用户",
+                id: 'user',
+                children: [
+                    {
+                        label: "1",
+                        id: 'one',
+                        children: [
+                            { label: "2", id: 'two', children: [] },
+                            { label: "3", id: 'three', children: [] },
+                        ],
+                    },
+                    { label: "4", id: 'four', children: [] },
+                ]
+            },
+            {
+                id: 'city',
+                label: "城区名称",
+                children: [],
+            },
+        ];
+        let allLeaf = []
+        const findLeaf = (list) => {
+            list.forEach(item => {
+                if (item.children && item.children.length > 0) {
+                    findLeaf(item.children)
+                } else allLeaf.push(item)
+            })
+        }
+        findLeaf(theadData)
+        console.log('allLeaf', allLeaf)
+    </script>
+</body>
+
+</html>

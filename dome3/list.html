@@ -10,136 +10,136 @@
 
 <body>
     <script>
-
         function deepCloneMax(obj) {
-            if ([null, undefined, NaN, false].includes(obj)) return obj
-            if (typeof obj !== "object" && typeof obj !== "function") return obj
-            let newObj = Array.isArray(obj) ? [] : {}
+            if ([null, undefined, NaN, false].includes(obj)) return obj;
+            if (typeof obj !== "object" && typeof obj !== "function") return obj;
+            let newObj = Array.isArray(obj) ? [] : {};
             for (let key in obj) {
                 if (obj.hasOwnProperty(key)) {
-                    newObj[key] = typeof obj[key] == "object" ? deepCloneMax(obj[key]) : obj[key]
+                    newObj[key] =
+                        typeof obj[key] == "object" ? deepCloneMax(obj[key]) : obj[key];
                 }
             }
-            return newObj
+            return newObj;
         }
         let region = [
             {
-                "firstCol": 0,
-                "lastCol": 2,
-                "firstRow": 0,
-                "lastRow": 0
+                firstCol: 0,
+                lastCol: 2,
+                firstRow: 0,
+                lastRow: 0,
             },
             {
-                "firstCol": 0,
-                "lastCol": 1,
-                "firstRow": 1,
-                "lastRow": 1
+                firstCol: 0,
+                lastCol: 1,
+                firstRow: 1,
+                lastRow: 1,
             },
             {
-                "firstCol": 2,
-                "lastCol": 2,
-                "firstRow": 1,
-                "lastRow": 2
+                firstCol: 2,
+                lastCol: 2,
+                firstRow: 1,
+                lastRow: 2,
             },
             {
-                "firstCol": 3,
-                "lastCol": 3,
-                "firstRow": 0,
-                "lastRow": 2
+                firstCol: 3,
+                lastCol: 3,
+                firstRow: 0,
+                lastRow: 2,
             },
-        ]
+        ];
         let cells = [
             [
                 {
-                    "v": "用户",
-                    "expression": "",
-                    "properties": {}
+                    v: "用户",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "用户",
-                    "expression": "",
-                    "properties": {}
+                    v: "用户",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "用户",
-                    "expression": "",
-                    "properties": {}
+                    v: "用户",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "城区名称",
-                    "expression": "",
-                    "properties": {}
+                    v: "城区名称",
+                    expression: "",
+                    properties: {},
                 },
             ],
             [
                 {
-                    "v": "1",
-                    "expression": "",
-                    "properties": {}
+                    v: "1",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "1",
-                    "expression": "",
-                    "properties": {}
+                    v: "1",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "4",
-                    "expression": "",
-                    "properties": {}
+                    v: "4",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "城区名称",
-                    "expression": "",
-                    "properties": {}
+                    v: "城区名称",
+                    expression: "",
+                    properties: {},
                 },
             ],
             [
                 {
-                    "v": "2",
-                    "expression": "",
-                    "properties": {}
+                    v: "2",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "3",
-                    "expression": "",
-                    "properties": {}
+                    v: "3",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "4",
-                    "expression": "",
-                    "properties": {}
+                    v: "4",
+                    expression: "",
+                    properties: {},
                 },
                 {
-                    "v": "城区名称",
-                    "expression": "",
-                    "properties": {}
+                    v: "城区名称",
+                    expression: "",
+                    properties: {},
                 },
-            ]
-        ]
-        // const theadData = [
-        //     {
-        //         label: "用户",
-        //         id: 'user',
-        //         children: [
-        //             {
-        //                 label: "1",
-        //                 id: 'one',
-        //                 children: [
-        //                     { label: "2", id: 'two', children: [] },
-        //                     { label: "3", id: 'three', children: [] },
-        //                 ],
-        //             },
-        //             { label: "4", id: 'four', children: [] },
-        //         ]
-        //     },
-        //     {
-        //         id: 'city',
-        //         label: "城区名称",
-        //         children: [],
-        //     },
-        // ];
+            ],
+        ];
+        const theadData1 = [
+            {
+                label: "用户",
+                id: "user",
+                children: [
+                    {
+                        label: "1",
+                        id: "one",
+                        children: [
+                            { label: "2", id: "two", children: [] },
+                            { label: "3", id: "three", children: [] },
+                        ],
+                    },
+                    { label: "4", id: "four", children: [] },
+                ],
+            },
+            {
+                id: "city",
+                label: "城区名称",
+                children: [],
+            },
+        ];
 
-        const theadData = [
+        const theadData2 = [
             {
                 label: "用户",
                 children: [
@@ -151,7 +151,7 @@
                         label: "22",
                         children: [],
                     },
-                ]
+                ],
             },
             {
                 label: "城区名称",
@@ -165,144 +165,334 @@
                             },
                         ],
                     },
-                ]
+                ],
+            },
+        ];
+
+        const theadData = [
+            {
+                align: "left",
+                label: "用户",
+                prop: "279_1",
+                width: "",
+                type: "dim",
+                orderType: "",
+                clumType: "dimension",
+                index: 0,
+                children: [
+                    {
+                        label: "1",
+                        isHide: false,
+                        id: 1678521451157,
+                        index: 1678521451157,
+                        children: [],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                    {
+                        label: "2",
+                        id: 1678521468353,
+                        index: 1678521468353,
+                        isHide: false,
+                        children: [
+                            {
+                                label: "7",
+                                isHide: false,
+                                id: 1678522567299,
+                                index: 1678522567299,
+                                children: [
+                                    {
+                                        label: "8",
+                                        isHide: false,
+                                        id: 1678522571576,
+                                        index: 1678522571576,
+                                        children: [],
+                                        align: "left",
+                                        warnEnable: false,
+                                        conceal: false,
+                                        warnThresholdOperator: "==",
+                                    },
+                                ],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
+                        ],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                    {
+                        label: "3",
+                        id: 1678521453653,
+                        index: 1678521453653,
+                        isHide: false,
+                        children: [
+                            {
+                                label: "4",
+                                isHide: false,
+                                id: 1678521456117,
+                                index: 1678521456117,
+                                children: [],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
+                        ],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                ],
+                isHide: false,
+                conceal: false,
+                id: 1678521444663,
+                warnEnable: false,
+                warnThresholdOperator: "==",
+            },
+            {
+                align: "left",
+                label: "城区名称",
+                prop: "280_1",
+                width: "",
+                type: "dim",
+                orderType: "",
+                clumType: "dimension",
+                index: 1,
+                children: [
+                    {
+                        label: "9",
+                        isHide: false,
+                        id: 1678522576689,
+                        index: 1678522576689,
+                        children: [
+                            {
+                                label: "5",
+                                isHide: false,
+                                id: 1678521458992,
+                                index: 1678521458992,
+                                children: [],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
+                        ],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                    {
+                        label: "6",
+                        id: 1678521461896,
+                        index: 1678521461896,
+                        isHide: false,
+                        children: [
+                            {
+                                label: "10",
+                                isHide: false,
+                                id: 1678522581923,
+                                index: 1678522581923,
+                                children: [
+                                    {
+                                        label: "11",
+                                        isHide: false,
+                                        id: 1678522579083,
+                                        index: 1678522579083,
+                                        children: [],
+                                        align: "left",
+                                        warnEnable: false,
+                                        conceal: false,
+                                        warnThresholdOperator: "==",
+                                    },
+                                ],
+                                align: "left",
+                                warnEnable: false,
+                                conceal: false,
+                                warnThresholdOperator: "==",
+                            },
+                        ],
+                        align: "left",
+                        warnEnable: false,
+                        conceal: false,
+                        warnThresholdOperator: "==",
+                    },
+                ],
+                isHide: false,
+                conceal: false,
+                id: 1678521444664,
+                warnEnable: false,
+                warnThresholdOperator: "==",
             },
         ];
 
         // 查询最深层级有多少级
         function getMaxlevel(treeData, type) {
-            let level = 0
-            let maxLevel = 0
+            let level = 0;
+            let maxLevel = 0;
             function loop(data, level) {
-                data.forEach(item => {
-                    item[type] = level
+                data.forEach((item) => {
+                    item[type] = level;
                     if (level > maxLevel) {
-                        maxLevel = level
+                        maxLevel = level;
                     }
-                    if ('children' in item) {
+                    if ("children" in item) {
                         if (item.children.length > 0) {
-                            loop(item.children, level + 1)
+                            loop(item.children, level + 1);
                         }
                     }
-                })
+                });
             }
-            loop(treeData, 1)
-            return maxLevel
+            loop(treeData, 1);
+            return maxLevel;
         }
-        let maxlevel = getMaxlevel(theadData, 'level')
-        console.log('原始数据theadData', theadData)
-        console.log('最大层级maxlevel', maxlevel)
+        let maxlevel = getMaxlevel(theadData, "level");
+        console.log("原始数据theadData", theadData);
+        console.log("最大层级maxlevel", maxlevel);
 
         //获取所有的叶子节点
         const findLeaf = (list) => {
-            let allLeaf = []
+            let allLeaf = [];
             const findf = (data) => {
-                data.forEach(item => {
+                data.forEach((item) => {
                     if (item.children && item.children.length > 0) {
-                        findf(item.children)
-                    } else allLeaf.push(item)
-                })
-            }
-            findf(list)
-            return allLeaf
-        }
-        let allDocument = findLeaf(theadData)
-        console.log('叶子节点allDocument', allDocument)
+                        findf(item.children);
+                    } else allLeaf.push(item);
+                });
+            };
+            findf(list);
+            return allLeaf;
+        };
+        let allDocument = findLeaf(theadData);
+        console.log("叶子节点allDocument", allDocument);
 
         //先分层级 有多少级
-        const formatArrB = arr => {
-            let initArr = []
+        const formatArrB = (arr) => {
+            let initArr = [];
             const format = (ar, i) => {
-                initArr[i] || (initArr[i] = [])
-                ar.forEach(val => {
-                    initArr[i].push(val)
+                initArr[i] || (initArr[i] = []);
+                ar.forEach((val) => {
+                    initArr[i].push(val);
                     if (Array.isArray(val.children) && val.children.length > 0) {
-                        format(val.children, i + 1) // 此处不能用i++或者++i，因为循环可能还未完成
+                        format(val.children, i + 1); // 此处不能用i++或者++i，因为循环可能还未完成
                     }
-                })
-                return initArr
-            }
-            return format(arr, 0)
-        }
-        let format = formatArrB(deepCloneMax(theadData))
-        console.log('先分层级format', format)
+                });
+                return initArr;
+            };
+            return format(arr, 0);
+        };
+        let format = formatArrB(deepCloneMax(theadData));
+        console.log("先分层级format", format);
 
-        let flatList = deepCloneMax(format)
-        flatList = flatList.flat()
-        console.log('flatList', flatList)
-        let cellsHand = []
+        let flatList = deepCloneMax(format);
+        flatList = flatList.flat();
+        console.log("flatList", flatList);
+        let cellsHand = [];
         const opreter = (list) => {
-            let cells = []
-            list.forEach(item => {
-                let itemArr = []
-                item.forEach((iv, ix) => {
-                    let itemLeaf = []//存储每一个层级元素的叶子节点
-                    let level = 0
-                    if (iv.children && iv.children.length > 0) {
-                        level = getMaxlevel(iv.children, 'findLevel')
-                        itemLeaf = findLeaf(iv.children)
-                    }
-                    level = level + 1
-                    for (let i = 0; i < level; i++) {
+            let cells = [];
+            list.forEach((item, index) => {
+                let itemArr = [];
+                if (index == list.length - 1) {
+                    //最后一级就直接添加
+                    allDocument.forEach((last) => {
                         itemArr.push({
-                            "v": iv.label,
-                            "expression": "",
-                            "properties": {}
-                        })
-                    }
-                    let itemlen = item.length
-                    let arrlen = itemArr.length
-                    let alllen = allDocument.length
-                    if (ix == itemlen - 1 && arrlen < alllen) {
-                        let gapNumber = alllen - arrlen //当前节点与最大长度节点相差多少个叶子-向上查找补差额
-                        let nowLevel = iv.level
-                        for (let j = 0; j < gapNumber; j++) {
-                            let findAdd = format[nowLevel - 2 - j] // 上一层级的所有节点
-                            let findNoChild = findAdd.find(f => !(f.children && f.children.length > 0))
-                            if (findNoChild) {
-                                itemArr.push({
-                                    "v": findNoChild.label,
-                                    "expression": "",
-                                    "properties": {}
-                                })
+                            v: last.label,
+                            expression: "",
+                            properties: {},
+                        });
+                    });
+                } else {
+                    item.forEach((iv, ix) => {
+                        let itemLeaf = []; //存储每一个层级元素的叶子节点
+                        let level = 0;
+                        if (iv.children && iv.children.length > 0) {
+                            level = getMaxlevel(iv.children, "findLevel");
+                            itemLeaf = findLeaf(iv.children);
+                        }
+                        level = level + 1;
+                        let leafLen = itemLeaf.length;
+                        if (leafLen == 0) {
+                            itemArr.push({
+                                v: iv.label,
+                                expression: "",
+                                properties: {},
+                            });
+                        }
+                        for (let i = 0; i < leafLen; i++) {
+                            itemArr.push({
+                                v: iv.label,
+                                expression: "",
+                                properties: {},
+                            });
+                        }
+                        let itemlen = item.length;
+                        let arrlen = itemArr.length;
+                        let alllen = allDocument.length;
+                        if (ix == itemlen - 1 && arrlen < alllen) {
+                            let gapNumber = alllen - arrlen; //当前节点与最大长度节点相差多少个叶子-向上查找补差额
+                            let nowLevel = iv.level;
+                            for (let j = 0; j < gapNumber; j++) {
+                                let findAdd = format[nowLevel - 2 - j]; // 上一层级的所有节点
+                                let notChild =
+                                    findAdd.filter(
+                                        (h) => !(h.children && h.children.length > 0)
+                                    ) || [];
+                                if (notChild.length >= 1) {
+                                    //当上一级有多个节点没有children 则把没有children的数据追加
+                                    notChild.forEach((n) => {
+                                        itemArr.push({
+                                            v: n.label,
+                                            expression: "",
+                                            properties: {},
+                                        });
+                                    });
+                                }
                             }
                         }
-                    }
-                    console.log(iv.label + '--itemLeaf', itemLeaf)
-                    console.log(iv.label + '--level', iv.level, level)
-                })
-                cells.push(itemArr)
-            })
-            console.log('cells9999999999', cells)
-        }
-        opreter(format)
 
-        // let handleArr = [
-        //     ['用户', '用户', '用户', '城区名称'],
-        //     ['1', '1', '4', '城区名称'],
-        //     ['2', '3', '4', '城区名称'],
-        // ]
-        // let overArr = []
+                        console.log(iv.label + "--itemLeaf", itemLeaf);
+                        console.log(iv.label + "--level", iv.level, level);
+                    });
+                }
+                cells.push(itemArr);
+            });
+            console.log("cells9999999999", cells);
+        };
+        opreter(format);
 
-        // const setArr = (list) => {
-        //     list.forEach((item, index) => {
-        //         overArr.push(item.label)
-        //     })
-        // }
+      // let handleArr = [
+      //     ['用户', '用户', '用户', '城区名称'],
+      //     ['1', '1', '4', '城区名称'],
+      //     ['2', '3', '4', '城区名称'],
+      // ]
+      // let overArr = []
 
-        // let level = 1
-        // const setLevel = (list) => {
-        //     let len = list.length
-        //     list.forEach((item, index) => {
-        //         item.level = level
-        //         if (item.children && item.children.length > 0) {
-        //             level = level + 1
-        //             setLevel(item.children)
-        //         }
-        //     })
-        // }
-        // setLevel(theadData)
-        // console.log(theadData)
+      // const setArr = (list) => {
+      //     list.forEach((item, index) => {
+      //         overArr.push(item.label)
+      //     })
+      // }
+
+      // let level = 1
+      // const setLevel = (list) => {
+      //     let len = list.length
+      //     list.forEach((item, index) => {
+      //         item.level = level
+      //         if (item.children && item.children.length > 0) {
+      //             level = level + 1
+      //             setLevel(item.children)
+      //         }
+      //     })
+      // }
+      // setLevel(theadData)
+      // console.log(theadData)
     </script>
 </body>
 

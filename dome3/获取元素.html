@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="table">
+        <div class="test">
+            <div class="header">我是表头</div>
+        </div>
+        测试
+    </div>
+    <script>
+        // let ids = document.getElementById('table')
+        let ids = document.querySelector('#table')
+        let headers = ids.querySelectorAll(".header");
+        console.log('ids', ids)
+        console.log('headers', headers[0])
+    </script>
+</body>
+
+</html>

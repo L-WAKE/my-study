@@ -944,7 +944,11 @@
             let sortArr = []
             arr.forEach(item => {
                 let parent = getAllParentNodes(theadData, item.id)
-                sortArr.push(parent)
+                let obj = {
+                    parent: parent,
+                    level: item.level
+                }
+                sortArr.push(obj)
             })
             console.log('sortArr888', sortArr)
         }
@@ -968,6 +972,7 @@
                     let leafLen = itemLeaf.length;
                     if (leafLen == 0) {
                         itemArr.push({
+                            level: iv.level,
                             v: iv.label,
                             id: iv.id,
                             expression: "",
@@ -976,6 +981,7 @@
                     }
                     for (let i = 0; i < leafLen; i++) {
                         itemArr.push({
+                            level: iv.level,
                             v: iv.label,
                             id: iv.id,
                             expression: "",
@@ -999,7 +1005,9 @@
                                 //当上一级有多个节点没有children 则把没有children的数据追加
                                 notChild.forEach((n) => {
                                     itemArr.push({
+                                        level: n.level,
                                         v: n.label,
+                                        id: n.id,
                                         expression: "",
                                         properties: {},
                                     });

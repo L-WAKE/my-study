@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // https://printjs.crabbly.com/
+
+        // import print from "print-js";
+
+        const printHandle = () => {
+            let chartInst = this.popSet.config;
+            let id = chartInst.id + "_content";
+            let html = document.querySelector("#" + id).innerHTML;
+            // 新建一个 DOM
+            let div = document.createElement("div");
+            let printDOMID = "printDOMElement";
+            div.id = printDOMID;
+            div.innerHTML = html;
+            div.style = "text-align:center;border:1px solid #999";
+
+            let htrs, btrs;
+            if (chartInst.type == "newTable") {
+                htrs = div.querySelectorAll(".vxe-table--header-wrapper thead tr");
+                btrs = div.querySelectorAll(".vxe-table--body-wrapper tbody tr");
+            } else {
+                // 提取第一个表格的内容 即表头
+                htrs = div.querySelectorAll(".el-table__header-wrapper thead tr");
+                btrs = div.querySelectorAll(".el-table__body-wrapper tbody tr");
+            }
+
+            // 创建一个打印表格
+            let table =
+                '<table border="1" cellspacing="0" cellpadding="1" style="width:100%;"><thead>';
+
+            htrs.forEach((tr) => {
+                table += "<tr>";
+                let ths = tr.querySelectorAll("th");
+                ths.forEach((th) => {
+                    let colspan = th.getAttribute("colspan");
+                    let rowspan = th.getAttribute("rowspan");
+                    let colId = th.getAttribute("colId");
+                    let val = th.innerText;
+                    if (colspan > 0 && rowspan > 0 && chartInst.type !== "newTable") {
+                        table += `<th colspan="${colspan}" rowspan="${rowspan}">${val}</th>`;
+                    } else if (!!colId && chartInst.type == "newTable") {
+                        colspan = colspan || 1;
+                        rowspan = rowspan || 1;
+                        table += `<th colspan="${colspan}" rowspan="${rowspan}">${val}</th>`;
+                    }
+                });
+                table += "</tr>";
+            });
+            table += "</thead><tbody>";
+
+            btrs.forEach((tr) => {
+                table += "<tr>";
+                let tds = tr.querySelectorAll("td");
+                tds.forEach((td) => {
+                    let colspan = td.getAttribute("colspan");
+                    let rowspan = td.getAttribute("rowspan");
+                    let val = td.innerText;
+                    table += `<td colspan="${colspan}" rowspan="${rowspan}">${val}</td>`;
+                });
+                table += "</tr>";
+            });
+            table += "</tbody></table>";
+
+            div.innerHTML = `<h1 style="font-size:16px;line-height:32px;">${chartInst.global.name}</h1>${table}`;
+
+            document.querySelector("body").appendChild(div);
+            console.log(div);
+            print({
+                printable: printDOMID,
+                type: "html",
+                scanStyles: true,
+                style:
+                    "body{width:100%;text-align:center;}table {border:1;width:100%;}table th{font-size:12px;font-weight:500}table td{font-size:12px;text-align:center;vertical-align:middle}", // 表格样式
+            });
+            document.querySelector("body").removeChild(div);
+        }
+    </script>
+</body>
+
+</html>

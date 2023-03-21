@@ -58,8 +58,25 @@
         }
         console.log('高级生成', getTrees())
 
+        const getTheTree = (ary2) => {
+            const loopTree = (father = []) => {
+                father.forEach(item => {
+                    let child = ary2.filter(v => item.id == v.parent_id)
+                    if (child && child.length > 0) {
+                        item.children = child
+                        loopTree(item.children, ary2)
+                    }
+                })
+                return father
+            }
+            let forefather = ary2.filter(v => !v.parent_id)
+            let treeList = loopTree(forefather)
+            return treeList
+        }
+        console.log(getTheTree(ary2))
 
-        function getAllTree(ary) {
+        /*
+          function getAllTree(ary) {
             const setTree = (parentArr, ary) => {
                 parentArr.forEach(item => {
                     let children = ary.filter(child => child.parent_id == item.id) || []
@@ -75,6 +92,7 @@
             return treeList
         }
         console.log('生成的树', getAllTree(ary2))
+        */
     </script>
 </body>
 

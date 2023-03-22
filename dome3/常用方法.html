@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 把数组最后一项移到第一项
+        function lastFirst(arr) {
+            return arr.push(arr.shift());
+        }
+
+        // 把数组的第一项放到最后一项
+        function firstLast(arr) {
+            return arr.unshift(arr.pop());
+        }
+
+        // 利用set数组去重
+        function uniqueArr(arr) {
+            return [...new Set(arr)]
+        }
+
+        // 获取随机颜色 -16进制
+        function getRandomColor() {
+            return `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
+        }
+
+        // 检测是否为空对象
+        function isEmpty(obj) {
+            return Reflect.ownKeys(obj).length === 0 && obj.constructor === Object;
+        }
+
+        let arr = [5, 8, 6, 8, 5, 4, 4, 5, 3]
+        // lastFirst(arr)
+        uniqueArr(arr)
+        console.log(arr)
+    </script>
+</body>
+
+</html>

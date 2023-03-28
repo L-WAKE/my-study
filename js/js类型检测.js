@@ -52,5 +52,12 @@ console.log(objHas.hasOwnProperty("lxw")); //false
     语法: Object.prototype.toString.call([value])
 */
 console.log("==================toString=============================");
-Object.prototype.toString.call(12); //[boject Number]
-Object.prototype.toString.call(true); //[boject Boolean]
+console.log(Object.prototype.toString.call(12)); //[object Number]
+console.log(Object.prototype.toString.call(true)); //[object Boolean]
+console.log(Object.prototype.toString.call(undefined)); //[object undefined]
+console.log(Object.prototype.toString.call({})); //[object Object]
+console.log(Object.prototype.toString.call([])); //[object Array]
+console.log(Object.prototype.toString.call(null)); //[object Null]
+console.log(Object.prototype.toString.call(NaN)); //[object Number]
+console.log(Object.prototype.toString.call(999999999n)); //[object BigInt]
+console.log(Object.prototype.toString.call(Symbol("name"))); //[object Symbol]

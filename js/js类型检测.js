@@ -52,12 +52,17 @@ console.log(objHas.hasOwnProperty("lxw")); //false
     语法: Object.prototype.toString.call([value])
 */
 console.log("==================toString=============================");
+console.log("基本类型");
 console.log(Object.prototype.toString.call(12)); //[object Number]
-console.log(Object.prototype.toString.call(true)); //[object Boolean]
-console.log(Object.prototype.toString.call(undefined)); //[object undefined]
-console.log(Object.prototype.toString.call({})); //[object Object]
-console.log(Object.prototype.toString.call([])); //[object Array]
-console.log(Object.prototype.toString.call(null)); //[object Null]
 console.log(Object.prototype.toString.call(NaN)); //[object Number]
-console.log(Object.prototype.toString.call(999999999n)); //[object BigInt]
+console.log(Object.prototype.toString.call("122")); //[object String]
+console.log(Object.prototype.toString.call(true)); //[object Boolean]
 console.log(Object.prototype.toString.call(Symbol("name"))); //[object Symbol]
+console.log(Object.prototype.toString.call(undefined)); //[object undefined]
+console.log(Object.prototype.toString.call(null)); //[object Null]
+console.log(Object.prototype.toString.call(999999999n)); //[object BigInt]
+
+console.log("引用类型");
+console.log(Object.prototype.toString.call(bCon)); //[object Function]
+console.log(Object.prototype.toString.call([])); //[object Array]
+console.log(Object.prototype.toString.call({})); //[object Object]

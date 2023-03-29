@@ -39,7 +39,7 @@ function ParentCall(name) {
   this.hobbies = ["sing", "dance", "rap"];
 }
 function ChildCall(name) {
-  ParentCall.call(this, name);
+  ParentCall.apply(this, [name]);
   this.age = 24;
 }
 const c1Call = new ChildCall("c1Call");

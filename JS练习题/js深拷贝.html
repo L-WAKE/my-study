@@ -44,7 +44,7 @@
             return objClone
         }
 
-        // 标准深度克隆
+        // 标准深度克隆 深拷贝
         function deepCloneMax(obj) {
             if ([null, undefined, NaN, false].includes(obj)) return obj
             if (typeof obj !== "object" && typeof obj !== "function") return obj

@@ -131,4 +131,4 @@ class ChildEs6 extends ParentEs6 {
 const c1Es6 = new ChildEs6("c1Es6");
 const c2Es6 = new ChildEs6("c2Es6");
 console.log(c1Es6 instanceof ChildEs6); // true
-console.log(c1Es6 instanceof ParentEs6); // true
+console.log(c2Es6 instanceof ParentEs6); // true

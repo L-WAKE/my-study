@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 垂直水平居中 -->
+    <div class="father">
+        <div class="child">我是子元素</div>
+    </div>
+</body>
+<style>
+    .father {
+        width: 500px;
+        height: 500px;
+        background: gray;
+
+        /* 第1种 flex/grid */
+        /* display: flex;
+        align-items: center;
+        justify-content: center; */
+
+        /* display: grid;
+        align-items: center;
+        justify-content: center; */
+
+        /* 第2种 定位居中 */
+        /* position: relative; */
+
+        /* 第3种 定位加transform 负值 */
+        position: relative;
+    }
+
+    .child {
+        width: 200px;
+        height: 200px;
+        background: #dadada;
+
+        /* 第2种 定位居中 */
+        /* position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto; */
+
+        /* 第3种 定位加transform 负值 */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+</html>

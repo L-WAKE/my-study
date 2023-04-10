@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    // 将虚拟DOM转换成实际的DOM.html
+    const vnode = {
+        tag: 'div',
+        attrs: {
+            id: 'app',
+            class: 'index'
+        },
+        children: [
+            {
+                tag: 'div',
+                attrs: { class: 'header' },
+                children: [
+                    { tag: 'span', content: 'headerspan1' }
+                ]
+            },
+            {
+                tag: 'div',
+                attrs: { class: 'content' },
+                children: [
+                    { tag: 'span', content: 'span1' },
+                    { tag: 'span', content: 'span2' },
+                    { tag: 'span', content: 'span3' }
+                ]
+            }
+        ]
+    }
+
+    const renderHtml = (vnode) => {
+        if (!vnode.tag) return
+        let dom = document.createElement(vnode.tag)
+        if (vnode.attrs) {
+            Object.keys(vnode.attrs).map(key => {
+                const value = vnode.attrs[key]
+                dom.setAttribute(key, value)
+            })
+        }
+        if (vnode.content) dom.innerHTML = vnode.content
+        if (vnode.children && vnode.children.length > 0) {
+            vnode.children.forEach(child => {
+                dom.appendChild(renderHtml(child))
+            })
+        }
+        return dom
+    }
+
+    document.body.appendChild(renderHtml(vnode))
+</script>
+
+</html>

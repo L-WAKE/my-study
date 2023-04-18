@@ -10,6 +10,8 @@
 
 <body>
     <script>
+        // ES6 数组扁平化去重排序
+
         let setArr = [[6, 2, 1], 2, 2, 5, 6, 4, 1, 4, [5, 4]]
         let hanldArr = Array.from(new Set(setArr.flat(Infinity).sort((a, b) => a - b)))
         // let flatArr = setArr.flat(Infinity)

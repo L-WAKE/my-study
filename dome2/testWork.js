@@ -6,3 +6,4 @@ self.onmessage = function (event) {
     }
     self.postMessage(num);
 }
+// testWork

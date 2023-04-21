@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <!-- vue中new的实例会控制这个元素中的所有内容,就是MVVM中的V -->
+    <div id="app">
+        <P>{{msg}}</P>
+    </div>
+
+    <script>
+      //创建一个vue的实例
+      //new出来的vm就是MVVM中的VM
+      var vm = new Vue({
+          el:'#app',//表示要控制哪个区域的实例
+          //这里的data就是MVVM中的M,保存每个页面的数据
+          data : { //data中存放的是el中要用到的数据
+            msg:'欢迎学习VUE'//通过VUE指令放数据到页面上，不用操作DOM
+          },
+          methods:{} //方法对象,对一些事件函数进行处理
+      })
+
+      // 在VM实例中，如果要访问data上的数据,或者要访问methods中的方法，必须带this
+    </script>
+</body>
+</html>

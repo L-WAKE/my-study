@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <button @click="msg='NO'">修改msg的内容</button>
+        <p id="p">{{msg}}</p>
+    </div>
+</body>
+<script>
+    var vm=new Vue({
+        el:'#app',
+        data:{
+            msg:'ok'
+        },
+        methods:{
+            show(){
+                console.log("执行了该方法");
+            }
+        },
+        beforeCreate(){ //1.创建前
+            // console.log(this.msg);
+            // this.show();
+            //在beforeCreate中，data中的数据和methods中的方法都还没有初始化，不能进行数据操作
+        },
+        created(){      //2.创建后  data中的数据和methods中的方法都已经初始化了，可以进行数据操作
+            // console.log(this.msg);
+            // this.show();
+        },
+        beforeMount(){  //3.载入前  模版已经在内存中完成了 但是并没有渲染到页面中去
+            // var x=document.getElementById("p");
+            // console.log("界面上的数据："+x.innerText);
+        },
+        mounted(){      //4.载入后  内存里的模版已经挂载到了页面中去，用户可以看到渲染好的页面了
+            var x=document.getElementById("p");
+            console.log("界面上的数据："+x.innerText);
+        },
+        beforeUpdate(){ //5.更新前   界面上的元素没有更新 而Data中的数据更新了
+            // var x=document.getElementById("p");
+            // console.log("界面上的数据："+x.innerText);
+            // console.log("data中的数据："+this.msg);
+        }, 
+        updated(){      //6.更新后    界面数据和Data中的数据已经保持一致了 都更新了
+            // var x=document.getElementById("p");
+            // console.log("界面上的数据："+x.innerText);
+            // console.log("data中的数据："+this.msg);
+        }
+
+             //7.销毁前    当执行beforeDestroy 时候vue实例就已经从运行阶段进入到了销毁阶段  但还没有真正执行销毁过程
+             //8.销毁后    当执行到destroyed 时候组件已经完全被销毁了 此时组件中的数据、方法、指令等都已经不可用了
+    })
+</script>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        .a{width: 100px;height: 100px; background: darksalmon;}
+        .b{border: 10px solid red;}
+
+    </style>
+    <script>
+        //addClass(class|fn)         添加类 多个类之间可以用空格隔开
+        //removeClass([class|fn])    删除类
+        //toggleClass(class|fn[,sw]) 切换类 有就删除 没有就添加
+        $(
+            function(){
+                $("#x").click(function(){
+                    $("div").addClass("a b");
+                })
+                $("#y").click(function(){
+                    $("div").removeClass("a b");
+                })
+                $("#z").click(function(){
+                    $("div").toggleClass("a b");
+                })
+            }
+        )
+    </script>
+</head>
+<body>
+    <button id="x">添加类</button>
+    <button id="y">删除类</button>
+    <button id="z">切换类</button><br>
+    <div></div>
+</body>
+</html>

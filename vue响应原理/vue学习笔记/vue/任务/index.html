@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>指标治理</title>
+    <link rel="stylesheet" href="../任务/css/index.css">
+    <script src="../任务/js/html2canvas.js"></script>
+    <script src="../任务/js/jspdf.debug.js"></script>
+    <script src="../任务/js/jquery-3.3.1.min.js"></script>
+</head>
+
+<body id="titBody">
+    <div class="box">
+        <div class="tu">
+            <img src="../任务/images/1.jpg">
+        </div>
+        <div class="pai">
+            <ul>
+                <li><img src="../任务/images/2.jpg"></li>
+                <li><img src="../任务/images/3.jpg"></li>
+                <li><img src="../任务/images/4.jpg"></li>
+            </ul>
+        </div>
+        <button id="btn" style="width: 100px;height: 50px;background: gray;margin-left: 400px;">下载PDF</button>
+        <br><br>
+        <div style="width: 500px;height:900px;background: pink;"></div>
+    </div>
+    <script>
+        //html文件转成pdf格式文件函数
+        var btn = document.getElementById("btn");
+        btn.onclick = function () {
+            btn.style.display = 'none';
+            html2canvas(document.body, {
+                onrendered: function (canvas) {
+                    //返回图片dataURL，参数：图片格式和清晰度(0-1)
+                    var pageData = canvas.toDataURL('image/jpeg', 1.0);
+
+                    //方向默认竖直，尺寸ponits，格式a4[595.28,841.89]
+                    var pdf = new jsPDF('', 'pt', 'a4');
+
+                    //addImage后两个参数控制添加图片的尺寸，此处将页面高度按照a4纸宽高比列进行压缩
+                    pdf.addImage(pageData, 'JPEG', 0, 0, 595.28, 592.28 / canvas.width * canvas.height);
+
+                    //保存
+                    pdf.save('stone.pdf');
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

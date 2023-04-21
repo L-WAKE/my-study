@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <script>
+        $(
+            function(){
+                $(".a").hover(function(){
+                    console.log("移入a");
+                },function(){
+                    console.log("移出a");
+                })
+            }
+        )
+    </script>
+</head>
+<body>
+    <div style="width: 200px;height: 200px;background: pink;" class="a">
+        <div style="width: 100px;height: 100px;background: gray;" class="b"></div>
+    </div>
+</body>
+</html>

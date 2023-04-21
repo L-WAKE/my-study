@@ -1,0 +1,7 @@
+1.VUE的基本框架结构
+2.v-show 和v-if的区别
+3.v-html、v-bind、v-on的使用
+4.v-for的几种用法
+5.v-model的操作
+6.简易计算器
+7.修饰符

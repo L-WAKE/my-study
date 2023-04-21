@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        .box>ul>li{
+            position: relative;
+            list-style: none;
+            float: left;
+        }
+        .box{
+            margin: 50px 100px;
+        }
+        .box>.tu>li{
+            display: none;
+        }
+        .an>li{
+            opacity: 0.7;
+            border-radius: 25px;
+            list-style: none;
+            float: left;
+            width: 25px;
+            height: 25px;
+            background:gray;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        .an{
+            position: absolute;
+            bottom: 80px;
+            right:600px;
+        }
+        .an>li:first-child{background: lawngreen;}
+    </style>
+    <script>
+        $(function(){
+            $(".an>li").click(function(){
+                //点击当前圆点会改变背景色
+                $(this).css("background","lawngreen")
+                var x=$(this).siblings(); //将不是当前元素的背景色设为灰色
+                x.css("background","gray");
+
+                //找到当前点击的索引并找到对应的图片将css设置为display:block
+                var y=$(this).index();
+                var im=$(".tu>li").eq(y);
+                //im.css("display","block") 
+                //im.show(500);
+                im.fadeIn(500); //淡入
+                im.siblings().css("display","none"); //将不是当前选中的元素隐藏
+            })
+            
+        })
+    </script>
+</head>
+<body>
+    <div class="box">
+        <ul class="tu">
+            <li style="display: block;"><img src="../图片/5.jpg" width="1200" height="550"></li>
+            <li><img src="../图片/2.jpg" width="1200" height="550"></li>
+            <li><img src="../图片/3.jpg" width="1200" height="550"></li>
+            <li><img src="../图片/4.jpg" width="1200" height="550"></li>
+            <li><img src="../图片/1.jpg" width="1200" height="550"></li>
+        </ul>
+        <ul class="an">
+            <li></li><li></li><li></li><li></li><li></li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="pic">
+            <img :src="now" />
+        </div>
+    </div>
+</body>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            pic: ["../图片/1.jpg", "../图片/2.jpg", "../图片/3.jpg", "../图片/4.jpg", "../图片/5.jpg"],
+            i: "0",
+            now: "../图片/1.jpg",
+        },
+        mounted() {
+            this.now = this.pic[0];
+            var _this = this;
+            setInterval(function () {
+                _this.i++;
+                _this.now = _this.pic[_this.i];
+                if (_this.i >= _this.pic.length - 1) {
+                    _this.i = 0;
+                }
+            }, 1000)
+        },
+        methods: {
+
+        }
+    })
+</script>
+
+</html>

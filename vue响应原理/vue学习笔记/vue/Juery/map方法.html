@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <script>
+        $(
+            function(){
+                var x=[1,2,3,6,81];//数组
+                var y={0:1,1:2,2:3,3:4,lenght:8};//伪数组
+
+                //原生map 不能输出对象
+                // x.map(function(value,index,array){
+                //     console.log(value,index,array);
+                // })
+
+                //jquery map能输出对象也能输出数组
+                //对象
+                // $.map(y,function(val,inde){
+                //     console.log(val,inde);
+                // })
+                //数组
+                var a=$.map(x,function(val,inde){
+                    console.log(val,inde);
+                })
+                console.log(a);//map默认返回的值是一个空数组
+            }
+        );
+    </script>
+</body>
+</html>

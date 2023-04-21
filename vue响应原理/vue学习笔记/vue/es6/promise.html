@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <script>
+        $(function(){
+            let p=new Promise(function(resolve,reject){
+                //异步代码
+                //resolve——成功，reject——失败
+                
+                $.ajax({
+                    url:'arr.txt',//https://9c5fdc3e-e3a8-4713-a44a-d12353a32330.mock.pstmn.io/pop
+                    dataType:'json',
+                    success(arr){       //成功时
+                        resolve(arr);
+                    },
+                    error(err){         //错误信息
+                        reject(err);
+                    }
+                });
+            });
+            p.then(function(arr){       //有结果时调用此方法
+                alert("成功！！"+arr);
+                console.log(arr);
+            },function(arr){
+                alert("失败！！"+arr);
+            });
+
+            // Promise.all([
+            //     $.ajax({url:'arr.txt',dataType:'json'}),
+            //     $.ajax({url:'json.txt',dataType:'json'})
+            // ]).then(function(results){
+            //     let [arr,json]=results;
+            //     alert("成功");
+            //     console.log(arr,json);
+            // },function(){
+            //     alert("失败");
+            // });
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

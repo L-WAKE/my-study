@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <script>
+        $(
+            function(){
+                var str="    liu    "
+                var st=$.trim(str);//$.trim去除字符串两边的空格
+                console.log("--"+str+"--");//未去除空格
+                console.log("--"+st+"--")//去除空格之后
+
+
+                var x=[1,2,3,6,81];//数组
+                var y={0:1,1:2,2:3,3:4,lenght:8};//伪数组
+
+                var res=$.isArray(x); //判断是否是一个真数组 只有两个返回值：true/false
+                console.log(res);
+            }
+        )
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <script>
+    // 1. attr (name|pro|key,val|fn)
+    // 作用:获取或者设置属性节点的值
+    // 可以传递一个参数，也可以传递两个参数
+    // 如果传递一个参数，代表获取属性节点的值
+    // 如果传递两个参数，代表设置属性节点的值
+
+    // 2.removeAttr(name) 会删除所有找到元素指定的属性节点
+
+        $(function(){
+        // 如果是获取:无论找到多少个元素，都只会返回第一个元素指定的属性节点的值
+        // var a=$("span").attr("class");
+        // console.log(a);
+        // 如果是设置:找到多少个元素就会设置多少个元素,如果设置的属性节点不存在，那么系统会自动新增       
+            // var b=$("span").attr("class","box");
+            // console.log(b);
+
+            // var c=$("span").attr("id","po");  //新增
+            // console.log(c);
+        
+        $("span").removeAttr("name class"); //也可以删除两个属性
+        })
+    </script>
+</head>
+<body>
+    <span class="s1" name="ls"></span>
+    <span class="s2" name="zs"></span>
+</body>
+</html>

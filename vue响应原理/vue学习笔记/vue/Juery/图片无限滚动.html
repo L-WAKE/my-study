@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        div{
+            width: 1200px;
+            height: 400px;
+            border: 1px solid pink;
+            overflow: hidden;
+            margin-top: 100px;
+            margin-left: 50px;
+            font-size: 0;
+        }
+        ul{
+            list-style: none;
+            width: 3600px;
+            height: 400px;
+            background: black;
+        }
+        ul>li{float: left;}
+    </style>
+    <script>
+        $(function(){
+            var x=0;//定义偏移位
+            var ti;
+            function auto(){
+                ti=setInterval(function(){  //重复执行延时间隔内的事情
+                    x -= 10;
+                    if(x==-2400){
+                        x=0;
+                    }
+                    $("ul").css("marginLeft",x);//向左移动10像素
+                },20)
+            }
+            auto();
+            $("li").hover(function(){  //鼠标移上li触发事件
+                clearInterval(ti);     //清除计时器
+                $(this).siblings().fadeTo(100,0.5) //选中非当前的Li 添加蒙版
+                $(this).stop().fadeTo(100,1)//将当前Li去除蒙版
+            },function(){
+                auto();
+                $("li").stop().fadeTo(100,1); //去除所有的蒙版
+            });
+        })
+    </script>
+</head>
+<body>
+    <div>
+        <ul>
+            <li><img src="../图片/1.jpg" width="600px" height="400px"></li>
+            <li><img src="../图片/2.jpg" width="600px" height="400px"></li>
+            <li><img src="../图片/3.jpg" width="600px" height="400px"></li>
+            <li><img src="../图片/4.jpg" width="600px" height="400px"></li>
+            <li><img src="../图片/1.jpg" width="600px" height="400px"></li>
+            <li><img src="../图片/2.jpg" width="600px" height="400px"></li>
+        </ul>
+    </div>
+</body>
+</html>

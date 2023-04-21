@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <script>
+        $(
+            function(){
+                var w=$("#tu").width();
+                var h=$("#tu").height();
+                // console.log(w,h);
+                
+                $("#big").click(function(){
+                    $("#tu").css('width',w+120);
+                    $("#tu").css('height',h+120);
+                })
+                $("#sm").click(function(){
+                    $("#tu").css('width',w-50);
+                    $("#tu").css('height',h-50);
+                })
+        })
+    </script>
+    <svg width="240px" height="240px" style="border:1px solid red">
+        <!-- <rect x="20" y="20" width="200" height="200" fill="pink" id="tu"> -->
+         <image xlink:href="../图片/1.jpg" width="120px" height="120px" id="tu">
+    </svg>
+    <!-- <img src="../图片/1.jpg" width="500px" height="300px" id="tu"><br> -->
+    <input type="button" value="放大" id="big">
+    <input type="button" value="缩小"id="sm">
+</body>
+</html>

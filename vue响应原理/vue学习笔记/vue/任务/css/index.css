@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.box {
+    width: 1100px;
+    height: 600px;
+}
+.tu>img{
+    position: relative;
+    width: 1100px;
+    height: 600px;
+}
+.pai{
+    position: absolute;
+    font-size: 0;
+    top: 200px;
+    left: 100px;
+}
+.pai>ul>li{
+    list-style: none;
+    margin-left: 20px;
+    float: left;
+}
+.pai>ul>li>img{
+    border-radius: 18px;
+    width: 200px;
+    height: 300px;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+    <style>
+        .in{
+            height: 150px;
+            background:pink;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 使用.stop阻止冒泡 -->
+        <!-- <div class="in" v-on:click="di">
+            <input type="button" value="蹉他" @click.stop="put">
+        </div> -->
+        <!-- .prevent 阻止默认行为 .once事件只触发一次-->
+        <!-- <a href="http://www.baidu.com" @click.prevent="dian">百度</a> -->
+        <a href="http://www.baidu.com" @click.prevent="dian">百度</a>
+    </div>
+    <script>
+        var vm= new Vue({
+            el:'#app',
+            data:{},
+            methods:{
+                di(){
+                    console.log('点击了DIV')
+                },
+                put(){
+                    console.log('点击了INPUT')
+                },
+                dian(){
+                    console.log("点击了这个A标签");
+                }
+            }
+        });
+    </script>
+</body>
+</html>

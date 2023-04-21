@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0; padding: 0;}
+        .one{
+            width: 100px;
+            height: 100px;
+            background: pink;
+        }
+        .t{
+            width: 500px;
+            height: 10px;
+            background: blue;
+        }
+    </style>
+    <script>
+        $(function(){
+            $("button").eq(0).click(function(){
+                $(".one").animate(
+                    {width:500},1000).delay(1000).animate({height:500},1000)//执行宽度增加至500等两秒后继续执行高度增至500
+            })
+            $("button").eq(1).click(function(){
+                $("div").stop(true);//立即停止当前和后继的动画
+            })
+        })
+    </script>
+</head>
+<body>
+    <button>开始动画</button>
+    <button>停止动画</button>
+    <div class="one"></div>
+    <div class="t"></div>
+</body>
+</html>

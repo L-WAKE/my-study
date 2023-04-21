@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        .ad{
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            display: none;
+        }
+        .ad>span{
+            display:inline-block;
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+    <script>
+        $(function(){
+            //关闭广告
+            $("span").click(function(){
+                $(".ad").remove();
+            })
+            //广告动画 滑出、淡淡消失、再淡出
+            $(".ad").stop().slideDown(1000).fadeOut(500).fadeIn(1000);
+        })
+    </script>
+</head>
+<body>
+<div class="ad">
+    <img src="../图片/1.png">
+    <span></span>
+</div>
+</body>
+</html>

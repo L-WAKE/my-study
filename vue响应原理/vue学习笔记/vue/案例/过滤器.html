@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>{{ms|mg}}</p>
+    </div>
+    <script>
+        //定义一个全局过滤器 名字叫mg
+        Vue.filter('mg',function(ms){//filter查找符合条件的元素
+            return ms.replace(/靓仔/g,'大哥')
+        })
+        var vm =new Vue({
+            el:"#app",
+            data:{
+                ms:"别人都叫我靓仔，但我不想当靓仔，当靓仔太烦恼了"
+            },
+            methods:{}
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../lib/layui/css/layui.css">
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <div id="app">                
+        <div style="background:pink; width: 100%;height: 40px;"><h2>添加品牌</h2></div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">输入ID:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" v-model="ID">
+            </div>
+            <label class="layui-form-label">输入name:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="no" class="layui-input" v-model="name" @keyup.enter="add()">
+            </div>
+            <button type="button" class="layui-btn layui-btn-normal" @click="add()">添加</button>
+        </div>
+        <label class="layui-form-label">关键字查询:</label>
+        <div class="layui-input-inline">
+            <input type="text" name="username" lay-verify="required" placeholder="请输入" 
+            autocomplete="no" class="layui-input" v-model="key" id="cha">
+        </div>
+
+        <table class="layui-table">
+            <colgroup>
+                <col width="300">
+                <col width="300">
+                <col width="400">
+                <col width="300">
+            </colgroup>
+            <!-- 表头 -->
+            <thead>
+                <tr>
+                <th>ID</th>
+                <th>name</th>
+                <th>TIME</th>
+                <th>操作</th>
+                </tr> 
+            </thead>
+            <!-- 表的内容 -->
+            <tbody>  
+                <tr v-for="itm in ech(key)" :key="itm.ID">
+                    <td>{{itm.ID}}</td>
+                    <td v-text="itm.name"></td>
+                    <!-- 时间过滤器 -->
+                    <td>{{itm.TIME|name1}}</td>  
+                    <td><a href="" @click.prevent="del(itm.ID)">删除</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        //全局过滤器 格式化时间
+        Vue.filter('name1',function(dastr){
+            //根据特定字符串 得到特定的时间  yyyy-mm-dd
+            var dt=new Date(dastr);
+            var y=dt.getFullYear();
+            var m=dt.getMonth()+1;
+            var d=dt.getDate();
+            return y+'-'+m+"-"+d;
+        });
+
+        var vm=new Vue({
+            el:"#app",
+            data:{
+                key:"",
+                ID:"",
+                name:"",
+                list:[
+                    {ID:1,name:"刘备",TIME:new Date(),sex:"男"},
+                    {ID:2,name:"关羽",TIME:new Date(),sex:"男"},
+                    {ID:3,name:"张飞",TIME:new Date(),sex:"男"}
+                ]
+            },
+            methods:{
+                add(){//添加对象到list中
+                    if(this.ID=="" || this.name==""){alert("ID和name不允许为空！请从新输入")}
+                    else{
+                        var people= {ID:this.ID,name:this.name,TIME:new Date()}
+                        this.list.push(people)
+                        this.ID=this.name=""
+                    }
+                },
+                del(ID){//根据id删除数据
+                    //some方法
+                    // this.list.some((itm,i)=>{
+                    //     if(itm.ID==ID){
+                    //         this.list.splice(i,1)
+                    //         return true
+                    //     }
+                    // })
+                    //findindex方法
+                    var index=this.list.findIndex(itm=>{
+                        if(itm.ID==ID){
+                            return true;
+                        }
+                    })
+                    this.list.splice(index,1)
+                },
+                ech(key){//根据关键字进行数据搜索
+                    var list1=[]//用于存放查询到的数据
+                    this.list.forEach(itm=>{
+                        if(itm.name.indexOf(key)!=-1){//如果在name中包含key就添加到新数组中
+                            list1.push(itm)
+                        }
+                    })
+                    return list1
+                }
+            }
+        })
+        document.getElementById("cha").focus();
+    </script>
+</body>
+</html>

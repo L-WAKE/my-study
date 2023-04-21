@@ -1,0 +1,391 @@
+﻿过滤器：
+
+// 过滤方法
+    items: function() {
+      var labelCnsNm = this.labelCnsNm;
+      if (labelCnsNm) {
+    不区分大小写处理
+    var reg = new RegExp(labelCnsNm, "ig");
+    return this.content.filter(function(e) {
+    匹配所有字段
+    return Object.keys(e).some(function(key) {
+      return e[key].match(reg);
+    });
+    匹配某个字段
+          return e.labelCnsNm.match(reg);
+        });
+      }
+      return this.content;
+    },
+
+
+
+
+
+
+----3.技术如何选择?
+前端必定有的技术包含CSS/HTML/JS。如果为了能更快速更美观的完成系统的前端页面可以使用前端框架、包括了bootstrap、foundnation等
+服务器端技术选择：JAVA/PHP/PYTHON/ASP等
+每个技术都有其优势与缺点 新手上手的话可以选择PHP或者JAVA
+JAVA拥有大量的文档资源可以供我们查询、PHP上手简单可以快速开发一个完整的系统
+----4.设计并完成一个项目的流程？
+1.整理系统功能，绘制流程图
+2.根据功能设计数据库
+3.编写前端页面
+4.将前端页面与数据库结合
+5.测试系统功能，完善系统功能不健全部分。
+
+引入依赖
+npm install
+
+6.引入less
+
+npm install less less-loader
+
+
+1、安装node.js，安装完node.js之后，npm也会自动安装
+
+查询是否安装成功的命令：
+
+node -v
+
+npm -v
+
+2、全局安装脚手架工具vue-cli，命令如下：
+
+npm install --global vue-cli
+
+
+3、vue项目初始化命令如下，若没有安装webpack，则先安装webpack
+
+npm install -g webpack
+
+vue init webpack myVue
+
+注：安装过程 中有个选项（Use ESLint to line your code ?选择 No ）
+
+4、进入到myVue目录下，使用npm install 安装package.json包中的依赖
+
+命令如下：
+
+cd myVue
+
+npm install
+5、运行项目：
+
+npm run dev在浏览器上输入：localhost:8080，将会出现下面的vue初始页面：
+
+6、结束项目运行：
+
+ctrl+v，选择Y即可停止项目的运行
+
+
+vue项目目录说明
+build：项目构建(webpack)相关代码
+
+config：配置目录，包括端口号等
+
+node_modules：npm加载的项目依赖块
+
+src：这里是我们要开发的目录，基本上要做的事情都在这个目录里。里面包含了几个目录及文件：
+
+assets: 放置一些图片，如logo等
+
+components：该目录里存放的我们的开发文件组件，主要的开发文件都存放在这里了
+
+App.vue：项目入口文件
+
+main.js：项目的核心文件
+
+router：路由配置目录
+
+static：放置一些静态资源文件
+
+test：初始测试目录，可删除
+
+.xxxx文件：这些是一些配置文件，包括语法配置，git配置等
+
+index.html：首页入口文件
+
+package.json：项目配置文件
+
+README.md：项目的说明文档，markdown 格式
+三、vue项目启动流程
+1、在执行npm run dev的时候，会去在当前文件夹下的项目中找package.json文件,启动开发服务器，默认端口是8080；
+2、找到src的main.js文件，在该文件中new Vue的实例，要加载的模板内容App；
+3、App是src目录下的App.vue结尾的文件；
+4、在App.vue所对应的模板当中，有一个router-view在src目录下有一个router文件夹，该文件夹有个index.js文件，该文件是配置路由词典，指定了路由地址是空，加载HelloWorld组件
+
+四、Vue的组件的使用
+1、在components文件夹下创建.vue结尾的文件
+
+例如在：src/components/public/目录下新建header.vue文件
+
+2、在路由配置文件src/router/index.js中引入组件并配置组件路由
+
+2.1、引入组件
+import Header from '@/components/public/header'
+2.2、配置组件路由
+
+{
+
+path: '/header',
+
+name: 'header',
+
+component: Header
+
+}
+3、运行项目：npm run dev
+
+4、在浏览器中输入：localhost:8080/header ,显示如下页面：
+
+
+
+==============Element UI
+
+使用 npm 的方式安装，它能更好地和 webpack 打包工具配合使用。
+npm i element-ui -S
+引入 Element
+完整引入在 main.js 中写入以下内容：
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import App from './App.vue';
+
+Vue.use(ElementUI);
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});需要注意的是，样式文件需要单独引入。
+按需引入借助 babel-plugin-component，我们可以只引入需要的组件，以达到减小项目体积的目的。
+首先，安装 babel-plugin-component：npm install babel-plugin-component -D
+然后，将 .babelrc 修改为：
+{
+  "presets": [["es2015", { "modules": false }]],
+  "plugins": [
+    [
+      "component",
+      {
+        "libraryName": "element-ui",
+        "styleLibraryName": "theme-chalk"
+      }
+    ]
+  ]
+}
+接下来，如果你只希望引入部分组件，比如 Button 和 Select，那么需要在 main.js 中写入以下内容：import Vue from 'vue';
+import { Button, Select } from 'element-ui';
+import App from './App.vue';
+
+Vue.component(Button.name, Button);
+Vue.component(Select.name, Select);
+/* 或写为
+ * Vue.use(Button)
+ * Vue.use(Select)
+ */
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
+
+全局配置
+
+在引入 Element 时，可以传入一个全局配置对象。该对象目前支持 size 与 zIndex 字段。size 用于改变组件的默认尺寸，zIndex 设置弹框的初始 z-index（默认值：2000）。按照引入 Element 的方式，具体操作如下：
+完整引入 Element：
+import Vue from 'vue';
+import Element from 'element-ui';
+Vue.use(Element, { size: 'small', zIndex: 3000 });
+
+按需引入 Element：
+import Vue from 'vue';
+import { Button } from 'element-ui';
+
+Vue.prototype.$ELEMENT = { size: 'small', zIndex: 3000 };
+Vue.use(Button);
+按照以上设置，项目中所有拥有 size 属性的组件的默认尺寸均为 'small'，弹框的初始 z-index 为 3000。
+
+
+浮动元素会生成一个块级框，而不论它本身是何种元素。如果浮动非替换元素，则要指定一个明确的宽度；否则，它们会尽可能地窄。
+
+
+AJAX 是一种用于创建快速动态网页的技术。
+
+通过在后台与服务器进行少量数据交换，AJAX 可以使网页实现异步更新。这意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。
+
+传统的网页（不使用 AJAX）如果需要更新内容，必需重载整个网页面。
+
+
+
+
+
+
+
+
+
+完整组件列表和引入方式（完整组件列表以 components.json 为准）
+import Vue from 'vue';
+import {
+  Pagination,
+  Dialog,
+  Autocomplete,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Menu,
+  Submenu,
+  MenuItem,
+  MenuItemGroup,
+  Input,
+  InputNumber,
+  Radio,
+  RadioGroup,
+  RadioButton,
+  Checkbox,
+  CheckboxButton,
+  CheckboxGroup,
+  Switch,
+  Select,
+  Option,
+  OptionGroup,
+  Button,
+  ButtonGroup,
+  Table,
+  TableColumn,
+  DatePicker,
+  TimeSelect,
+  TimePicker,
+  Popover,
+  Tooltip,
+  Breadcrumb,
+  BreadcrumbItem,
+  Form,
+  FormItem,
+  Tabs,
+  TabPane,
+  Tag,
+  Tree,
+  Alert,
+  Slider,
+  Icon,
+  Row,
+  Col,
+  Upload,
+  Progress,
+  Spinner,
+  Badge,
+  Card,
+  Rate,
+  Steps,
+  Step,
+  Carousel,
+  CarouselItem,
+  Collapse,
+  CollapseItem,
+  Cascader,
+  ColorPicker,
+  Transfer,
+  Container,
+  Header,
+  Aside,
+  Main,
+  Footer,
+  Timeline,
+  TimelineItem,
+  Link,
+  Divider,
+  Image,
+  Calendar,
+  Backtop,
+  PageHeader,
+  CascaderPanel,
+  Loading,
+  MessageBox,
+  Message,
+  Notification
+} from 'element-ui';
+
+Vue.use(Pagination);
+Vue.use(Dialog);
+Vue.use(Autocomplete);
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(Menu);
+Vue.use(Submenu);
+Vue.use(MenuItem);
+Vue.use(MenuItemGroup);
+Vue.use(Input);
+Vue.use(InputNumber);
+Vue.use(Radio);
+Vue.use(RadioGroup);
+Vue.use(RadioButton);
+Vue.use(Checkbox);
+Vue.use(CheckboxButton);
+Vue.use(CheckboxGroup);
+Vue.use(Switch);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(OptionGroup);
+Vue.use(Button);
+Vue.use(ButtonGroup);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(DatePicker);
+Vue.use(TimeSelect);
+Vue.use(TimePicker);
+Vue.use(Popover);
+Vue.use(Tooltip);
+Vue.use(Breadcrumb);
+Vue.use(BreadcrumbItem);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Tabs);
+Vue.use(TabPane);
+Vue.use(Tag);
+Vue.use(Tree);
+Vue.use(Alert);
+Vue.use(Slider);
+Vue.use(Icon);
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(Upload);
+Vue.use(Progress);
+Vue.use(Spinner);
+Vue.use(Badge);
+Vue.use(Card);
+Vue.use(Rate);
+Vue.use(Steps);
+Vue.use(Step);
+Vue.use(Carousel);
+Vue.use(CarouselItem);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
+Vue.use(Cascader);
+Vue.use(ColorPicker);
+Vue.use(Transfer);
+Vue.use(Container);
+Vue.use(Header);
+Vue.use(Aside);
+Vue.use(Main);
+Vue.use(Footer);
+Vue.use(Timeline);
+Vue.use(TimelineItem);
+Vue.use(Link);
+Vue.use(Divider);
+Vue.use(Image);
+Vue.use(Calendar);
+Vue.use(Backtop);
+Vue.use(PageHeader);
+Vue.use(CascaderPanel);
+
+Vue.use(Loading.directive);
+
+Vue.prototype.$loading = Loading.service;
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
+Vue.prototype.$notify = Notification;
+Vue.prototype.$message = Message;

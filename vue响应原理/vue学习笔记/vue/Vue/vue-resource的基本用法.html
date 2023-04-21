@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+    <script src="../lib/vue-resource.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="get">get请求</button>
+        <button @click="pop">post请求</button>
+    </div>
+</body>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+
+        },
+        methods: {
+            get() {
+                this.$http.get('https://9c5fdc3e-e3a8-4713-a44a-d12353a32330.mock.pstmn.io/pop').then((
+                    val) => {
+                        console.log("请求成功！");
+                        console.log(val.data); //获取到的数据data
+                    }, (val) => {
+                        console.log("请求失败");
+                    })
+            },
+            pop() {
+                this.$http.post('http://vue.studyit.io/api/post', {}, {
+                        // emulateJSON: true
+                    })
+                    .then((val) => {
+                        console.log("请求成功！");
+                        console.log(val.body); //获取到的数据data
+                    }, (val) => {
+                        console.log("请求失败");
+                    })
+            }
+        }
+    })
+</script>
+
+</html>

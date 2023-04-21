@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <script>
+        $(function(){
+            function tdate(){
+                var date=new Date();
+                var a =[date.getFullYear()+"-",
+                date.getMonth()+1+"-",
+                date.getDate()+" ",
+                date.getHours()+":",
+                date.getMinutes()+":",
+                date.getSeconds()];
+                return a.join("");
+            }
+            $("button").click(function(){
+                $("span").html(tdate());
+            })
+        })
+    </script>
+</head>
+<body>
+    <button>显示当前日期</button>
+    <span id="sp"></span>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>{{msg}}</p>
+        <!-- v-text会覆盖原本元素 -->
+        <h4 v-text="msg">sdfsdf</h4>
+        <!-- v-html会把data中的内容替换，还会变成msg2有的标签 -->
+        <div v-html="msg2"></div>
+        <!-- v-bind是vue用于绑定data属性的指令 也把v-bind可以直接写成一个:-->
+        <input type="button" value="按钮" :title="my">
+        <!-- v-on是事件绑定机制 缩写是@ -->
+        <input type="button" value="点击" @click="show">
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'#app',
+            data:{
+                msg:'123',
+                msg2:'<h1>我是一个H</h1>',
+                my:'自己定义的title'
+            },
+            methods:{//定义所有可用的方法
+                show(){
+                    alert("Nihao");
+                }
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <mycom @fun="show"></mycom>
+    </div>
+
+    <template id="tem">
+        <div>
+            <h3>这是子组件---{{sonmsg.name}}今年{{sonmsg.age}}岁了</h3>
+            <input type="button" value="子按钮点击触发父组件传递过来的方法" @click="myclick">
+        </div>
+    </template>
+</body>
+<script>
+    var com={
+        template:"#tem",
+        data(){
+            return{
+                sonmsg:{
+                    name:'大头爸爸',age:22
+                }
+            }
+        },
+        methods:{
+            myclick(){
+                this.$emit('fun',this.sonmsg)
+            }
+        }
+    }
+
+    var vm=new Vue({
+        el:"#app",
+        data:{
+            datason:null
+        },
+        methods:{
+            show(data){
+                // console.log("调用了父组件的show方法并传了两个参数"+data+data2);
+                // console.log(data)
+                this.datason=data;
+                console.log(this.datason.name+"今年"+this.datason.age+"岁了");
+            }
+        },
+        components:{
+            mycom:com
+        }
+    })
+</script>
+</html>

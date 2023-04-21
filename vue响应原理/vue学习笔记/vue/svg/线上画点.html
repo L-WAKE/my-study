@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <?xml version="1.0" encoding="utf-8" ?>
+    <svg id="d" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+        style="border: 1px solid red;">
+        <script type="text/javascript" xlink:href="C:/Users/admin/Desktop/实训/vue学习笔记/vue/lib/svg.js"></script>
+        <script type="text/javascript">
+            window.onload = function () {
+                var zhi=null;
+                var d = document.getElementById("d");
+                var draw = SVG('d').size(500, 500);
+                var c = document.getElementById("c");
+                window.onkeydown=function(e){
+                    zhi=e.keyCode;
+                }
+                window.onkeyup=function(e){
+                    zhi=null;
+                }
+                c.onclick=function (e) {
+                    if(zhi===86){
+                        draw.each((i,child)=>{
+                          var ch=child[i]
+                            if(ch.type=="circle"){
+                                ch.fill({ color: 'blue' })
+                            }
+                        })
+                        zhi=0;
+                        c.style="stroke:blue;stroke-width:4";
+                        var m=e.clientX;
+                        var n=e.clientY;
+                        var rect = draw.circle(16).fill('blue').move(m-8, n-8);
+                        rect.click(function(e){
+                            var a=e.clientX;
+                            var b=e.clientY;
+                            alert("坐标为："+a+","+b);
+                        })
+                    }else{
+                        var x=e.clientX;
+                        var y=e.clientY;
+                        var rect = draw.circle(16).fill('#f06').move(x-8, y-8);
+                        rect.click(function(e){
+                            var a=e.clientX;
+                            var b=e.clientY;
+                            alert("坐标为：("+a+", "+b+")");
+                        })
+                    }
+                }
+   
+                
+            }
+        </script>
+        <line id="c" x1="20" y1="200" x2="480" y2="200" style="stroke:pink;stroke-width:4" />
+    </svg>
+</head>
+
+<body>
+</body>
+
+</html>

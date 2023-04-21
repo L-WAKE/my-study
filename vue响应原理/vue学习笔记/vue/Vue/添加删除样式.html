@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <ul class="list">
+            <li v-for="(item,index) in liList" v-on:mouseenter="addClass(index)" v-bind:class="{ classred:index==current}">
+                {{item.title}}</li>
+        </ul>
+    </div>
+</body>
+<script>
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            name: '成步堂',
+            current: 5,
+            liList: [
+                { title: '哈哈' },
+                { title: '阿昂' },
+                { title: '呜呜' },
+                { title: '来啦' }
+            ]
+        },
+        methods: {
+            addClass: function (index) {
+                this.current = index;
+            }
+        }
+    })
+</script>
+<style type="text/css">
+    .classred {
+        color: red;
+    }
+</style>
+
+</html>

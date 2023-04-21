@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>SVG使用鼠标点击绘制折线效果</title>
+	</head>
+	<body>
+		<div class="div1">
+			<svg id="svg1" xmlns="http://www.w3.org/2000/svg" width=500 height=500 style="border: 1px solid red;">
+				<circle id="a" r="10" cx="100" cy="100" style="fill: red; stroke-width: 2" />
+				<circle id="b" r="10" cx="450" cy="100" style="fill: red; stroke-width: 2" />
+				<!-- <line x1="0" y1="0" x2="300" y2="300" style="stroke:rgb(99,99,99);stroke-width:2"/> -->
+			</svg>
+		</div>
+		<script>
+			window.onload = function() {
+				var ming = 'http://www.w3.org/2000/svg';
+				var oSvg = document.getElementById('svg1');
+				var a=document.getElementById("a");
+
+				var oPolyLine = null;
+				var pointsNum = '';
+
+				function createTag(tagName, tagAttr) { //画线
+					let tag = document.createElementNS(ming, tagName);
+					for (var attr in tagAttr) {
+						tag.setAttribute(attr, tagAttr[attr]);
+					}
+					return tag;
+				}
+				var obj = document.querySelectorAll('.div1')[0];
+				a.onmousedown = function(ev) {
+					console.log("点击了");
+					if (!oPolyLine) {
+						oPolyLine = createTag('line', {
+							'x1':'100',
+							'y1':'100',
+							'x2':'450',
+							'y2':'100',
+							'stroke': 'gray',
+							'stroke-width': '2'
+						});
+					}
+					oSvg.appendChild(oPolyLine); //画线
+					var x = ev.clientX - obj.offsetLeft;
+					var y = ev.clientY - obj.offsetTop;
+					if (pointsNum == '') {
+						pointsNum = x + ',' + y;
+					} else {
+						pointsNum += ',' + x + ',' + y;
+					}
+					oPolyLine.setAttribute('points', pointsNum);
+				}
+			}
+		</script>
+	</body>
+</html>

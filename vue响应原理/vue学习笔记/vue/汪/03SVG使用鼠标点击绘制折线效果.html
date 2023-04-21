@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- <meta name="author" content="http://www.softwhy.com/" /> -->
+		<title>SVG使用鼠标点击绘制折线效果</title>
+	</head>
+	<body>
+		<div class="div1">
+			<svg id="svg1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>
+		</div>
+		<script>
+			window.onload = function() {
+				var ming = 'http://www.w3.org/2000/svg';
+				var oSvg = document.getElementById('svg1');
+
+				var oPolyLine = null;
+				var pointsNum = '';
+
+				function createTag(tagName, tagAttr) {
+					let tag = document.createElementNS(ming, tagName); //创建一个具有指定的命名空间URI和限定名称的元素。
+					for (var attr in tagAttr) {
+						//for in 用来循环遍历对象中的键值对的（continue和break同样适用---》优先循环数学属性名（从小到大）
+						tag.setAttribute(attr, tagAttr[attr]);
+					}
+					return tag;
+				}
+				var obj = document.querySelectorAll('.div1')[0];
+
+
+				// obj.appendChild(createTag('svg', {
+				// 	'xmlns': ming
+				// }));
+				//鼠标点击画布时的操作
+				oSvg.onmousedown = function(ev) {
+					if (!oPolyLine) {
+						oPolyLine = createTag('polyline', {
+							'fill': 'none',
+							'stroke': 'red',
+							'stroke-width': '2'
+						});
+						oSvg.appendChild(oPolyLine); //画线
+					}
+					var x = ev.clientX - obj.offsetLeft;
+					var y = ev.clientY - obj.offsetTop;
+
+					if (pointsNum == '') {
+						pointsNum = x + ',' + y;
+					} else {
+						pointsNum += ',' + x + ',' + y;
+					}
+
+					oPolyLine.setAttribute('points', pointsNum);
+					var oCircle = createTag('circle', {
+						'cx': x,
+						'cy': y,
+						'r': '5',
+						'fill': 'white',
+						'stroke': 'red',
+						'stroke-width': 3
+					});
+					oSvg.appendChild(oCircle); //画圆
+
+					if (ev.button === 2) {
+						oSvg.onmousemove = null;
+						//oncontextmenu当用户在 ‘oSvg’元素上右击鼠标时执行
+						oSvg.oncontextmenu = function() {
+							oSvg.onmousemove = null;
+							return false;
+						};
+					} else {
+						//onmousemove在鼠标指针移出指定的元素后执行
+						oSvg.onmousemove = function(ev) {
+							var ev = ev || window.event;
+
+							if (oPolyLine) {
+								var x = ev.clientX - obj.offsetLeft;
+								var y = ev.clientY - obj.offsetTop;
+								oPolyLine.setAttribute('points', pointsNum + ',' + x + ',' + y);
+							}
+						};
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

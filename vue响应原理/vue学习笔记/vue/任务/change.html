@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>change</title>
+    <link rel="stylesheet" href="../任务/css/index.css">
+    <script src="../任务/js/html2canvas.js"></script>
+    <script src="../任务/js/jspdf.debug.js"></script>
+    <script src="../任务/js/jquery-3.3.1.min.js"></script>
+</head>
+
+<body id="titBody">
+    <div class="box">
+        <div class="tu">
+            <img src="../任务/images/1.jpg">
+        </div>
+        <div class="pai">
+            <ul>
+                <li><img src="../任务/images/2.jpg"></li>
+                <li><img src="../任务/images/3.jpg"></li>
+                <li><img src="../任务/images/4.jpg"></li>
+            </ul>
+        </div>
+        <button id="btn" style="width: 100px;height: 50px;background: gray;margin-left: 400px;">下载PDF</button>
+        <br><br>
+        <div style="width: 500px;height:900px;background: pink;"></div>
+    </div>
+    <script>
+        //html文件转成pdf格式文件函数
+        var btn = document.getElementById("btn");
+        btn.onclick = function () {
+            $("body").print({
+                globalStyles: true,
+                mediaPrint: false,
+                stylesheet: null,
+                noPrintSelector: ".no-print",
+                iframe: true,
+                append: null,
+                prepend: null,
+                manuallyCopyFormValues: true,
+                deferred: $.Deferred(),
+                timeout: 750,
+                title: null,
+                doctype: '<!doctype html>'
+            });
+        }
+    </script>
+</body>
+
+</html>

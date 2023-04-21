@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="button" value="点击" @click="dianji">
+        <!-- v-if的特点：每次执行都会重新添加或删除元素 -->
+        <!-- v-show的特点：它不会删除或添加元素，只是每次都把元素隐藏起来，切换了display的none样式 -->
+
+        <!--如果元素涉及到频繁的切换，推荐使用v-show -->
+        <!--如果元素可能永远也不会被显示出来被用户看到，则推荐使用v-if -->
+
+        <h3 v-if="t">这是用v-if控制的元素</h3>
+        <h3 v-show="t">这是用v-show控制的元素</h3>
+    </div>
+    <script>
+        var vm = new Vue({
+            el:"#app",
+            data:{
+                t:true
+            },
+            methods:{
+                dianji(){
+                    this.t=!this.t
+                }
+            }
+        })
+    </script>
+</body>
+</html>

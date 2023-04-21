@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <?xml version="1.0" encoding="utf-8" ?>
+    <svg id="d" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+        style="border: 1px solid red;">
+        <script type="text/javascript" xlink:href="C:/Users/admin/Desktop/实训/vue学习笔记/vue/lib/svg.js"></script>
+        <script type="text/javascript">
+            window.onload = function (e) {
+                var zhi=null;
+                var d = document.getElementById("d");
+                var draw = SVG('d').size(280, 280);
+                function redraw(b) {
+                    draw.clear();
+                    var x = 0,
+                        y = 0,
+                        z = 10;
+                    var a = z + b;
+                    var m = parseInt(280 / a);
+                    for (var i = 0; i < m; i++) {
+                        for (j = 0; j < m; j++) {
+                            var rect = draw.circle(z).fill('#f06').move(x, y);
+                            y = y + a;
+                       
+                            window.onkeydown=function(e){
+                                zhi=e.keyCode;
+                            }
+                            rect.click(function (e) {
+                                var x1 = document.getElementById("x1");
+                                var y1 = document.getElementById("y1");
+                                x1.innerHTML=e.clientX;
+                                y1.innerHTML=e.clientY;
+                                if(zhi===86){
+                                    zhi=null;
+                                    var str=prompt("请输入你的颜色值：");
+                                    this.fill({
+                                        color: str
+                                    });
+                                }else{
+                                    this.fill({
+                                        color: 'blue'
+                                    });
+                                }
+                            })
+                        }
+                        x = x + a;
+                        y = 0;
+                    }
+                }
+                redraw(20);
+                var bu = document.getElementById("bu");
+                bu.onclick = function () {
+                    var bt = document.getElementById("bt1");
+                    b = parseInt(bt.value);
+                    console.log(bt.value);
+                    redraw(b);
+                }
+            }
+        </script>
+    </svg>
+</head>
+<body>
+    <br>
+    <p style="display:inline-block">当前点的坐标为：</p>（<label id="x1">x</label>，<label id="y1">y</label>）
+    <input type="text" id="bt1">
+    <button id="bu">确定</button>
+</body>
+</html>

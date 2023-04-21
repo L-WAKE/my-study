@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        .nav{
+            list-style: none;
+            width: 300px;
+            margin: 100px auto;
+            /* border: 1px solid black; */
+        }
+        /* text-indent: 2em; 两个字的间隔 */
+        .nav li{
+            text-indent: 2em;
+            border: 1px solid black;
+            line-height: 35px;
+            border-bottom: none;
+        }
+        /* last-child最后一个子元素 */
+        .nav>li:last-child{
+            border-bottom:1px solid black;
+            /* 左下角和右下角的圆角实现 */
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        /* first-child 第一个子元素 */
+        .nav>li:first-child{
+            border-top-left-radius: 10px;
+            border-top-right-radius:10px;
+        }
+        .nav span{
+            margin-left: 180px;
+        }
+        .sub>li{
+            list-style: none;
+            background: pink;
+            border: 1px solid white;
+        }
+        .sub>li:hover{
+            background:gray;
+        }
+        .sub{
+            display: none;
+        }
+        .n>span{
+            transform: rotate(90deg);
+        }
+    </style>
+    <script>
+        $(function(){
+            //监听一级菜单的点击事件
+            $(".nav>li").click(function(){
+                //点击当前的一级菜单时背景色变灰色
+                $(this).css("background","gray");
+                //拿到所有非当前的一级菜单
+                var a= $(this).siblings();
+                //让非当前一级菜单变回原来的颜色
+                a.css("background","white")
+
+
+                //拿到一级菜单的子菜单
+                var x=$(this).children(".sub");
+                //展开二级菜单
+                x.slideDown(500);
+                //拿到所有非当前的二级菜单
+                var y=$(this).siblings().children(".sub");
+                //让非当前二级菜单收起
+                y.slideUp(500);
+
+
+                //让span顺时针旋转90度
+                $("this").addClass("n");
+                $(this).siblings().removeClass("n");
+            })
+        })
+    </script>
+</head>
+<body>
+    <!-- 快捷键，ul.nav>li{一级菜单}*8 -->
+<ul class="nav">
+    <li class="n">一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+    <li>一级菜单<span>》</span>
+        <ul class="sub">
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+            <li>二级菜单</li>
+        </ul>
+    </li>
+</body>
+</html>

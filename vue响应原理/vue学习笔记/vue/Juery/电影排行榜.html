@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        .box{
+            margin-top:50px;
+            margin-left: 500px;
+            width: 300px;
+            height: 450px;
+            border: 1px solid black;
+        }
+        .box h1{
+            font-size: 20px;
+            line-height: 35px;
+            color: pink;
+            padding-left: 10px;
+            border-bottom:1px dashed #ccc;
+        }
+        ul li{
+            list-style: none;
+            padding:5px 10px;
+            border: 1px dashed #ccc;
+        }
+        ul span{
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            background: #ccc;
+            margin-right:10px;;
+        }
+        ul li:nth-child(n+3) span{
+            background: pink;
+        }
+        .con{
+            overflow: hidden;
+            display: none;
+        }
+        .con img{
+            width: 80px;
+            height: 120px;;
+            float: left;
+            margin-top:5px;
+        }
+        .con p{
+            width: 180px;
+            height: 120px;
+            float: right;
+            font-size:12px;
+            line-height: 20px;
+        }
+        .cont .con{
+            overflow: hidden;
+            display: block;
+        }
+    </style>
+    <script>
+        $(
+            function(){
+                // $("li").mouseenter(function(){
+                //     $(this).addClass("cont");
+                // })
+                // $("li").mouseleave(function(){
+                //     $(this).removeClass("cont");
+                // })
+                $("li").hover(function(){
+                    $(this).attr("class","cont");
+                },function(){
+                    $(this).removeClass("cont");
+                })
+            }
+        )
+    </script>
+</head>
+<body>
+    <div class="box">
+        <h1>电影排行榜</h1>
+        <ul>
+            <li><span>1</span>电影名字
+            <div class="con">
+                <img src="../图片/2.jpg">
+                <p>简介: 故事发生在非洲附近的大海上，主人公冷锋(吴京饰)遭遇人生滑铁卢，被“开除军籍”，
+                    本想漂泊一生的他，正当他打算这么做的时候，一场突如其来的意外打破了他的计划，突然被卷入了一场
+                </p>
+            </div>
+            </li>
+            <li><span>2</span>电影名字
+            <div class="con">
+                <img src="../图片/2.jpg">
+                <p>简介: 故事发生在非洲附近的大海上，主人公冷锋(吴京饰)遭遇人生滑铁卢，被“开除军籍”，
+                    本想漂泊一生的他，正当他打算这么做的时候，一场突如其来的意外打破了他的计划，突然被卷入了一场
+                </p>
+            </div>
+            </li>
+            <li><span>3</span>电影名字
+            <div class="con">
+                <img src="../图片/2.jpg">
+                <p>简介: 故事发生在非洲附近的大海上，主人公冷锋(吴京饰)遭遇人生滑铁卢，被“开除军籍”，
+                    本想漂泊一生的他，正当他打算这么做的时候，一场突如其来的意外打破了他的计划，突然被卷入了一场
+                </p>
+            </div>
+            </li>
+            <li><span>4</span>电影名字
+            <div class="con">
+                <img src="../图片/2.jpg">
+                <p>简介: 故事发生在非洲附近的大海上，主人公冷锋(吴京饰)遭遇人生滑铁卢，被“开除军籍”，
+                    本想漂泊一生的他，正当他打算这么做的时候，一场突如其来的意外打破了他的计划，突然被卷入了一场
+                </p>
+            </div>
+            </li>
+            <li><span>5</span>电影名字
+            <div class="con">
+                <img src="../图片/2.jpg">
+                <p>简介: 故事发生在非洲附近的大海上，主人公冷锋(吴京饰)遭遇人生滑铁卢，被“开除军籍”，
+                    本想漂泊一生的他，正当他打算这么做的时候，一场突如其来的意外打破了他的计划，突然被卷入了一场
+                </p>
+            </div>
+            </li>
+
+            
+        </ul>
+    </div>
+</body>
+</html>

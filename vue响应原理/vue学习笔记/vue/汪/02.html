@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>放大缩小</title>
+		<script src="../vue/lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+		<style>
+			a{
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			$(function(){
+				//创建svg框							
+				//导入一张图片。
+				var w=$("#tu").width();
+				var h=$("#tu").height();
+				// console.log(w,h);
+				
+				$("#big").click(function(){
+					$("#tu").css('width',w+120);
+					$("#tu").css('height',h+120);
+				})
+				$("#sm").click(function(){
+					$("#tu").css('width',w-50);
+					$("#tu").css('height',h-50);
+				})
+				
+				var t1 = document.getElementById("wheelDelta");
+				var scrollFunc = function(e) {
+					// console.log(e)
+				    // e是FF的事件。window.event是chrome/ie/opera的事件
+				    var ee = e || window.event;
+				    // console.log(ee); //可以看看ee.wheelDelta和e.detail在浏览器中的值；
+				    
+				
+				    if(ee.wheelDelta) { //IE/Opera/Chrome   
+				        t1.value = ee.wheelDelta;
+						var t2=$("#tu")
+						var w1=$("#tu").width();
+						var h1=$("#tu").height();
+						if(t1.value==120){
+							$("#tu").css('width',w1+120);
+							$("#tu").css('height',h1+120);
+						}else{
+							$("#tu").css('width',w1-120);
+							$("#tu").css('height',h1-120);
+						}
+				    }
+					 // else if(ee.detail) { //Firefox    
+				  //       t2.value = ee.detail;
+				  //   } 	
+				}		
+				
+				/*注册事件滑轮事件。*/
+				if(document.addEventListener) {
+				    //W3C FF
+				    document.addEventListener('DOMMouseScroll', scrollFunc, false);
+				} 
+				    var t2 = document.getElementById("tu");
+				//IE/Opera/Chrome/Safari
+				t2.onmousewheel = t2.onmousewheel = scrollFunc; 
+				
+				 $("#change").click(function(){
+					$("#tu").attr("xlink:href","../vue/图片/2.jpg");
+				});
+
+				$("#tu").click(function(){
+					var a=$("#tu").width();
+					var b=$("#tu").height();
+					alert("宽："+a+" 高："+b);
+				});
+			})
+		</script>
+		<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" style="border:1px solid #000000;">
+			<a><image xlink:href="../vue/图片/1.jpg"  width="600" height="400" id="tu" class="a"></image></a>
+		</svg>
+		<button id="change">切换图片</button>
+		<input type="button" value="放大" id="big" style="cursor: pointer">
+		<input type="button" value="缩小"id="sm" style="cursor: pointer">
+		
+		<p>
+		    <label for="wheelDelta"> 滚动值:</label>(IE/Opera)
+		    <input type="text" id="wheelDelta" />
+		</p>	
+	</body>
+</html>

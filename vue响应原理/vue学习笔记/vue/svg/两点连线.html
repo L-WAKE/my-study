@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <?xml version="1.0" encoding="utf-8" ?>
+    <svg id="d" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+        style="border: 1px solid red;">
+        <script type="text/javascript" xlink:href="C:/Users/admin/Desktop/实训/vue学习笔记/vue/lib/svg.js"></script>
+        <script type="text/javascript">
+            window.onload = function () {
+                var d = document.getElementById("d");
+                var draw = SVG('d').size(280, 280);
+
+                var x,y,m,n;
+                var a = document.getElementById("a");
+                var b = document.getElementById("b");
+                a.onclick=function () {
+                    console.log("你点击了这个圆");
+                    x=parseInt(a.getAttribute("cx"));
+                    y=parseInt(a.getAttribute("cy"));
+                    m=parseInt(b.getAttribute("cx"));
+                    n=parseInt(b.getAttribute("cy"));
+                }
+                b.onclick=function () {
+                    var line = draw.line(x, y, m, n).stroke({ width: 2 }).stroke('red');
+                }
+                
+            }
+        </script>
+        <circle id="a" r="10" cx="100" cy="100" style="fill: red; stroke-width: 2" />
+        <circle id="b" r="10" cx="100" cy="200" style="fill: red; stroke-width: 2" />
+        <!-- <line id="c" x1="100" y1="100" x2="100" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" /> -->
+    </svg>
+</head>
+
+<body>
+</body>
+
+</html>

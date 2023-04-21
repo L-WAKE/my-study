@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+    <script>
+        $(function(){
+            //prop 用法跟attr差不多 prop方法不仅能够操作属性， 他还能操作属性节点
+            // var a= $("span").eq(0).prop("id","liu");  //eq(下标)
+            // console.log(a);
+
+            //与attr区别
+            console.log($("input").prop("checked")); //true/false
+            console.log($("input").attr("checked"));//checked/undefined
+        })
+    </script>
+</head>
+<body>
+    <span class="si"></span>
+    <span class="wu"></span>
+    <input type="checkbox">
+</body>
+</html>

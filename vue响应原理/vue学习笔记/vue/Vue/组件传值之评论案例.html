@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <ul>
+                <li v-for="item in list" :key="item.id">
+                    <span>评论人：{{item.name}}</span>
+                    &emsp; {{item.content}} &emsp; {{item.time}}
+                </li>
+            </ul>
+        </div>
+        <mycom @fun="loadcom"></mycom>
+    </div>
+    <template id="tem">
+        <div>
+            <div>
+                <label>评论人：&emsp;</label>
+                <input type="text" v-model="name">
+            </div><br>
+            <div>
+                <label>评论内容：</label>
+                <input type="text" v-model="content">
+            </div><br>
+            <div>
+                <input type="button" value="发表评论" @click="post">
+            </div>
+        </div>
+    </template>
+</body>
+<script>
+    var com = {
+        template: "#tem",
+        data() {
+            return {
+                name: '',
+                content: '',
+                six:"子组件的值"
+            }
+        },
+        methods: {
+            post() {
+                var com = { name: this.name, content: this.content };
+                //从localstorage中获取所有的评论
+                var list = JSON.parse(localStorage.getItem('cmts') || '[]');
+                list.unshift(com)
+                //从新保存最新的评论数据
+                localStorage.setItem('cmts', JSON.stringify(list))
+
+                this.name = this.content = ''
+                this.$emit('fun',this.six);
+            }
+        }
+    }
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            list: [
+                { id: 1, name: "李白", content: "天生我材必有用", time: new Date().toLocaleTimeString() },
+                { id: 2, name: "清照", content: "相见时难别亦难", time: new Date().toLocaleTimeString() },
+                { id: 3, name: "曹操", content: "观沧海曹操写的", time: new Date().toLocaleTimeString() }
+            ],
+            six:null//定义这个six是为了接收子组件传过来的值
+        },
+        components: {
+            mycom: com
+        },
+        methods:{
+            loadcom(data){
+                var list = JSON.parse(localStorage.getItem('cmts') || '[]');
+                this.list=list;
+                this.six=data; //将子组件传过来的值存入到this.six
+                console.log(this.six);
+            }
+        },
+        created(){
+            this.loadcom();
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/jquery-3.3.1/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <div class="div1">第一个div</div>
+
+    <script>
+        window.onload=function(){}//原生JS的写法
+
+        //Jquery的基本写法
+        $(function(){
+            var x=[1,2,3,6,81];//数组
+            var y={0:1,1:2,2:3,3:4,lenght:8};//对象
+            //原生JS遍历只能遍历数组，不能遍历对象
+            // x.forEach(function(value,index){
+            //     console.log(index,value);
+            // })
+            // $.each(x,function(value,index){
+            //     console.log(value,index)
+            // })
+
+            var b=$.each(y,function(index,value){
+                console.log(index,value);
+            })
+            console.log(b);  //each 返回值是这个对象本身
+
+        })
+    </script>
+</body>
+</html>

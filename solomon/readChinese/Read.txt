@@ -1,0 +1,4608 @@
+<template ref="chart-search">
+  <div
+    :ref="'cso_' + config.i"
+    style="width: 100%; height: 100%"
+    v-if="
+      config.global.show &&
+      (config.options.setData.dataConfig.filter[0] ||
+        config.options.setData.dataConfig.dyConfig)
+    "
+    class="search-filter-control-home"
+  >
+    <div
+      :ref="'csi_' + config.i"
+      class="dib vm"
+      style="width: calc(90% - 200px); padding-bottom: 5px"
+    >
+      <div
+        v-if="config.options.setData.dataConfig.dyConfig && false"
+        class="dib vm filter-item-home"
+      >
+        <div
+          class="dib vm filter-item-home"
+          v-for="(item, idx) in config.options.setData.dataConfig.dyConfig"
+          :key="'dycs_' + idx"
+          style="
+            margin-left: 10px;
+            margin-top: 5px;
+            background: #f0f3f6;
+            padding: 5px;
+            border-radius: 4px;
+          "
+        >
+          <span style="color: red; font-size: 12px; line-height: 20px">*</span>
+          <span class="fieldName vm"
+            >{{ item.relationParamName || item.relationParamKey }}：</span
+          >
+          <!-- <span style="color: red;font-size: 12px;line-height: 20px;">{{ ($t('i18n157')) }}</span> -->
+          <template v-if="item.paramType == 'val'">
+            <el-input
+              v-if="item.paramInputType == 'text'"
+              size="mini"
+              class="noChange tint"
+              style="width: 194px"
+              v-model="item.paramValueSingle"
+            ></el-input>
+            <el-input-number
+              v-if="item.paramInputType == 'number'"
+              :controls="false"
+              size="mini"
+              class="noChange tint input-number"
+              style="width: 194px"
+              v-model="item.paramValueSingle"
+            ></el-input-number>
+          </template>
+          <el-date-picker
+            class="change-input-icon"
+            v-model="item.paramValueSingle"
+            v-if="item.paramType == 'date' && item.paramRelation == 'year'"
+            type="year"
+            :placeholder="$t('i18n158')"
+            style="width: 170px; vertical-align: middle"
+            value-format="yyyy"
+          >
+          </el-date-picker>
+          <el-date-picker
+            class="change-input-icon"
+            v-model="item.paramValueSingle"
+            v-if="item.paramType == 'date' && item.paramRelation == 'month'"
+            type="month"
+            size="mini"
+            :placeholder="$t('i18n159')"
+            style="width: 170px; vertical-align: middle"
+            value-format="yyyyMM"
+          >
+          </el-date-picker>
+          <el-date-picker
+            class="change-input-icon"
+            v-model="item.paramValueSingle"
+            v-if="item.paramType == 'date' && item.paramRelation == 'date'"
+            type="date"
+            size="mini"
+            :placeholder="$t('i18n160')"
+            style="width: 170px;vertical-align:middle}"
+            value-format="yyyyMMdd"
+          >
+          </el-date-picker>
+          <dropTree
+            v-if="
+              item.paramType == 'level' &&
+              systemDimsLevels[item.paramDimItem.dimId] &&
+              item.paramDimItem &&
+              sysDimensionOptionSession[
+                item.paramDimItem.dimId + '_' + item.paramDimItem.dimLevel
+              ]
+            "
+            style="width: 190px; vertical-align: middle"
+            ref="selectTreeRef"
+            :key="
+              'selectTreeRefs_' +
+              item.paramDimItem.dimId +
+              '_' +
+              item.paramDimItem.dimLevel
+            "
+            :treeData="
+              sysDimensionOptionSession[
+                item.paramDimItem.dimId + '_' + item.paramDimItem.dimLevel
+              ]
+            "
+            :params="getNextDimParams(item.paramDimItem.dimLevelId)"
+            :filterItem="item.paramDimItem"
+            :dimsList="systemDimsLevels[item.paramDimItem.dimId]"
+            :showCheckbox="false"
+            :treeProps="defaultTreeProps"
+            :dimType="'system'"
+            :isMultiple="false"
+            :value="[item.paramValueSingle]"
+            :label="[item.paramLabelSingle]"
+            :useLevel="item.paramDimItem.blockLevel"
+            @updataTopData="updataTopData"
+            @changeVal="changeFormVal2($event, item, filtersConfig)"
+          ></dropTree>
+          <span v-if="item.showRemark">
+            <el-popover
+              popper-class="searchTip"
+              :title="$t('si18NtipContent')"
+              width="200"
+              trigger="hover"
+              :content="item.noteNameRemark"
+            >
+              <i class="el-icon-info" slot="reference" style="color: #0c82ff"></i>
+            </el-popover>
+          </span>
+        </div>
+      </div>
+      <template v-if="config.options.setData.dataConfig.searchFilterGroup.length">
+        <template
+          v-for="(filterItem, index1) in config.options.setData.dataConfig
+            .searchFilterGroup"
+        >
+          <div
+            class="dib vm filter-item-home"
+            style="
+              margin-left: 10px;
+              margin-top: 5px;
+              background: #f0f3f6;
+              padding: 5px;
+              border-radius: 4px;
+            "
+            v-if="filterItem.type == 'dataSet'"
+            :key="'setDataDataConfigStr' + index1"
+          >
+            <template v-if="filterItem.filterCheckType == '1'">
+              <template v-for="(conditionItem, index2) in filterItem.condition">
+                <span
+                  :key="'conditionItemStr*' + index2"
+                  v-if="conditionItem.isfill"
+                  style="color: red; font-size: 12px; line-height: 20px"
+                  >*</span
+                >
+              </template>
+            </template>
+            <span class="fieldName vm"
+              >{{
+                filterItem.colAlias
+                  ? filterItem.colAlias
+                  : filterItem.noteName || filterItem.colNameCn
+              }}：</span
+            > 
+            <!--非枚举类型  枚举只有维度类型字段才存在-->
+            <template v-if="filterItem.filterCheckType == '1'">
+              <div
+                style="display: inline-block"
+                v-for="(conditionItem, index2) in filterItem.condition"
+                :key="'conditionItemStr' + index2"
+              >
+                <!--逻辑条件start-->
+                <!-- <span v-if="conditionItem.isfill==true" style="color: red;font-size: 12px;line-height: 20px;">{{ $t('i18n157') }}</span> -->
+                <span
+                  id="lj01"
+                  v-if="
+                    conditionItem.conditionValueType == '-1' &&
+                    filterItem.clumType != 'indicator'
+                  "
+                >{{conditionItem.disabled}}
+                  <el-select
+                    size="mini"
+                    :disabled="filterItem.disabled"
+                    @change="changeValuesType($event, conditionItem)"
+                    v-if="config.options.searchFilterOptionsMap"
+                    v-model="conditionItem.conditionOperator"
+                    :placeholder="$t('i18n161')"
+                    style="width: 85px; display: none"
+                  >
+                    <el-option
+                      v-for="(searchFilterOptionsMapItem, index5) in config.options
+                        .setData.searchFilterOptionsMap[
+                        config.options.setData.valueCtrTypeByDimLevelId[
+                          filterItem.colId
+                        ] + ''
+                      ] || config.options.searchFilterOptionsMap['defual']"
+                      :key="'searchFilterOptionsMapItemStr' + index5"
+                      :label="searchFilterOptionsMapItem.name"
+                      v-if="isShowEqOnly(searchFilterOptionsMapItem, filterItem)"
+                      :value="searchFilterOptionsMapItem.conditionOperator"
+                    ></el-option>
+                  </el-select>
+                </span>
+                <span
+                  id="lj02"
+                  v-if="
+                    conditionItem.conditionValueType == '-1' &&
+                    filterItem.clumType == 'indicator'
+                  "
+                >
+                  <el-select
+                    :disabled="filterItem.disabled"
+                    size="mini"
+                    @change="setConditionOperator"
+                    v-model="conditionItem.conditionOperator"
+                    :placeholder="$t('i18n161')"
+                    style="width: 85px; display: none"
+                  >
+                    <el-option
+                      v-for="(searchFilterOptionsMapItem, index6) in config.options
+                        .setData.searchFilterOptionsMap['indicator']"
+                      :key="'searchFilterOptionsMapItemStr' + index6"
+                      :label="searchFilterOptionsMapItem.name"
+                      :value="searchFilterOptionsMapItem.conditionOperator"
+                    ></el-option>
+                  </el-select>
+                </span>
+                <span id="lj03" v-if="conditionItem.conditionValueType == '1'">
+                  <el-select
+                    :disabled="filterItem.disabled"
+                    size="mini"
+                    @change="setConditionOperator"
+                    v-model="conditionItem.conditionOperator"
+                    :placeholder="$t('i18n161')"
+                    style="width: 85px; display: none"
+                  >
+                    <el-option
+                      v-for="(searchFilterOptionsMapItem, index7) in config.options
+                        .setData.searchFilterOptionsMap['file']"
+                      :key="'searchFilterOptionsMapItemStr' + index7"
+                      :label="searchFilterOptionsMapItem.name"
+                      :value="searchFilterOptionsMapItem.conditionOperator"
+                    ></el-option>
+                  </el-select>
+                </span>
+
+                <!--逻辑条件end-->
+                <!--                        <el-select
+                                              @change="function() {conditionItem.values='';conditionItem.conditionOperator='';setConditionOperator()}"
+                                              slot="prepend" v-model="conditionItem.conditionValueType"
+                                              :placeholder="$t('i18n162')" size="mini" style="width: 85px;">
+                                          <el-option :label="$t('i18n163')" value="-1"></el-option>
+                                          <el-option v-if="filterItem.clumType == 'dimension'" :label="$t('i18n164')" value="1"></el-option>
+                                      </el-select>-->
+
+                <template v-if="conditionItem.conditionValueType == '-1'">
+                  <!--一般输入框-->
+
+                  <el-select
+                    :disabled="filterItem.disabled"
+                    size="mini"
+                    v-if="false"
+                    disabled
+                    v-model="conditionItem.conditionOperator"
+                    style="width: 80px"
+                  >
+                    <el-option
+                      v-for="(operatorItem, index) in getOperatorLevels(filterItem)"
+                      :key="new Date().getTime() + index"
+                      :label="operatorItem.name"
+                      :value="operatorItem.conditionOperator"
+                    ></el-option>
+                  </el-select>
+                  <el-input
+                    :disabled="filterItem.disabled"
+                    v-model="conditionItem.values"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      (config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '0' ||
+                        !config.options.setData.valueCtrTypeByDimLevelId[
+                          filterItem.colId
+                        ])
+                    "
+                    :placeholder="$t('i18n3')"
+                    size="mini"
+                    @input="forceUpdate"
+                    style="width: 160px"
+                  ></el-input>
+                  <template v-if="conditionItem.showType == '1'">
+                    <!--下拉选情况-->
+                    <el-select
+                      :disabled="filterItem.disabled"
+                      size="mini"
+                      clearable
+                      @click="freshDimensionOptionSession(filterItem)"
+                      @change="updateNextLeveOption(filterItem)"
+                      v-model="conditionItem.values"
+                      multiple
+                      filterable
+                      collapse-tags
+                      :multiple-limit="
+                        conditionItem.conditionOperator == 'IN' ||
+                        conditionItem.conditionOperator == 'NOTIN'
+                          ? 0
+                          : 1
+                      "
+                      v-if="
+                        conditionItem.conditionValueType == '-1' &&
+                        config.options.setData.valueCtrTypeByDimLevelId[
+                          filterItem.colId
+                        ] +
+                          '' ==
+                          '1' &&
+                        filterItem.dimScale &&
+                        filterItem.dimScale < limitSize &&
+                        config.options.setData.dimensionOptionSession[
+                          filterItem.dimId + '_' + filterItem.dimLevel
+                        ]
+                      "
+                      style="min-width: 260px"
+                    >
+                      <el-option
+                        v-for="(item, index) in config.options.setData
+                          .dimensionOptionSession[
+                          filterItem.dimId + '_' + filterItem.dimLevel
+                        ]"
+                        :key="'dimensionOptionSessionStr' + item.code"
+                        v-if="isShowThisOption(filterItem, index, item.code)"
+                        :label="item.name"
+                        :value="item.code"
+                      >
+                      </el-option>
+                    </el-select>
+
+                    <el-select
+                    :disabled="filterItem.disabled"
+                      size="mini"
+                      v-if="
+                        conditionItem.conditionValueType == '-1' &&
+                        config.options.setData.valueCtrTypeByDimLevelId[
+                          filterItem.colId
+                        ] +
+                          '' ==
+                          '1' &&
+                        filterItem.dimScale &&
+                        filterItem.dimScale >= limitSize
+                      "
+                      v-model="conditionItem.values"
+                      :multiple="
+                        conditionItem.conditionOperator == 'IN' ||
+                        conditionItem.conditionOperator == 'NOTIN'
+                          ? true
+                          : false
+                      "
+                      collapse-tags
+                      :multiple-limit="
+                        conditionItem.conditionOperator == 'IN' ||
+                        conditionItem.conditionOperator == 'NOTIN'
+                          ? 0
+                          : 1
+                      "
+                      @change="
+                        saveSelect(
+                          $event,
+                          conditionItem,
+                          filterItem.dimId + '_' + filterItem.dimLevel,
+                          filterItem
+                        )
+                      "
+                      filterable
+                      remote
+                      clearable
+                      reserve-keyword
+                      :placeholder="$t('i18n165')"
+                      :remote-method="
+                        (val) =>
+                          remoteMethod(
+                            val,
+                            filterItem.dimId,
+                            filterItem.dimLevel,
+                            filterItem.colId,
+                            filterItem
+                          )
+                      "
+                      style="min-width: 260px; margin-left: 10px"
+                      :loading="conditionLoading"
+                    >
+                      <el-option
+                        v-for="option in unionList(
+                          conditionItem,
+                          config.options.setData.dimensionOptionSession[
+                            filterItem.dimId + '_' + filterItem.dimLevel
+                          ]
+                        )"
+                        :key="option.code"
+                        :label="option.name"
+                        :value="option.code"
+                      >
+                      </el-option>
+                    </el-select>
+                  </template>
+                  <template v-else>
+                    <dropTree
+                      style="width: 190px"
+                      ref="selectTreeRef"
+                      :treeData="
+                        config.options.setData.dimensionOptionSession[
+                          filterItem.dimId + '_' + filterItem.dimLevel
+                        ]
+                      "
+                      :params="getNextDimParams(filterItem.colId)"
+                      :filterItem="filterItem"
+                      :dimsList="config.options.setData.dataConfig.dimensionLevelItems"
+                      :showCheckbox="false"
+                      :treeProps="defaultTreeProps"
+                      :isMultiple="
+                        conditionItem.conditionOperator == 'IN' ||
+                        conditionItem.conditionOperator == 'NOTIN'
+                          ? true
+                          : false
+                      "
+                      :value="conditionItem.values"
+                      :label="conditionItem.labels"
+                      :useLevel="conditionItem.blockLevel"
+                      :fixedLevel="true"
+                      :disabled="filterItem.disabled"
+                      @updataTopData="updataTopData"
+                      @changeVal="changeFormVal($event, conditionItem)"
+                    ></dropTree>
+                  </template>
+
+                  <!--日期类型 start-->
+                  <el-date-picker
+                    :disabled="conditionItem.disabled"
+                    v-model="conditionItem.values"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '10' &&
+                      conditionItem.conditionOperator != 'NOTIN' &&
+                      conditionItem.conditionOperator != 'IN' &&
+                      conditionItem.conditionOperator != 'BETWEEN'
+                    "
+                    type="year"
+                    :placeholder="$t('i18n158')"
+                    style="width: 160px"
+                    value-format="yyyy"
+                    format="yyyy"
+                    @input="forceUpdate"
+                    class="change-input-icon"
+                    :picker-options="{
+                      disabledDate(v) {
+                        let date = new Date();
+                        if (!conditionItem.maxDate) {
+                          return false;
+                        }
+                        let maxDate = $common.getDateStringByFormate(
+                          conditionItem.maxDate
+                        );
+                        let cdl = $common.dateFormat('yyyy', v);
+
+                        return cdl > $common.dateFormat('yyyy', maxDate);
+                      },
+                    }"
+                  >
+                  </el-date-picker>
+                  <el-date-picker
+                    :disabled="conditionItem.disabled"
+                    v-model="conditionItem.values"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '11' &&
+                      conditionItem.conditionOperator != 'NOTIN' &&
+                      conditionItem.conditionOperator != 'IN' &&
+                      conditionItem.conditionOperator != 'BETWEEN'
+                    "
+                    type="month"
+                    size="mini"
+                    :placeholder="$t('i18n159')"
+                    style="width: 160px"
+                    value-format="yyyyMM"
+                    format="yyyyMM"
+                    @input="forceUpdate"
+                    @change="(val) => updateTimeByLeveChange(val, filterItem)"
+                    class="change-input-icon"
+                    :picker-options="{
+                      disabledDate(v) {
+                        let date = new Date();
+                        if (!conditionItem.maxDate) {
+                          return false;
+                        }
+                        let maxDate = $common.getDateStringByFormate(
+                          conditionItem.maxDate
+                        );
+                        let cdl = $common.dateFormat('yyyyMM', v);
+                        return cdl > $common.dateFormat('yyyyMM', new Date(maxDate));
+                      },
+                    }"
+                  >
+                  </el-date-picker>
+                  <el-date-picker
+                    :disabled="conditionItem.disabled"
+                    v-model="conditionItem.values"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '12' &&
+                      conditionItem.conditionOperator != 'NOTIN' &&
+                      conditionItem.conditionOperator != 'IN' &&
+                      conditionItem.conditionOperator != 'BETWEEN'
+                    "
+                    type="date"
+                    size="mini"
+                    :placeholder="$t('i18n160')"
+                    style="width: 160px"
+                    value-format="yyyyMMdd"
+                    format="yyyyMMdd"
+                    @input="forceUpdate"
+                    @change="(val) => updateTimeByLeveChange(val, filterItem)"
+                    class="change-input-icon"
+                    :picker-options="{
+                      disabledDate(v) {
+                        let date = new Date();
+                        if (!conditionItem.maxDate) {
+                          return false;
+                        }
+                        let cdl = $common.dateFormat('yyyyMMdd', v);
+                        let maxDate = $common.getDateStringByFormate(
+                          conditionItem.maxDate
+                        );
+                        return cdl > $common.dateFormat('yyyyMMdd', new Date(maxDate));
+                      },
+                    }"
+                  >
+                  </el-date-picker>
+                  <div
+                    class="tint noChange"
+                    style="display: inline-block"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      conditionItem.conditionOperator == 'BETWEEN' &&
+                      bdatePicker(
+                        config.options.setData.valueCtrTypeByDimLevelId[
+                          filterItem.colId
+                        ] + ''
+                      )
+                    "
+                  >
+                    <el-date-picker
+                      class="tint noChange"
+                      :disabled="filterItem.disabled"
+                      v-model="conditionItem.betweenValues"
+                      :type="
+                        bdatePicker(
+                          config.options.setData.valueCtrTypeByDimLevelId[
+                            filterItem.colId
+                          ] + ''
+                        ).type
+                      "
+                      size="mini"
+                      :placeholder="$t('i18n166')"
+                      style="width: 300px"
+                      :range-separator="$t('i18n167')"
+                      :value-format="
+                        bdatePicker(
+                          config.options.setData.valueCtrTypeByDimLevelId[
+                            filterItem.colId
+                          ] + ''
+                        ).formate
+                      "
+                      :format="
+                        bdatePicker(
+                          config.options.setData.valueCtrTypeByDimLevelId[
+                            filterItem.colId
+                          ] + ''
+                        ).formate
+                      "
+                      :picker-options="{
+                        disabledDate(v) {
+                          let date = new Date();
+                          if (!conditionItem.maxDate) {
+                            return false;
+                          }
+                          let dateOption = bdatePicker(
+                            config.options.setData.valueCtrTypeByDimLevelId[
+                              filterItem.colId
+                            ] + ''
+                          );
+                          let cdl = $common.dateFormat(dateOption.formate, v);
+                          let maxDate = $common.getDateStringByFormate(
+                            conditionItem.maxDate
+                          );
+                          return cdl > $common.dateFormat(dateOption.formate, maxDate);
+                        },
+                      }"
+                    >
+                    </el-date-picker>
+                  </div>
+                  <select-date
+                    class="tint"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '10' &&
+                      (conditionItem.conditionOperator == 'NOTIN' ||
+                        conditionItem.conditionOperator == 'IN')
+                    "
+                    @dateChange="secrchChangeDate"
+                    :styleObj="{ width: '160px' }"
+                    :paramOpt="{ groupIndex: index1, itemIndex: index2 }"
+                    :dateModel="conditionItem.values"
+                    datetype="year"
+                    :picker-options="pickerOptions"
+                    valueType="array"
+                  ></select-date>
+                  <select-date
+                    class="tint"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '11' &&
+                      (conditionItem.conditionOperator == 'NOTIN' ||
+                        conditionItem.conditionOperator == 'IN')
+                    "
+                    @dateChange="secrchChangeDate"
+                    :styleObj="{ width: '160px' }"
+                    :paramOpt="{ groupIndex: index1, itemIndex: index2 }"
+                    :dateModel="conditionItem.values"
+                    datetype="month"
+                    :picker-options="pickerOptions"
+                    valueType="array"
+                  ></select-date>
+                  <select-date
+                    class="tint"
+                    v-if="
+                      conditionItem.conditionValueType == '-1' &&
+                      config.options.setData.valueCtrTypeByDimLevelId[filterItem.colId] +
+                        '' ==
+                        '12' &&
+                      (conditionItem.conditionOperator == 'NOTIN' ||
+                        conditionItem.conditionOperator == 'IN')
+                    "
+                    @dateChange="secrchChangeDate"
+                    :styleObj="{ width: '160px' }"
+                    :paramOpt="{ groupIndex: index1, itemIndex: index2 }"
+                    :dateModel="conditionItem.values"
+                    datetype="date"
+                    :picker-options="pickerOptions"
+                    valueType="array"
+                  ></select-date>
+                  <!--日期类型 end-->
+                </template>
+                <el-button
+                  v-if="conditionItem.conditionValueType == '1'"
+                  type="primary"
+                  size="mini"
+                  icon="el-icon-document"
+                  class="fileNameSpan"
+                  style="width: 160px; background: #409eff; height: 28px"
+                  @click="showFilterFileWindow(conditionItem)"
+                >
+                  {{ conditionItem.fileValue.fileName }}
+                </el-button>
+                <el-select
+                  :disabled="conditionItem.disabled"
+                  :key="new Date().getTime()"
+                  v-if="index2 < filterItem.condition.length - 1"
+                  v-model="conditionItem.groupInnerLogicType"
+                  @change="groupInnerLogicTypeChange"
+                  style="width: 70px; margin-right: 5px"
+                  size="mini"
+                  filterable
+                  :placeholder="$t('i18n161')"
+                >
+                  <el-option :label="$t('i18n168')" value="and">{{
+                    $t("i18n168")
+                  }}</el-option>
+                  <el-option :label="$t('i18n169')" value="or">{{
+                    $t("i18n169")
+                  }}</el-option>
+                </el-select>
+              </div>
+            </template>
+            <!--限定枚举类型-->
+            <template v-if="filterItem.filterCheckType == '2'">
+              <div style="display: inline-block">
+                <div
+                  v-if="
+                    !filterItem.filterCheckOption.isFilterCheckOption &&
+                    config.options.setData.dimensionOptionSession[
+                      filterItem.dimId + '_' + filterItem.dimLevel + 'formeiju'
+                    ]
+                  "
+                >
+                  <el-select
+                    :disabled="filterItem.disabled"
+                    size="mini"
+                    style="min-width: 260px"
+                    v-if="filterItem.filterCheckRadio == '1'"
+                    v-model="filterItem.filterCheckOption.values"
+                    filterable
+                    clearable
+                    :placeholder="$t('pleaseSelect')"
+                  >
+                    <el-option
+                      v-for="dimensionOptionSessionItem in config.options.setData
+                        .dimensionOptionSession[
+                        filterItem.dimId + '_' + filterItem.dimLevel + 'formeiju'
+                      ]"
+                      :key="
+                        'dimensionOptionSessionItem1' + dimensionOptionSessionItem.code
+                      "
+                      :label="dimensionOptionSessionItem.name"
+                      :value="dimensionOptionSessionItem.code"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+                <div v-if="filterItem.filterCheckOption.isFilterCheckOption">
+                  <el-select
+                  :disabled="filterItem.disabled"
+                    size="mini"
+                    style="min-width: 260px"
+                    v-if="filterItem.filterCheckRadio == '1'"
+                    v-model="filterItem.filterCheckOption.values"
+                    filterable
+                    clearable
+                    :placeholder="$t('pleaseSelect')"
+                  >
+                    <!--限定枚举范围-->
+                    <el-option
+                      v-for="filterCheckOptionArrItem in filterItem.filterCheckOption
+                        .filterCheckOptionArr"
+                      :key="'filterCheckOptionArrItem1' + filterCheckOptionArrItem.code"
+                      :label="filterCheckOptionArrItem.name"
+                      :value="filterCheckOptionArrItem.code"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+                <!--单选-->
+
+                <!--多选-->
+                <template v-if="filterItem.filterCheckRadio == '2'">
+                  <div id="duoxuan1" v-if="!filterItem.isFilterCheckOption">
+                    <div
+                      v-if="
+                        !filterItem.filterCheckOption.isFilterCheckOption &&
+                        config.options.setData.dimensionOptionSession[
+                          filterItem.dimId + '_' + filterItem.dimLevel + 'formeiju'
+                        ]
+                      "
+                    >
+                      <el-select
+                      :disabled="filterItem.disabled"
+                        size="mini"
+                        style="min-width: 260px"
+                        v-model="filterItem.filterCheckOption.valueArr"
+                        filterable
+                        multiple
+                        :placeholder="$t('pleaseSelect')"
+                      >
+                        <el-option
+                          v-for="dimensionOptionSessionItem in config.options.setData
+                            .dimensionOptionSession[
+                            filterItem.dimId + '_' + filterItem.dimLevel + 'formeiju'
+                          ]"
+                          :key="
+                            'dimensionOptionSessionItem2' +
+                            dimensionOptionSessionItem.code
+                          "
+                          :label="dimensionOptionSessionItem.name"
+                          :value="dimensionOptionSessionItem.code"
+                        >
+                        </el-option>
+                      </el-select>
+                    </div>
+                    <div v-if="filterItem.filterCheckOption.isFilterCheckOption">
+                      <el-select
+                      :disabled="filterItem.disabled"
+                        size="mini"
+                        style="min-width: 260px"
+                        v-model="filterItem.filterCheckOption.valueArr"
+                        filterable
+                        multiple
+                        :placeholder="$t('pleaseSelect')"
+                      >
+                        <el-option
+                          v-for="filterCheckOptionArrItem in filterItem.filterCheckOption
+                            .filterCheckOptionArr"
+                          :key="
+                            'filterCheckOptionArrItem2' + filterCheckOptionArrItem.code
+                          "
+                          :label="filterCheckOptionArrItem.name"
+                          :value="filterCheckOptionArrItem.code"
+                        >
+                        </el-option>
+                      </el-select>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+            <span v-if="filterItem.showRemark" class="search-item-tip">
+              <el-popover
+                popper-class="searchTip"
+               
+                width="200"
+                trigger="hover"
+                :content="filterItem.noteNameRemark"
+              >
+                <i class="el-icon-info" slot="reference" style="color: #0c82ff"></i>
+              </el-popover>
+            </span>
+          </div>
+          <div
+            class="dib vm filter-item-home"
+            v-if="filterItem.type == 'dynamic'"
+            :key="'dycs_' + index1"
+            style="
+              margin-left: 10px;
+              margin-top: 5px;
+              background: #f0f3f6;
+              padding: 5px;
+              border-radius: 4px;
+            "
+          >
+            <span style="color: red; font-size: 12px; line-height: 20px">*</span>
+            <span class="fieldName vm"
+              >{{ filterItem.relationParamName || filterItem.relationParamKey }}：</span
+            >
+            <!-- <span style="color: red;font-size: 12px;line-height: 20px;">{{ ($t('i18n157')) }}</span> -->
+            <template v-if="filterItem.paramType == 'val'">
+              <el-input
+              :disabled="filterItem.disabled"
+                v-if="filterItem.paramInputType == 'text'"
+                size="mini"
+                class="noChange tint"
+                style="width: 194px"
+                v-model="filterItem.paramValueSingle"
+              ></el-input>
+              <el-input-number
+              :disabled="filterItem.disabled"
+                v-if="filterItem.paramInputType == 'number'"
+                :controls="false"
+                size="mini"
+                class="noChange tint input-number"
+                style="width: 194px"
+                v-model="filterItem.paramValueSingle"
+              ></el-input-number>
+            </template>
+            <el-date-picker
+              :disabled="filterItem.disabled"
+              class="change-input-icon"
+              v-model="filterItem.paramValueSingle"
+              v-if="filterItem.paramType == 'date' && filterItem.paramRelation == 'year'"
+              type="year"
+              :placeholder="$t('i18n158')"
+              style="width: 170px; vertical-align: middle"
+              value-format="yyyy"
+            >
+            </el-date-picker>
+            <el-date-picker
+            :disabled="filterItem.disabled"
+              class="change-input-icon"
+              v-model="filterItem.paramValueSingle"
+              v-if="filterItem.paramType == 'date' && filterItem.paramRelation == 'month'"
+              type="month"
+              size="mini"
+              :placeholder="$t('i18n159')"
+              style="width: 170px; vertical-align: middle"
+              value-format="yyyyMM"
+            >
+            </el-date-picker>
+            <el-date-picker
+              :disabled="filterItem.disabled"
+              class="change-input-icon"
+              v-model="filterItem.paramValueSingle"
+              v-if="filterItem.paramType == 'date' && filterItem.paramRelation == 'date'"
+              type="date"
+              size="mini"
+              :placeholder="$t('i18n160')"
+              style="width: 170px;vertical-align:middle}"
+              value-format="yyyyMMdd"
+            >
+            </el-date-picker>
+            <dropTree
+              v-if="
+                filterItem.paramType == 'level' &&
+                systemDimsLevels[filterItem.paramDimItem.dimId] &&
+                filterItem.paramDimItem &&
+                sysDimensionOptionSession[
+                  filterItem.paramDimItem.dimId + '_' + filterItem.paramDimItem.dimLevel
+                ]
+              "
+              style="width: 190px; vertical-align: middle"
+              ref="selectTreeRef"
+              :key="
+                'selectTreeRefs_' +
+                filterItem.paramDimItem.dimId +
+                '_' +
+                filterItem.paramDimItem.dimLevel
+              "
+              :treeData="
+                sysDimensionOptionSession[
+                  filterItem.paramDimItem.dimId + '_' + filterItem.paramDimItem.dimLevel
+                ]
+              "
+              :params="getNextDimParams(filterItem.paramDimItem.dimLevelId)"
+              :filterItem="filterItem.paramDimItem"
+              :dimsList="systemDimsLevels[filterItem.paramDimItem.dimId]"
+              :showCheckbox="false"
+              :treeProps="defaultTreeProps"
+              :dimType="'system'"
+              :isMultiple="filterItem.multiple"
+              :value="filterItem.paramValueSingle"
+              :label="filterItem.paramLabelSingle"
+              :useLevel="filterItem.blockLevel"
+              :fixedLevel="true"
+              :disabled="filterItem.disabled"
+              @updataTopData="updataTopData"
+              @changeVal="changeFormVal2($event, filterItem, filtersConfig)"
+            ></dropTree>
+            <span v-if="filterItem.showRemark" class="search-item-tip">
+              <el-popover
+                popper-class="searchTip"
+                width="200"
+                trigger="hover"
+                :content="filterItem.noteNameRemark"
+              >
+                <i class="el-icon-info" slot="reference" style="color: #0c82ff"></i>
+              </el-popover>
+            </span>
+          </div>
+        </template>
+      </template>
+    </div>
+
+    <el-row class="search-item-bt-home">
+      <el-col
+        :style="{ width: $i18n.locale == 'zh' ? '60px' : '70px' }"
+        v-if="
+          !isLoadingControl || config.options.setData.dataConfig.searchFilterGroup.length
+        "
+      >
+        <el-button
+          :id="'csoBtn_' + config.i"
+          class="vm"
+          v-if="config.options.setData.dataConfig.searchFilterGroup.length"
+          size="mini"
+          type="primary"
+          v-on:click="showMsg"
+          style="margin-top: 5px"
+        >
+          {{ $t("i18n170") }}
+        </el-button>
+      </el-col>
+
+      <el-col style="width: 60px;" v-if="(isLoadingControl || isShowBtn)&&configuration.searchStopBtnShow">
+        <el-button class="vm" v-if="isShowBtn"
+                   size="mini" type="primary" v-on:click="stopShowMsg"
+                   style="    margin-top: 5px;"
+        >
+          {{ $t('i18n171') }}
+        </el-button>
+      </el-col>
+      <el-col :style="{ width: $i18n.locale == 'zh' ? '60px' : '90px' }">
+        <el-button
+          v-if="config.options.setData.dataConfig.searchFilterGroup.length"
+          size="mini"
+          type="primary"
+          v-on:click="downLoadControlsDataWindowOpen"
+          style="margin-top: 5px"
+        >
+          {{ $t("download") }}
+        </el-button>
+      </el-col>
+      <el-col :style="{ width: $i18n.locale == 'zh' ? '110px' : '144px' }" v-if="configuration.showReportInfo">
+        <el-button
+          size="mini"
+          type="primary"
+          v-on:click="showRepInfo"
+          style="margin-top: 5px"
+        >
+          {{ $t("viewReportInfo") }}
+        </el-button>
+      </el-col>
+    </el-row>
+
+    <!--文件过滤选项框-->
+    <el-dialog
+      :title="$t('i18n172')"
+      v-loading="fileLoadIng"
+      :element-fileLoadIng-text="$t('i18n173')"
+      element-fileLoadIng-background="rgba(0, 0, 0, 0.8)"
+      :append-to-body="true"
+      custom-class="filterPop"
+      :visible.sync="filtersConfig.isShowFilterFileWindow"
+      width="800px"
+    >
+      <el-row
+        style="
+          height: 40px;
+          background: #f5eeee;
+          line-height: 40px;
+          padding: 0 10px;
+          border-radius: 4px;
+        "
+      >
+        <span>{{ $t("i18n174") }}</span>
+        <el-input
+          class="fileSearchInput tint"
+          :placeholder="$t('i18n3')"
+          size="mini"
+          v-model="filtersConfig.filterFilesCheck"
+          style="width: 200px"
+        >
+        </el-input>
+        <el-upload
+          class="upload-demo"
+          style="margin-left: 280px; margin-top: -40px"
+          action="/ssa/biFile/uploadFileWithRel.action"
+          :auto-upload="true"
+          :before-upload="checkType"
+          :on-success="successUpload"
+          :data="uploadParam"
+          :show-file-list="false"
+        >
+          <el-button size="small" type="primary">{{ $t("i18n175") }}</el-button>
+          <div
+            slot="tip"
+            class="el-upload__tip"
+            style="margin-left: 90px; margin-top: -40px"
+          >
+            {{ $t("i18n176") }}M{{ $t("i18n177") }}excel{{ $t("i18n178") }}csv{{
+              $t("i18n179")
+            }}
+          </div>
+        </el-upload>
+      </el-row>
+      <el-row
+        style="
+          height: 420px;
+          border: 1px solid #eaeaea;
+          box-sizing: border-box;
+          margin-top: 5px;
+          padding: 5px;
+          overflow-x: hidden;
+          overflow-y: auto;
+          border-radius: 4px;
+        "
+      >
+        <div
+          v-if="
+            item.file_rel_name.indexOf(filtersConfig.filterFilesCheck) > -1 ||
+            item.file_id == filtersConfig.filterConItem.fileValue.fileId
+          "
+          :class="getIcon('back', item.file_rel_name, item.file_id)"
+          v-for="(item, index) in filtersConfig.filterFiles"
+          :key="'filterFile' + index"
+        >
+          <div class="fileIcon">
+            <i :class="getIcon('class', item.file_rel_name, item.file_id)"></i>
+          </div>
+          <p>{{ item.file_rel_name }}</p>
+          <div class="checkBox">
+            <i class="el-icon-check"></i>
+          </div>
+          <div class="controlBox rel">
+            <div
+              class="controlIcon"
+              @click="saveFilterFileMasg(item)"
+              :title="$t('i18n180')"
+            >
+              <i class="el-icon-check"></i>
+            </div>
+            <div class="controlTools abs">
+              <i
+                class="el-icon-view"
+                @click="preViewFileData(item)"
+                :title="$t('view')"
+              ></i>
+              <i
+                class="el-icon-delete"
+                @click="deleteFileRealtion(item)"
+                :title="$t('delete')"
+              ></i>
+            </div>
+          </div>
+        </div>
+      </el-row>
+    </el-dialog>
+
+    <el-dialog
+      :title="$t('i18n181')"
+      :visible.sync="downLoadDataParam.showDownLoadControlItemDataWindow"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+      :width="levelParams.isNeedLevelSelect?'900px':'500px'"
+    >
+      <div class="dialog-style">
+        <el-row :gutter="10" style="margin-top: 20px">
+          <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+            <div style="text-align: right">{{ $t("i18n182") }}</div>
+          </el-col>
+          <el-col :span="$i18n.locale == 'zh' ? 12 : 17">
+            <div>
+              <el-radio v-model="downLoadDataParam.download_method" label="1">{{
+                $t("backGen")
+              }}</el-radio>
+              <el-radio v-model="downLoadDataParam.download_method" label="0">{{
+                $t("immediate")
+              }}</el-radio>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10" style="margin-top: 20px">
+          <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+            <div style="text-align: right">{{ $t("i18n185") }}</div>
+          </el-col>
+          <el-col :span="$i18n.locale == 'zh' ? 12 : 17">
+            <div>
+              <el-radio v-model="downLoadDataParam.downloadType" label="0"
+                >EXCEL</el-radio
+              >
+              <!-- <el-radio v-model="downLoadDataParam.downloadType" label="2">CSV</el-radio> -->
+            </div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10" style="margin-top: 20px">
+          <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+            <div style="text-align: right; line-height: 30px">{{ $t("i18n186") }}</div>
+          </el-col>
+          <el-col :span="$i18n.locale == 'zh' ? 12 : 17">
+            <el-select
+              size="mini"
+              style="min-width: 300px"
+              v-model="downLoadDataParam.downLoadControlId"
+              @change="select_change"
+              filterable
+              :placeholder="$t('pleaseSelect')"
+            >
+              <el-option
+                v-for="optionItem in getDownLoadCharts"
+                :key="optionItem.id"
+                :value="optionItem.id"
+                :label="optionItem.global.name || optionItem.id || optionItem.tableName"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <!-- 对于树形结构时增加层级选择 2023.4.14 -->
+        <template v-if="levelParams.isNeedLevelSelect">
+          <el-row :gutter="10" style="margin-top: 15px">
+            <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+              <div style="text-align: right;line-height: 30px">{{ $t('exportLevel') }}：</div>
+            </el-col>
+            <el-col :span="$i18n.locale == 'zh' ? 12 : 17">
+              <el-select v-model="levelParams.blockLevel" size="mini" style="min-width: 300px"
+                  :placeholder="$t('pleaseSelect')" @change="changeLevelBlock">
+                <el-option
+                  v-for="item in levelParams.levelOpts || []"
+                  :key="item.dimLevel"
+                  :label="item.colNameCn"
+                  :value="item.dimLevel">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          <template v-if="levelParams.levelData.length > 0">
+            <template v-for="(item,idx) in levelParams.levelData">
+              <el-row :gutter="10" style="margin-top: 20px;">
+                <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+                  <div style="text-align: right;line-height: 18px;">{{ item.colNameCn }}：</div>
+                </el-col>
+                <el-col :span="17">
+                  <template v-if="item.isLast && item.cities.length > 0">
+                    <el-checkbox v-model="item.checkAll" @change="handleCheckAllChange($event,item)">{{ $t('i18n287') }}</el-checkbox>
+                    <el-checkbox-group v-model="item.checkedCities" size="mini" @change="handleCheckedCitiesChange($event,item)">
+                      <el-checkbox style="margin-right: 20px;" v-for="val in item.cities" :label="val.code" :key="val.code">{{ val.name }}</el-checkbox>
+                    </el-checkbox-group>
+                  </template>
+                  <template v-else>
+                    <el-radio-group v-model="item.radioChooose" size="mini" @input="radioGroupChange($event,item)">
+                      <el-radio v-for="val in item.cities" :label="val.name" :key="val.code" border>{{val.name}}</el-radio>
+                    </el-radio-group>
+                  </template>
+                </el-col>
+              </el-row>
+            </template>
+          </template>
+          <el-row :gutter="10" style="margin-top: 20px">
+            <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+              <div style="text-align: right;line-height: 20px">{{ $t('selectedCondition') }}：</div>
+            </el-col>
+            <el-col :span="17">
+              <div class="have-choose" v-if="levelParams.haveChooseLevel.length > 0">
+                <template v-for="(tag,tagIndex) in levelParams.haveChooseLevel">
+                  <el-tag
+                    v-if="tagIndex < 20"
+                    :key="tag.code"
+                    @close="closeTag(tag,tagIndex)"
+                    closable>
+                    {{tag.name}}
+                  </el-tag>
+                </template>
+                <el-button v-if="levelParams.haveChooseLevel.length > 20" type="primary">+{{ levelParams.haveChooseLevel.length - 20 }}</el-button>
+              </div>
+            </el-col>
+          </el-row>
+        </template>
+        
+        <!-- <el-row :gutter="10" style="margin-top: 20px">
+          <el-col :span="6">
+            <div style="text-align: right">{{ $t('i18n183') }}</div>
+          </el-col>
+          <el-col :span="12">
+            <div>
+              <el-checkbox v-model="downLoadDataParam.detailedList">{{ $t('i18n184') }}</el-checkbox>
+            </div>
+          </el-col>
+        </el-row> -->
+        
+        
+        <el-row :gutter="10" style="margin-top: 20px">
+          <el-col :span="$i18n.locale == 'zh' ? 6 : 7">
+            <div style="text-align: right; line-height: 30px">{{ $t("i18n187") }}</div>
+          </el-col>
+          <el-col :span="$i18n.locale == 'zh' ? 12 : 17">
+            <div>
+              <el-input
+                size="mini"
+                style="width: 300px"
+                v-model="downLoadDataParam.dirName"
+                maxlength="50"
+              ></el-input>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          type="text"
+          size="small"
+          @click="downLoadDataParam.showDownLoadControlItemDataWindow = false"
+          >{{ $t("cancel") }}</el-button
+        >
+        <el-button type="primary" size="small" @click="downLoadControlsData">{{
+          $t("confirm")
+        }}</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      :title="$t('i18n188')"
+      :visible.sync="isShowFileContext"
+      :close-on-click-modal="false"
+      :modal-append-to-body="true"
+      :append-to-body="true"
+      style="z-index: 9999"
+      width="700px"
+      height="500px"
+    >
+      <el-table
+        :data="fileContext.contextBody"
+        max-height="500"
+        border
+        stripe
+        style="width: 100%"
+      >
+        <el-table-column
+          v-for="(item, index) in fileContext.contextHead"
+          :prop="item.prop"
+          :label="item.label"
+          :key="'context_' + index"
+          width="180"
+        >
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from "vuex";
+import selectDate from "./selectDate";
+import dropTree from "./dropTree.vue";
+import * as XLSX from "xlsx";
+import { getConfig, getCoordinate,getAllColumns } from "../../src/assets/common/complexHeader";
+export default {
+  name: "chart-search",
+  props: ["config", "canvasSize", "isRepShow"],
+  components: { selectDate, dropTree },
+  data: function () {
+    return {
+      // 对于树形结构时增加层级选择 2023.4.14
+      levelParams:{
+        isNeedLevelSelect:false,//控制是否展示显示选择层级  
+        blockLevel:null,//当前所在的层级编码
+        levelOpts:[],//层级选项数据
+        levelData:[],//层级多选数据-父级
+        haveChooseLevel:[],//已选条件数据
+        datasetId:null,//用于请求层级数据的datasetId
+        nowClickDimLevel:null,//当前单击选择的层级
+      },
+
+      conditionLoading: false,
+      limitSize: 50, //下拉选数据量大于50条改用远程搜索
+      isShowFileContext: false,
+      fileLoadIng: false,
+      options: [],
+      value: "",
+      fileContext: {
+        contextHead: [],
+        contextBody: [],
+      },
+      filtersConfig: {
+        isShowFilterFileWindow: false,
+        filterFilesCheck: "",
+        filterFiles: [],
+      },
+      downLoadDataParam: {
+        showDownLoadControlItemDataWindow: false,
+        download_method: "1",
+        downloadType: "0",
+        dirName: "",
+        detailedList: false,
+        downLoadControlId: "",
+      },
+      pickerOptions: {},
+      uploadParam: {
+        businessType: "",
+        objId: "",
+      },
+      sessionUserId: "",
+      defaultTreeProps: {
+        label: "name",
+        value: "code",
+        children: "children",
+        isLeaf: "isLeaf",
+      },
+      systemDims: [],
+      systemDimsLevels: {},
+      sysDimensionOptionSession: {},
+      downNotifyRel: {},
+      configuration:window.config.configuration
+    };
+  },
+  watch: {
+    "config.options.setData.dataConfig.filter": {
+      handler(newName, oldName) {
+        //加载页面所需数据
+        //1.加载维度字段可用选项
+        let filterModel = this.config.options.setData.dataConfig.filter;
+        this.dobuildDemosionSession(filterModel);
+      },
+      deep: true,
+    },
+    "config.options.setData.dataConfig.dyConfig": {
+      handler(newVal, oldVal) {
+        if (!!newVal && newVal.length > 0) {
+          console.log("newVal99999999999999", newVal);
+          newVal.forEach((item) => {
+            this.getSysDimensionOption(item.paramDimItem);
+          });
+        }
+      },
+      deep: true,
+    },
+    "config.options.setData.dataConfig.searchFilterGroup": {
+      handler(newName, oldName) {
+        this.$forceUpdate();
+      },
+      deep: true,
+    },
+    "config.options.setData.dataConfig.dataSetId": {
+      handler(newName, oldName) {
+        this.getSelectedDataSetInfo(newName);
+        this.getSystemDims();
+      },
+      deep: true,
+    },
+  },
+  created() {
+    console.log(
+      JSON.parse(JSON.stringify(this.config.options.setData.dataConfig.filter))
+    );
+    console.log(new Date().getMonth());
+    let filterModel = this.config.options.setData.dataConfig.filter;
+    for (let i = 0; i < filterModel.length; i++) {
+      if (filterModel[i] && filterModel[i].config) {
+        for (let j = 0; j < filterModel[i].config.length; j++) {
+          this.config.options.setData.dimensionOptionSession[
+            filterModel[i].config[j].dimId + "_" + filterModel[i].config[j].dimLevel
+          ] = [];
+        }
+      }
+    }
+    //兼容新的逻辑2023-03-15
+    if (!this.config.options.setData.dataConfig.searchFilterGroup) {
+      let searchFilterGroup = [];
+      if (this.config.options.setData.dataConfig.dyConfig) {
+        this.config.options.setData.dataConfig.dyConfig.forEach((el, index) => {
+          el.type = "dynamic";
+          if (el.blockLevel == undefined && el.paramType == "level") {
+            //el.blockLevel=el.paramDimItem.dimLevel
+            this.$set(
+              this.config.options.setData.dataConfig.dyConfig[index],
+              "blockLevel",
+              el.paramDimItem.dimLevel
+            );
+          }
+          if (el.paramType == "val") {
+            this.$set(
+              this.config.options.setData.dataConfig.dyConfig[index],
+              "paramInputType",
+              "text"
+            );
+          }
+          if(el.disabled==undefined){
+            this.$set(
+              this.config.options.setData.dataConfig.dyConfig[index],
+              "disabled",
+              false
+            );
+          }
+          searchFilterGroup.push(this.config.options.setData.dataConfig.dyConfig[index]);
+        });
+
+        // searchFilterGroup=searchFilterGroup.concat(this.config.options.setData.dataConfig.dyConfig);
+      }
+      if (
+        this.config.options.setData.dataConfig.filter[0] &&
+        this.config.options.setData.dataConfig.filter[0].config
+      ) {
+        this.config.options.setData.dataConfig.filter[0].config.forEach((el,index) => {
+          el.type = "dataSet";
+          if(el.disabled==undefined){
+            this.$set(
+              this.config.options.setData.dataConfig.filter[0].config[index],
+              "disabled",
+              false
+            );
+          }
+          searchFilterGroup.push(el);
+        });
+        // searchFilterGroup=searchFilterGroup.concat(this.config.options.setData.dataConfig.filter[0].config);
+      }
+
+      this.$set(
+        this.config.options.setData.dataConfig,
+        "searchFilterGroup",
+        searchFilterGroup
+      );
+      // this.config.options.setData.dataConfig.searchFilterGroup=[...this.config.options.setData.dataConfig.filter[0].config||[],...this.config.options.setData.dataConfig.dyConfig||[]]
+    }
+    if (this.config.options.setData.dataConfig.searchFilterGroup) {
+      this.$set(this.config.options.setData.dataConfig, "dyConfig", []);
+      if (
+        this.config.options.setData.dataConfig.filter &&
+        this.config.options.setData.dataConfig.filter.length
+      ) {
+        this.config.options.setData.dataConfig.filter[0].config = [];
+      }
+
+      this.config.options.setData.dataConfig.searchFilterGroup.forEach((el,index) => {
+        if(el.disabled==undefined){
+          this.$set(this.config.options.setData.dataConfig.searchFilterGroup[index], "disabled", false);
+        }
+        if (el.type == "dynamic") {
+          if (el.blockLevel == undefined && el.paramType == "level") {
+            el.blockLevel = el.paramDimItem.dimLevel;
+          }
+         
+          this.config.options.setData.dataConfig.dyConfig.push(el);
+        }
+        if (el.type == "dataSet") {
+          this.config.options.setData.dataConfig.filter[0].config.push(el);
+        }
+      });
+    }
+
+    /*let filterModel = this.config.options.setData.dataConfig.filter;
+    this.dobuildDemosionSession(filterModel);*/
+    /*let userInfo = eval('(' + localStorage.getItem("userInfo") + ')');
+    this.sessionUserId = userInfo.user_id;
+    this.getSelectedDataSetInfo(this.config.options.setData.dataConfig.dataSetId)*/
+  },
+  mounted: function () {
+    //初始化加载维度选项
+    let filterModel = this.config.options.setData.dataConfig.filter;
+    this.dobuildDemosionSession(filterModel);
+    if (this.config.options.setData.dataConfig.dyConfig) {
+      this.getSystemDims();
+      this.config.options.setData.dataConfig.dyConfig.forEach((item) => {
+        this.getSysDimensionOption(item.paramDimItem);
+      });
+    }
+    let userInfo = eval("(" + localStorage.getItem("userInfo") + ")");
+    this.sessionUserId = userInfo.user_id;
+    if (this.config.options.setData.dataConfig.dataSetId !== "") {
+      this.getSelectedDataSetInfo(this.config.options.setData.dataConfig.dataSetId);
+    }
+    console.log("this.config========================", this.config);
+  },
+  updated: function () {
+    this.unitHeightSet();
+  },
+  methods: {
+    ...mapActions(["modifyChartDatas", "modifySceneType"]),
+   
+    // 对于树形结构时增加层级选择 - 2023.4.14
+    closeTag(tag,index){
+      this.levelParams.haveChooseLevel.splice(index,1)
+      const find = this.levelParams.levelData.find(v => v.isLast)
+      const haveChooseLevelCode = this.levelParams.haveChooseLevel.map(v => v.code)
+      find.checkedCities = haveChooseLevelCode
+      let cities = find.cities
+      let checkAllInde = true
+      for(let i=0; i<cities.length; i++){
+        const findIndex = this.levelParams.haveChooseLevel.findIndex(v => v.code==cities[i].code)
+        if(findIndex == -1){
+          checkAllInde = false
+          break
+        }
+      }
+      find.checkAll = checkAllInde
+    },
+    // 层级变化
+    changeLevelBlock(val){
+      this.levelParams.blockLevel = val
+      const addfind = this.levelParams.levelOpts.filter(v => v.dimLevel <= val)
+      const levelData = this.$common.compare(this._.cloneDeep(addfind),'dimLevel')
+      levelData.forEach(item => item.isLast = item.dimLevel == val ? true : false)
+      this.levelParams.levelData = this._.cloneDeep(levelData)
+      this.levelParams.haveChooseLevel = []
+    },
+    setLevelInfo(id,type){
+      let chartLists = this.chartDatas.chartLists
+      let findId = chartLists.find(v => v.id == id)
+      if(!findId){
+        this.levelParams.isNeedLevelSelect = false
+        return
+      }
+      this.levelParams.datasetId = findId.options.setData.dataConfig.dataSetId
+      let levelMap = findId.options.setData.dataConfig.dimension || [];
+      const dimensionLevelItems = findId.options.setData.dataConfig.dimensionLevelItems || [];
+      const findTree = levelMap.find(v => v.isTreeData)
+      let levelMaps = null
+      if(findTree){
+        levelMaps = dimensionLevelItems.filter(v => v.dimId == findTree.dimId)
+        this.levelParams.isNeedLevelSelect = true
+      }
+      if(!levelMaps) {
+        this.levelParams.isNeedLevelSelect = false
+        return
+      }
+      this.levelParams.levelOpts = levelMaps
+      this.levelParams.blockLevel = levelMaps[0].dimLevel
+      levelMaps.map(item => {
+        item.isLast = false
+        item.checkAll = false
+        // item.isIndeterminate = false
+        item.radioChooose = null//单选数据
+        item.cities = []//多选数据
+        item.checkedCities = []
+      })
+      if(type == 'open'){//打开下载弹窗时给第一条数据赋初值
+        this.selectDimsByLevel(levelMaps[0].dimLevelId,undefined,type)
+      }
+    },
+    //获取层级信息
+    selectDimsByLevel(dimLevelId,parentCode,type){
+      let param = new URLSearchParams(),_this = this;
+      param.append('dataSetId', _this.levelParams.datasetId);
+      param.append('dimLevelId', dimLevelId);
+      param.append('parentCode', parentCode);
+      this.$common.requireBackData({
+        type: 'post',
+        url: '/ssa/biReport/searchDimLevelValue.action',
+        param: param,
+        successCallBack: function (response) {
+          console.log('维度选项查询==========', response)
+          if (response.status == 200) {
+            let resultData = response.data.data || []
+            if(type == 'open'){//打开弹窗时
+              _this.levelParams.levelOpts[0].isLast = true
+              _this.levelParams.levelOpts[0].cities = resultData
+              _this.levelParams.levelData = [_this._.cloneDeep(_this.levelParams.levelOpts[0])]
+              _this.levelParams.isNeedLevelSelect = resultData.length > 0 ? true : false
+            }else if(type == 'click'){//单选层级时
+              const findIndex = _this.levelParams.levelData.findIndex(v => v.dimLevelId == dimLevelId)
+              _this.levelParams.levelData[findIndex].cities = resultData
+              // 判断全选
+              _this.setAllSelect()
+            }
+          } else {
+            _this.$message.error(`${_this.value.$t("dimQueryFailed")}!`)
+            if(type == 'open') _this.levelParams.isNeedLevelSelect = false
+          }
+        },
+      })
+    },
+    setAllSelect(){//单选时判断是否全选
+      const find = this.levelParams.levelData.find(v => v.isLast)
+      let level = find ? find.dimLevel-1 : -1
+      if(this.levelParams.nowClickDimLevel == level){
+        // 如果点击的是最后一级的父级，则判断是否全选
+        let { cities } = find
+        let checkAllInde = true
+        for(let i=0; i<cities.length; i++){
+          const findIndex = this.levelParams.haveChooseLevel.findIndex(v => v.code==cities[i].code)
+          if(findIndex == -1){
+            checkAllInde = false
+            break
+          }
+        }
+        find.checkAll = checkAllInde
+      }
+      console.log('levelData888',this.levelParams.levelData)
+      console.log('haveChooseLevel',this.levelParams.haveChooseLevel)
+    },
+    // 单选-
+    radioGroupChange(val,item){
+      console.log(val,item)
+      this.levelParams.nowClickDimLevel = item.dimLevel
+      const find = item.cities.find(v => v.name == val)
+      const level = item.dimLevel + 1
+      const findLevel = this.levelParams.levelOpts.find(v => v.dimLevel == level)
+      const findIndex = this.levelParams.levelData.findIndex(v => v.dimLevelId == findLevel.dimLevelId)
+      if(this.levelParams.blockLevel == this.levelParams.levelData[findIndex].dimLevel){
+        //当选择的层级为最后一层时表示多选
+        this.levelParams.levelData[findIndex].isLast = true
+      }
+      //当选择的层级大于点击的层级时-清空后面的层级数据
+      this.levelParams.levelData.forEach(value =>{
+        if(value.dimLevel > item.dimLevel){
+          value.cities = []
+          value.radioChooose = null
+        }
+      })
+      this.selectDimsByLevel(findLevel.dimLevelId,find.code,'click')
+    },  
+    // 全选 val-true/false
+    handleCheckAllChange(val,item) {
+      if(val){
+        let allCities = this.levelParams.haveChooseLevel.concat(item.cities)
+        allCities = this.$common.setArrObj(allCities,'code')
+        this.levelParams.haveChooseLevel = this._.cloneDeep(allCities)
+        const nameArr = allCities.map(v => v.code)
+        item.checkedCities = nameArr || []
+      }else{
+        const cities = item.cities
+        let levelHave = this.levelParams.haveChooseLevel
+        cities.forEach((val,idx) =>{
+          const findIndex = levelHave.findIndex(v => v.code == val.code)
+          findIndex!=-1 && levelHave.splice(findIndex,1)
+        })
+        const nameArr = levelHave.map(v => v.code)
+        item.checkedCities = nameArr || []
+      }
+      console.log('this.levelParams.levelData',this.levelParams.levelData)
+      console.log('this.levelParams.haveChooseLevel',this.levelParams.haveChooseLevel)
+      console.log('item888',val,item)
+    },
+    // 选择某一个-选项组
+    handleCheckedCitiesChange(value,item) {
+      // 设定已选条件值-haveChooseLevel
+      let updataData = []
+      value.forEach(val =>{
+        const find = item.cities.find(v => v.code == val)
+        find && updataData.push(find)
+      })
+      let allData = this.levelParams.haveChooseLevel.concat(updataData)
+      allData = this.$common.setArrObj(allData,'code')
+      this.levelParams.haveChooseLevel = this._.cloneDeep(allData);
+
+      // 取消勾选的时候删除haveChooseLevel里对应的项
+      const levelLen = this.levelParams.haveChooseLevel.length
+      for(let i = levelLen -1; i >= 0; i--){
+        const findIdx = value.findIndex(v => v == this.levelParams.haveChooseLevel[i].code)
+        if(findIdx == -1) this.levelParams.haveChooseLevel.splice(i,1)
+      }
+
+      // 全选控制
+      const cities = item.cities || []
+      let checkAllInde = true
+      for(let i=0; i<cities.length; i++){
+        const findIndex = value.findIndex(v => v ==cities[i].code)
+        if(findIndex == -1){
+          checkAllInde = false
+          break
+        }
+      }
+      item.checkAll = checkAllInde
+    },
+
+    // 所选报表发生改变
+    select_change(val) {
+      for (let i of this.chartDatas.chartLists) {
+        if (i.id == val) {
+          this.downLoadDataParam.dirName =
+            (i.global.name || i.tableName || i.id) +
+            "-" +
+            this.$common.dateFormat("yyyyMMddhhmmss", new Date());
+          break;
+        }
+      }
+    },
+    
+    updateTimeByLeveChange: function (val, filterItem) {
+      console.log("--------------------------------------------------");
+      let dimId = filterItem.dimId;
+      let dimLevel = filterItem.dimLevel;
+      let timeType = this.config.options.setData.valueCtrTypeByDimLevelId[
+        filterItem.colId
+      ]; // 10年  11月 12日
+      let updateLeveVal = "";
+      if (timeType == "10" || !val) {
+        //年   年不处理，没有值不处理
+        return;
+      } else if (timeType == "11") {
+        //月
+        updateLeveVal = val.slice(0, 4);
+      } else if (timeType == "12") {
+        //日
+        updateLeveVal = val.slice(0, 6);
+      }
+      let filter = this.config.options.setData.dataConfig.filter;
+      for (let i = 0; i < filter.length; i++) {
+        let configs = filter[i].config;
+        for (let j = 0; j < configs.length; j++) {
+          let dimIdCh = configs[j].dimId;
+          let dimLevelCh = configs[j].dimLevel;
+          if (dimIdCh == dimId && dimLevelCh == dimLevel - 1) {
+            if (configs[j].condition && configs[j].condition[0]) {
+              configs[j].condition[0].values = updateLeveVal;
+              this.updateTimeByLeveChange(val, configs[j]);
+            }
+          }
+        }
+      }
+    },
+
+    changeValuesType: function (p1, p2) {
+      console.log("p1======", p1);
+      console.log("p2======", p2);
+      if (p1 == "IN" || p1 == "NOTIN") {
+        this.$set(p2, "values", []);
+      } else {
+        this.$set(p2, "values", "");
+      }
+      this.$forceUpdate();
+    },
+    forceUpdate: function () {
+      console.log(`${this.$t("i18n189")}..................`);
+      this.$forceUpdate();
+    },
+    isShowThisOption: function (filterItem, index, code) {
+      let options = this.config.options.setData.dimensionOptionSession[
+        filterItem.dimId + "_" + filterItem.dimLevel
+      ];
+      for (let i = 0; i < index; i++) {
+        if (options[i].code == code) {
+          return false;
+        }
+      }
+      return true;
+    },
+
+    //是否只显示等于选项，当维度层级最上层，且有下一级的时候这里默认只能是登录，做成级联数据选项
+    isShowEqOnly: function (searchFilterOptionsMapItem, filterItem) {
+      let filterModel = this.config.options.setData.dataConfig.filter;
+      let isOnly = true;
+      for (let i = 0; i < filterModel.length; i++) {
+        if (filterModel[i] && filterModel[i].config && isOnly) {
+          for (let j = 0; j < filterModel[i].config.length; j++) {
+            if (filterItem.systemDimId == filterModel[i].config[j].systemDimId) {
+              if (
+                filterItem.systemDimLevelId < filterModel[i].config[j].systemDimLevelId
+              ) {
+                isOnly = false;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (!isOnly) {
+        return searchFilterOptionsMapItem.conditionOperator == "EQ";
+      }
+      return true;
+    },
+
+    updateNextLeveOption: function (filterItem) {
+      console.log(this.$t("i18n190"));
+      console.log("filterItem========================", filterItem);
+      this.$forceUpdate();
+      //查询下一层级的数据，级联下拉选数据查询
+      let filterModel = this.config.options.setData.dataConfig.filter;
+      for (let i = 0; i < filterModel.length; i++) {
+        if (filterModel[i] && filterModel[i].config) {
+          for (let j = 0; j < filterModel[i].config.length; j++) {
+            if (filterItem.systemDimId == filterModel[i].config[j].systemDimId) {
+              if (
+                filterItem.systemDimLevelId < filterModel[i].config[j].systemDimLevelId
+              ) {
+                //1、清空下一级已选数据
+                if (!filterModel[i].config[j].condition[0]) {
+                  continue;
+                }
+                filterModel[i].config[j].condition[0].selectedItem = [];
+                filterModel[i].config[j].condition[0].values = [];
+                //this.config.options.setData.dimensionOptionSession[filterItem.dimId + "_" + filterItem.dimLevel] = [] //清空当前的选项
+                this.config.options.setData.dimensionOptionSession[
+                  filterModel[i].config[j].dimId + "_" + filterModel[i].config[j].dimLevel
+                ] = []; //清空下一层级的选项
+                this.$nextTick(function () {
+                  if (
+                    filterItem.condition[0].values.length != 0 &&
+                    filterItem.systemDimLevelId + 1 ==
+                      filterModel[i].config[j].systemDimLevelId
+                  ) {
+                    //2、查询当前维度选项下一层级的选项数据
+                    if (Array.isArray(filterItem.condition[0].values)) {
+                      this.freshDimensionOptionSession(
+                        filterModel[i].config[j],
+                        filterItem.condition[0].values[0]
+                      );
+                    } else {
+                      this.freshDimensionOptionSession(
+                        filterModel[i].config[j],
+                        filterItem.condition[0].values
+                      );
+                    }
+                  }
+                });
+              }
+            }
+          }
+        }
+      }
+      //当前层级所选条件清空后
+      if (filterItem.condition[0].values.length == 0) {
+      }
+    },
+    setConditionOperator: function () {
+      this.$forceUpdate();
+    },
+    //保存当前选中的过滤文件信息
+    saveFilterFileMasg: function (item) {
+      this.filtersConfig.filterConItem.fileValue.fileId = item.file_id;
+      this.filtersConfig.filterConItem.fileValue.fileName = item.file_rel_name;
+      this.$forceUpdate();
+    },
+    deleteFileRealtion: function (item) {
+      let _this = this;
+      _this
+        .$confirm(`${_this.$t("i18n191")}?`, _this.$t("tips"), {
+          confirmButtonText: _this.$t("confirm"),
+          cancelButtonText: _this.$t("cancel"),
+          type: "warning",
+        })
+        .then(() => {
+          _this.fileLoadIng = true;
+          let param = new URLSearchParams();
+          param.append("fileId", item.file_id);
+          param.append("businessType", "6");
+          param.append("objId", _this.sessionUserId);
+          _this.$common.requireBackData({
+            type: "post",
+            url: "/ssa/biFile/deleteFile.action",
+            param: param,
+            successCallBack: function (response) {
+              if (response.data.status == 1) {
+                if (_this.filtersConfig.filterConItem.fileValue.fileId == item.file_id) {
+                  _this.filtersConfig.filterConItem.fileValue.fileId = "";
+                  _this.filtersConfig.filterConItem.fileValue.fileName = "";
+                }
+                _this.$message({
+                  showClose: true,
+                  message: _this.$t("deleteSuccess"),
+                  type: "success",
+                });
+                _this.getFilterFiles();
+                _this.fileLoadIng = false;
+              } else {
+                _this.$message({
+                  showClose: true,
+                  message: response.data.msg,
+                  type: "warning",
+                });
+                _this.fileLoadIng = false;
+              }
+            },
+          });
+        });
+    },
+    successUpload: function (response, file, fileList) {
+      this.getFilterFiles(response);
+    },
+    //打开文件弹窗
+    showFilterFileWindow: function (item) {
+      this.filtersConfig.isShowFilterFileWindow = true; //打开弹窗
+      this.filtersConfig.filterConItem = item; //记录当前配置 子项
+      //获取可用文件过滤条件
+      // param.append('user_id', this.chartDatas.userId);
+      this.getFilterFiles();
+    },
+    //获取当前用户可用的文件过滤条件
+    getFilterFiles: function (msg) {
+      let param = new URLSearchParams(),
+        _this = this;
+      param.append("user_id", this.sessionUserId);
+      this.$common.requireBackData({
+        type: "post",
+        url: "/ssa/repEditController/getFilterFiles.action",
+        param: param,
+        successCallBack: function (response) {
+          if (response.data.status == 1) {
+            _this.filtersConfig.filterFiles = response.data.data.files;
+            if (msg) {
+              _this.filtersConfig.filterConItem.fileValue.fileId = msg.data.file_ID;
+              _this.filtersConfig.filterConItem.fileValue.fileName = msg.data.file_NAME;
+              _this.$message({
+                showClose: true,
+                message: _this.$t("i18n192"),
+                type: "success",
+              });
+            }
+          } else {
+            _this.$message({
+              showClose: true,
+              message: _this.$t("i18n193") + response.data.msg,
+              type: "error",
+            });
+          }
+        },
+        errorCallBack: function (error) {
+          _this.$message({
+            showClose: true,
+            message: _this.$t("i18n194"),
+            type: "error",
+          });
+        },
+      });
+    },
+    checkType: function (file) {
+      let that = this;
+      this.uploadParam.businessType = "6";
+      this.uploadParam.objId = this.sessionUserId;
+      this.uploadParam.tableId = this.chartDatas.currentModel.options.setData.dataConfig.dataSetId;
+      let type = file.name.split(".");
+      let type2 = type[type.length - 1].toLocaleUpperCase();
+      if (type2 != "XLS" && type2 != "XLSX" && type2 != "CSV") {
+        this.$message({
+          showClose: true,
+          message: `${that.$t("pleaseSelect")}EXCEL${that.$t("i18n195")}CSV${that.$t("i18n196")}`,
+          type: "warning",
+        });
+        return false;
+      }
+    },
+    secrchChangeDate: function (date, paramOpt) {
+      console.log(date);
+      let _this = this;
+      var conditionObj = JSON.parse(
+        JSON.stringify(
+          _this.config.options.setData.dataConfig.filter[0].config[paramOpt.groupIndex]
+        )
+      );
+      conditionObj.condition[paramOpt.itemIndex].values = date;
+      _this.$set(
+        _this.config.options.setData.dataConfig.filter[0].config,
+        paramOpt.groupIndex,
+        conditionObj
+      );
+    },
+    stopShowMsg: function () {
+      for (let i = 0; i < this.chartDatas.chartLists.length; i++) {
+        this.$delete(this.chartDatas.chartLists[i].options.setData, "enableData");
+        this.chartDatas.chartLists[i]["stopSearchData"] = true;
+      }
+    },
+
+    filterMsgisFull: function () {
+      //判断条件输入是否完整
+      let bdyValid = false;
+      if (this.config.options.setData.dataConfig.dyConfig) {
+        this.config.options.setData.dataConfig.dyConfig.forEach((el) => {
+          if (!el.paramValueSingle) {
+            bdyValid = true;
+          }
+          if (Array.isArray(el.paramValueSingle) && el.paramValueSingle.length == 0) {
+            bdyValid = true;
+          }
+        });
+      }
+
+      for (let a = 0; a < this.config.options.setData.dataConfig.filter.length; a++) {
+        let config = this.config.options.setData.dataConfig.filter[a].config;
+        for (let b = 0; b < config.length; b++) {
+          if (config[b].filterCheckType == "2") {
+            if (!config[b].isfill) {
+              continue;
+            }
+            if (config[b].filterCheckRadio == "1") {
+              if (
+                !config[b].filterCheckOption.values ||
+                config[b].filterCheckOption.values == ""
+              ) {
+                return true;
+              }
+            } else {
+              if (
+                !config[b].filterCheckOption.valueArr ||
+                config[b].filterCheckOption.valueArr.length == 0
+              ) {
+                return true;
+              }
+            }
+          } else {
+            let condition = config[b].condition;
+            for (let c = 0; c < condition.length; c++) {
+              let isfill = condition[c].isfill;
+              let values = condition[c].values;
+              let betweenValues = condition[c].betweenValues;
+              let conditionOperator = condition[c].conditionOperator;
+              let conditionValueType = condition[c].conditionValueType;
+              let fileId = condition[c].fileValue.fileId;
+              if (isfill == true) {
+                if (conditionValueType == "-1") {
+                  if (
+                    conditionOperator == "BETWEEN" &&
+                    (!betweenValues || betweenValues.length == 0)
+                  ) {
+                    return true;
+                  }
+                  if (
+                    conditionOperator != "BETWEEN" &&
+                    (values == "" || conditionOperator == "")
+                  ) {
+                    return true;
+                  }
+                }
+                if (conditionValueType == "1") {
+                  if (fileId == "" || conditionOperator == "") {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return bdyValid || false;
+    },
+    //把isHide改为false
+    resetIsHide(data) {
+      if (!data) {
+        return;
+      }
+      for (let i of data) {
+        if (i.isHide) i.isHide = false;
+        if (i.children[0]) this.resetIsHide(i.children);
+      }
+    },
+    showMsg: function () {
+      //判断条件输入是否完整
+      let that = this;
+      if (this.filterMsgisFull()) {
+        this.$message({
+          showClose: true,
+          message: that.$t("i18n197"),
+          type: "warning",
+        });
+        return;
+      }
+      let todoList = [],
+        chartListsLen = this.chartDatas.chartLists.length;
+      if (
+        (!this.config.unionCharts || this.config.unionCharts.length == 0) &&
+        (!this.config.options.setData.dataConfig.dyConfig ||
+          this.config.options.setData.dataConfig.dyConfig.length == 0)
+      ) {
+        return;
+      }
+      //删除指标趋势
+      for (let i = 0; i < chartListsLen; i++) {
+        if (this.chartDatas.chartLists[i].global.tableid)
+          this.chartDatas.chartLists.splice(i--, 1);
+      }
+      for (let i = 0; i < this.chartDatas.tempChartLists.length; i++) {
+        if (this.chartDatas.tempChartLists[i].global.tableid)
+          this.chartDatas.tempChartLists.splice(i--, 1);
+      }
+      if (
+        this.config.options.setData.dataConfig.dyConfig &&
+        this.config.options.setData.dataConfig.dyConfig.length > 0
+      ) {
+        for (let i = 0; i < chartListsLen; i++) {
+          let currObj = this.chartDatas.chartLists[i];
+          // 存在动态参数
+          if (
+            currObj.type != "search" &&
+            currObj.options.setData.dataConfig.dataSetId ==
+              this.config.options.setData.dataConfig.dataSetId &&
+            this.config.options.setData.dataConfig.dyConfig &&
+            this.config.options.setData.dataConfig.dyConfig.length > 0
+          ) {
+            currObj.options.setData.dataConfig.dyParam = [];
+            this.config.options.setData.dataConfig.dyConfig.forEach((item) => {
+              let _tmpObj = {};
+              _tmpObj[item.relationParamKey] = item.paramValueSingle;
+              currObj.options.setData.dataConfig.dyParam.push(_tmpObj);
+            });
+            this.pushIntoTodoList(todoList, currObj);
+          }
+          if( currObj.type != "search" &&currObj.options.setData.dataConfig.dataSetId !=this.config.options.setData.dataConfig.dataSetId &&
+            this.config.options.setData.dataConfig.dyConfig &&this.config.options.setData.dataConfig.dyConfig.length > 0
+            ){
+              //控制参数传递到组件中
+              currObj.options.setData.dataConfig.dyParam = [];
+            this.config.options.setData.dataConfig.dyConfig.forEach((item) => {
+              let _tmpObj = {};
+              _tmpObj[item.relationParamKey] = item.paramValueSingle;
+              currObj.options.setData.dataConfig.dyParam.push(_tmpObj);
+            });
+            this.pushIntoTodoList(todoList, currObj);
+
+            }
+        }
+      } else {
+        //清除动态参数
+        for (let i = 0; i < chartListsLen; i++) {
+          let currObj = this.chartDatas.chartLists[i];
+          // 存在动态参数
+          if (
+            currObj.type != "search" &&
+            currObj.options.setData.dataConfig.dataSetId ==
+              this.config.options.setData.dataConfig.dataSetId
+          ) {
+            currObj.options.setData.dataConfig.dyParam = [];
+          }
+        }
+      }
+      if (this.config.unionCharts && this.config.unionCharts.length > 0) {
+        for (let j = 0; j < this.config.unionCharts.length; j++) {
+          for (let i = 0; i < chartListsLen; i++) {
+            delete this.chartDatas.chartLists[i].stopSearchData;
+            let currModel = this.chartDatas.chartLists[i];
+            //存在该关联对象
+            if (currModel.id == this.config.unionCharts[j]) {
+              //还原isHide
+              if (this.isRepShow && currModel.options.setStyle.table)
+                this.resetIsHide(currModel.options.setStyle.table.theadData);
+              //清空原有下钻复杂表头属性
+              if (currModel["downDrillList"] && currModel.options.setStyle.table) {
+                this.$common.setSelfHeadDataProp(
+                  currModel["downDrillList"][0],
+                  currModel.options.setStyle.table.theadData,
+                  currModel.clickColIndexNow
+                );
+              }
+              delete currModel["downDrillList"];
+              delete currModel.options.setData.dataConfig.weightFilter; //删除重点项配置
+
+              /* if (!this.$common.allDimPartitionCheck(this.chartDatas.chartLists[i].options.setData.dataConfig.filter)) {
+                this.$message.error('请完成控件【' + this.chartDatas.chartLists[i].global.name + '】必选取数条件配置!')
+                return;
+              }*/
+              if (
+                !this.$common.allDimPartitionCheck(
+                  this.config.options.setData.dataConfig.filter
+                )
+              ) {
+                // this.$message.warning(`${that.$t('i18n79')}!`)
+                this.$message({
+                  showClose: true,
+                  message: that.$t("i18n197"),
+                  type: "warning",
+                });
+                break;
+                return;
+              }
+              //先解析是否有自定义枚举选项，如果有{code:"nnnn",name:'nnnn'},名字和code一样，将这部分数据重新组装为-1:条件过滤
+              delete currModel.drillCloneQuery;
+              this.$set(currModel, "drillPrototype", []);
+              if (!!currModel.options.setData.dataConfig.drillCloneDim) {
+                let tmp = this._.cloneDeep(
+                  currModel.options.setData.dataConfig.drillCloneDim
+                );
+                if (currModel.options.setData.dataConfig.dimension) {
+                  for (
+                    let i = 0;
+                    i < currModel.options.setData.dataConfig.dimension.length;
+                    i++
+                  ) {
+                    //编辑时下钻后切换为树形的情况
+                    tmp[i].isTreeData =
+                      currModel.options.setData.dataConfig.dimension[i].isTreeData;
+                  }
+                }
+                this.$set(currModel.options.setData.dataConfig, "dimension", tmp);
+                delete currModel.options.setData.dataConfig.drillCloneDim;
+              }
+              if (!!currModel.options.setData.dataConfig.drillCloneFilter) {
+                let tmp = this._.cloneDeep(
+                  currModel.options.setData.dataConfig.drillCloneFilter
+                );
+                this.$set(currModel.options.setData.dataConfig, "filter", tmp);
+                delete currModel.options.setData.dataConfig.drillCloneFilter;
+              }
+              if (
+                currModel.options.setStyle.table &&
+                currModel.options.setStyle.table.isUserPage
+              ) {
+                currModel.options.setData.dataConfig.pageParam.pageSize =
+                  currModel.options.setStyle.table.pageSize;
+                currModel.options.setStyle.table.pageIndex = currModel.options.setData.dataConfig.pageParam.pageIndex = 1;
+              }
+              if (
+                currModel.options.setStyle.table &&
+                !currModel.options.setStyle.table.isUserPage
+              ) {
+                currModel.options.setData.dataConfig.pageParam.pageSize =
+                  currModel.options.setStyle.table.pageSize;
+                currModel.options.setStyle.table.pageIndex = 1;
+              }
+              let filterItemModel = this._.cloneDeep(
+                this.config.options.setData.dataConfig.filter[0]
+              );
+              //组装查询条件，参数
+              //查询时重置getSort
+              if (currModel.getSort)
+                currModel.getSort = { prop: "", order: "", orderType: "", flag: false };
+              let chartInstDataConfigModel = this.doFilterDataBuild(
+                filterItemModel,
+                currModel
+              );
+              currModel.searchFilter = this._.cloneDeep(chartInstDataConfigModel);
+              // this.chartDatas.chartLists[i].options.setData.chartDataArr=false//通过此方式卸载表格 显示正在加载界面
+              this.pushIntoTodoList(todoList, currModel);
+              //获取数据
+              // this.doReflushData(chartInstDataConfigModel, this.chartDatas.chartLists[i]);
+            }
+          }
+        }
+      }
+      if (todoList.length > 0) {
+        todoList.forEach((item) => {
+          let _conf = item.searchFilter
+            ? item.searchFilter
+            : item.options.setData.dataConfig;
+          this.doReflushData(_conf, item);
+        });
+      }
+    },
+    /**
+     * 将对象放入数组，
+     */
+    pushIntoTodoList(arr, obj) {
+      if (arr.length == 0) {
+        arr.push(obj);
+      } else {
+        let idx = -1,
+          len = arr.length;
+        for (let i = 0; i < len; i++) {
+          if (arr[i].id == obj.id) {
+            idx = i;
+            break;
+          }
+        }
+        if (idx == -1) {
+          arr.push(obj);
+        }
+      }
+    },
+    //拼装查询条件
+    doFilterDataBuild: function (
+      filterData,
+      chartInst,
+      resultFilterData,
+      dataConfigModel
+    ) {
+      let chartInstDataConfigModel = this._.cloneDeep(
+        dataConfigModel || chartInst.options.setData.dataConfig
+      );
+      if (!filterData) {
+        return chartInstDataConfigModel;
+      }
+      let filterDataModel = this._.cloneDeep(filterData);
+      chartInstDataConfigModel.filter = chartInstDataConfigModel.filter.filter(
+        (el) => el.groupName != "重点项过滤"
+      );
+      if (
+        !filterDataModel.groupGroupLogicType ||
+        filterDataModel.groupGroupLogicType == ""
+      ) {
+        filterDataModel.groupGroupLogicType == "and";
+      }
+      for (let i = 0; i < chartInstDataConfigModel.filter.length; i++) {
+        //整理数据，判断搜索框操作维度的条件是否与当前控件条件维度相同，若相同则用搜索框内的条件
+        this.filterConditionsForSearch(
+          filterDataModel.config,
+          chartInstDataConfigModel.filter[i].config
+        );
+        if (
+          !chartInstDataConfigModel.filter[i].groupGroupLogicType ||
+          chartInstDataConfigModel.filter[i].groupGroupLogicType == ""
+        ) {
+          chartInstDataConfigModel.filter[i].groupGroupLogicType = "and";
+        }
+      }
+      //一般情况
+      for (let j = 0; j < filterDataModel.config.length; j++) {
+        let conditionArr = [];
+        if (
+          filterDataModel.config[j].filterCheckType == "1" &&
+          filterDataModel.config[j].condition
+        ) {
+          for (let i = 0; i < filterDataModel.config[j].condition.length; i++) {
+            if (filterDataModel.config[j].condition[i].conditionValueType == "-1") {
+              //一般情况 非文本过滤
+              //拆解条件
+              if (
+                filterDataModel.config[j].condition[i].conditionOperator == "BETWEEN" &&
+                filterDataModel.config[j].condition[i].betweenValues &&
+                filterDataModel.config[j].condition[i].betweenValues.length > 0
+              ) {
+                let cloneConditionGe = this._.cloneDeep(
+                  filterDataModel.config[j].condition[i]
+                );
+                cloneConditionGe.conditionOperator = "GE";
+                cloneConditionGe.values = cloneConditionGe.betweenValues[0] || "";
+                if (
+                  filterDataModel.config[j].paramBindDisArr &&
+                  filterDataModel.config[j].paramBindDisArr.length
+                ) {
+                  cloneConditionGe.varName = filterDataModel.config[
+                    j
+                  ].paramBindDisArr.find(
+                    (el) => el.sendName == filterDataModel.config[j].colId + "_1"
+                  ).varName;
+                }
+                conditionArr.push(cloneConditionGe);
+                let cloneConditionLe = this._.cloneDeep(cloneConditionGe);
+                cloneConditionLe.conditionOperator = "LE";
+                cloneConditionLe.values = cloneConditionLe.betweenValues[1] || "";
+                delete cloneConditionLe.varName;
+                if (
+                  filterDataModel.config[j].paramBindDisArr &&
+                  filterDataModel.config[j].paramBindDisArr.length
+                ) {
+                  cloneConditionLe.varName = filterDataModel.config[
+                    j
+                  ].paramBindDisArr.find(
+                    (el) => el.sendName == filterDataModel.config[j].colId + "_2"
+                  ).varName;
+                }
+                conditionArr.push(cloneConditionLe);
+                //去掉betwwen
+              } else if (
+                filterDataModel.config[j].condition[i].conditionOperator != "BETWEEN" &&
+                filterDataModel.config[j].condition[i].values &&
+                filterDataModel.config[j].condition[i].values.length > 0
+              ) {
+                //filterDataModel.config[j].condition[i].values = [this._.cloneDeep(filterDataModel.config[j].condition[i].values)];
+                filterDataModel.config[j].condition[i].values = this._.cloneDeep(
+                  filterDataModel.config[j].condition[i].values
+                );
+                if (
+                  filterDataModel.config[j].paramBindDisArr &&
+                  filterDataModel.config[j].paramBindDisArr.length
+                ) {
+                  filterDataModel.config[j].condition[i].varName = filterDataModel.config[
+                    j
+                  ].paramBindDisArr.find(
+                    (el) => el.sendName == filterDataModel.config[j].colId
+                  ).varName;
+                }
+                conditionArr.push(filterDataModel.config[j].condition[i]);
+              }
+              //不是in notin关系时将字符串保存为数组用于查询
+              /*   if(filterDataModel.config[j].condition[i].conditionOperator !='IN' &&
+                     filterDataModel.config[j].condition[i].conditionOperator !='NOTIN'){
+                     if(filterDataModel.config[j].condition[i].values && filterDataModel.config[j].condition[i].values !=""){
+                         filterDataModel.config[j].condition[i].values = [this._.cloneDeep(filterDataModel.config[j].condition[i].values)];
+                         conditionArr.push(filterDataModel.config[j].condition[i]);
+                     }
+                 }else {
+                     if(filterDataModel.config[j].condition[i].values && filterDataModel.config[j].condition[i].values.length > 0){
+                         filterDataModel.config[j].condition[i].values = this._.cloneDeep(filterDataModel.config[j].condition[i].values);
+                         conditionArr.push(filterDataModel.config[j].condition[i]);
+                     }
+                 }*/
+            } else {
+              if (
+                filterDataModel.config[j].condition[i].fileValue.fileId &&
+                filterDataModel.config[j].condition[i].fileValue.fileId != ""
+              ) {
+                conditionArr.push(filterDataModel.config[j].condition[i]);
+              }
+            }
+          }
+          filterDataModel.config[j].condition = conditionArr;
+        } else if (filterDataModel.config[j].filterCheckType == "2") {
+          // 枚举类型
+          let selfOptions = [];
+          let valueArrModel = [];
+          if (filterDataModel.config[j].filterCheckRadio == "1") {
+            //单选
+            //限定选项，限定选项的时候判断，枚举是不是自定义的
+            if (
+              this.isSelfOption(
+                filterDataModel.config[j].filterCheckOption.values,
+                filterDataModel.config[j].filterCheckOption.filterCheckOptionArr
+              )
+            ) {
+              selfOptions.push(
+                this._.cloneDeep(filterDataModel.config[j].filterCheckOption.values)
+              );
+            } else {
+              if (
+                filterDataModel.config[j].filterCheckOption.values != undefined &&
+                filterDataModel.config[j].filterCheckOption.values != ""
+              ) {
+                valueArrModel.push(
+                  this._.cloneDeep(filterDataModel.config[j].filterCheckOption.values)
+                );
+              }
+            }
+          } else if (filterDataModel.config[j].filterCheckRadio == "2") {
+            //多选
+            if (
+              filterDataModel.config[j].filterCheckOption.valueArr &&
+              filterDataModel.config[j].filterCheckOption.valueArr.length > 0
+            ) {
+              for (
+                let i = 0;
+                i < filterDataModel.config[j].filterCheckOption.valueArr.length;
+                i++
+              ) {
+                if (
+                  this.isSelfOption(
+                    filterDataModel.config[j].filterCheckOption.valueArr[i],
+                    filterDataModel.config[j].filterCheckOption.filterCheckOptionArr
+                  )
+                ) {
+                  selfOptions.push(
+                    this._.cloneDeep(
+                      filterDataModel.config[j].filterCheckOption.valueArr[i]
+                    )
+                  );
+                } else {
+                  valueArrModel.push(
+                    this._.cloneDeep(
+                      filterDataModel.config[j].filterCheckOption.valueArr[i]
+                    )
+                  );
+                }
+              }
+            }
+          }
+          //添加过滤条件
+          filterDataModel.config[j].condition = [];
+          let conditionModel = {
+            groupInnerLogicType: "and",
+            conditionValueType: "-1",
+            filterType: "1",
+            filterLevel: "-1",
+            conditionOperator: "",
+            selectedItem: [], //远程搜索缓存选中项
+          };
+          if (valueArrModel.length > 0) {
+            let conditionModelItem = this._.cloneDeep(conditionModel);
+            conditionModelItem.values = valueArrModel;
+            if (selfOptions.length > 0) {
+              //如果将一个过滤条件拆分为两个，那么使用or关系连接
+              conditionModelItem.groupInnerLogicType = "or";
+            }
+            filterDataModel.config[j].condition.push(conditionModelItem);
+          }
+          if (selfOptions.length > 0) {
+            let conditionModelItem = this._.cloneDeep(conditionModel);
+            conditionModelItem.values = selfOptions;
+            conditionModelItem.filterType = "-1";
+            filterDataModel.config[j].condition.push(conditionModelItem);
+          }
+        }
+      }
+      //过滤器组合动态参数
+      filterDataModel.config.forEach((config) => {
+        if (config.paramBindDisArr && config.paramBindDisArr.length) {
+          config;
+        }
+      });
+
+      chartInstDataConfigModel.filter.push(filterDataModel);
+      if (resultFilterData) {
+        resultFilterData.push(this._.cloneDeep(filterDataModel));
+      }
+
+      console.log(`${this.$t("i18n70")}=====================`, chartInstDataConfigModel);
+      let filters = chartInstDataConfigModel.filter;
+      let dimensionLevelItems = chartInstDataConfigModel.dimensionLevelItems;
+      let selfFiler = [];
+      if (dimensionLevelItems) {
+        for (let i = 0; i < filters.length; i++) {
+          let configs = filters[i].config;
+          for (let j = 0; j < configs.length; j++) {
+            if (configs[j].systemDimId) {
+              for (let m = 0; m < dimensionLevelItems.length; m++) {
+                if (
+                  !!configs[j].condition[0] &&
+                  configs[j].condition[0].blockLevel !== undefined
+                ) {
+                  if (
+                    configs[j].dimLevel == configs[j].condition[0].blockLevel &&
+                    configs[j].dimId == dimensionLevelItems[m].dimId &&
+                    configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+                    configs[j].systemDimLevelId == dimensionLevelItems[m].systemDimLevelId
+                  ) {
+                    configs[j].colId = dimensionLevelItems[m].colId;
+                    // configs[j].dimId = dimensionLevelItems[m].dimId
+                    selfFiler.push(configs[j]);
+                  }
+                  if (
+                    configs[j].dimLevel != configs[j].condition[0].blockLevel &&
+                    configs[j].dimId == dimensionLevelItems[m].dimId &&
+                    configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+                    configs[j].condition[0].blockLevel == dimensionLevelItems[m].dimLevel
+                  ) {
+                    configs[j].colId = dimensionLevelItems[m].colId;
+                    // configs[j].dimId = dimensionLevelItems[m].dimId
+                    configs[j].dimLevel = configs[j].condition[0].blockLevel;
+                    selfFiler.push(configs[j]);
+                  }
+                } else {
+                  if (
+                    (configs[j].dimLevelId == dimensionLevelItems[m].dimLevelId &&
+                      configs[j].dimId == dimensionLevelItems[m].dimId) ||
+                    (configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+                      configs[j].systemDimLevelId ==
+                        dimensionLevelItems[m].systemDimLevelId &&
+                      chartInst.options.setData.dataConfig.dataSetId !=
+                        this.config.options.setData.dataConfig.dataSetId)
+                  ) {
+                    configs[j].colId = dimensionLevelItems[m].dimLevelId;
+                    configs[j].dimLevelId = dimensionLevelItems[m].dimLevelId;
+                    configs[j].dimId = dimensionLevelItems[m].dimId;
+                    selfFiler.push(configs[j]);
+                  }
+                }
+              }
+            }
+            // if (configs[j].systemDimId) {
+            //   for (let m = 0; m < dimensionLevelItems.length; m++) {
+            //     if (
+            //       !!configs[j].condition[0] &&
+            //       configs[j].condition[0].blockLevel !== undefined
+            //     ) {
+            //       if (
+            //         configs[j].dimLevel == configs[j].condition[0].blockLevel &&
+            //         configs[j].dimId == dimensionLevelItems[m].dimId &&
+            //         configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+            //         configs[j].systemDimLevelId == dimensionLevelItems[m].systemDimLevelId
+            //       ) {
+            //         configs[j].colId = dimensionLevelItems[m].colId;
+            //         // configs[j].dimId = dimensionLevelItems[m].dimId
+            //         selfFiler.push(configs[j]);
+            //       }
+            //       if (
+            //         configs[j].relation &&
+            //         configs[j].relation == dimensionLevelItems[m].colId &&
+            //         configs[j].dimLevel == configs[j].condition[0].blockLevel &&
+            //         configs[j].dimId != dimensionLevelItems[m].dimId &&
+            //         configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+            //         configs[j].systemDimLevelId == dimensionLevelItems[m].systemDimLevelId
+            //       ) {
+            //         let cloneConfig = this._.cloneDeep(configs[j]);
+            //         cloneConfig.colId = dimensionLevelItems[m].colId;
+            //         cloneConfig.dimId = dimensionLevelItems[m].dimId;
+            //         cloneConfig.dimLevelId = dimensionLevelItems[m].dimLevelId;
+            //         selfFiler.push(cloneConfig);
+            //       }
+            //       if (
+            //         configs[j].dimLevel != configs[j].condition[0].blockLevel &&
+            //         configs[j].dimId == dimensionLevelItems[m].dimId &&
+            //         configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+            //         configs[j].condition[0].blockLevel == dimensionLevelItems[m].dimLevel
+            //       ) {
+            //         configs[j].colId = dimensionLevelItems[m].colId;
+            //         configs[j].dimLevel = configs[j].condition[0].blockLevel;
+            //         selfFiler.push(configs[j]);
+            //       }
+            //       if (
+            //         configs[j].relation &&
+            //         configs[j].relation == dimensionLevelItems[m].colId &&
+            //         configs[j].dimLevel != configs[j].condition[0].blockLevel &&
+            //         dimensionLevelItems[m].dimId &&
+            //         configs[j].dimId != dimensionLevelItems[m].dimId &&
+            //         configs[j].systemDimId == dimensionLevelItems[m].systemDimId
+            //       ) {
+            //         let cloneConfig = this._.cloneDeep(configs[j]);
+            //         cloneConfig.colId = dimensionLevelItems[m].colId;
+            //         cloneConfig.dimLevel = cloneConfig.condition[0].blockLevel;
+            //         //dimId和dimLevelId需要替换为
+            //         let dimId = dimensionLevelItems[m].dimId;
+            //         let levelDim = dimensionLevelItems.find(
+            //           (el) =>
+            //             el.dimId == dimId &&
+            //             dimensionLevelItems[m].dimLevel == cloneConfig.dimLevel
+     
+            
+            
+            //         );
+            //         cloneConfig.dimId = levelDim.dimId;
+            //         cloneConfig.dimLevelId = levelDim.dimLevelId;
+            //         selfFiler.push(cloneConfig);
+            //       }
+            //     } else {
+            //       //很迷的操作，太混乱了，反正目前来看是对的
+            //       if (
+            //         configs[j].dimLevelId == dimensionLevelItems[m].dimLevelId &&
+            //         configs[j].dimId == dimensionLevelItems[m].dimId
+            //       ) {
+            //         //如果来源同一个系统维度，表明可以进行控制
+            //         selfFiler.push(configs[j]);
+            //       } else if (
+            //         configs[j].relation &&
+            //         configs[j].relation == dimensionLevelItems[m].colId &&
+            //         configs[j].systemDimId == dimensionLevelItems[m].systemDimId &&
+            //         configs[j].systemDimLevelId == dimensionLevelItems[m].systemDimLevelId
+            //       ) {
+            //         let cloneConfig = this._.cloneDeep(configs[j]);
+            //         cloneConfig.colId = configs[j].relation;
+            //         cloneConfig.dimLevelId = dimensionLevelItems[m].dimLevelId;
+            //         cloneConfig.dimId = dimensionLevelItems[m].dimId;
+            //         if (
+            //           selfFiler.findIndex(
+            //             (el) =>
+            //               el.colId == cloneConfig.colId &&
+            //               cloneConfig.dimLevelId == el.dimLevelId &&
+            //               cloneConfig.dimId == el.dimId
+            //           ) == -1
+            //         ) {
+            //           selfFiler.push(cloneConfig);
+            //         }
+            //       }
+
+            //       // if((configs[j].dimLevelId != dimensionLevelItems[m].dimLevelId && configs[j].dimId != dimensionLevelItems[m].dimId)&&(configs[j].systemDimId == dimensionLevelItems[m].systemDimId && configs[j].systemDimLevelId == dimensionLevelItems[m].systemDimLevelId)){
+            //       //   let cloneConfig=this._.cloneDeep(configs[j])
+            //       //   cloneConfig.colId = dimensionLevelItems[m].dimLevelId
+            //       //   cloneConfig.dimLevelId = dimensionLevelItems[m].dimLevelId
+            //       //   cloneConfig.dimId = dimensionLevelItems[m].dimId
+            //       //   if(selfFiler.findIndex(el=>el.colId==cloneConfig.colId&&cloneConfig.dimLevelId==el.dimLevelId&&cloneConfig.dimId==el.dimId)==-1){
+            //       //     selfFiler.push(cloneConfig)
+            //       //   }
+            //       // }
+            //     }
+            //   }
+            // }
+            else {
+              selfFiler.push(configs[j]);
+            }
+          }
+        }
+      }
+      if(this.config.options.setData.dataConfig.dyConfig&&this.config.options.setData.dataConfig.dyConfig.length>0){
+        this.config.options.setData.dataConfig.dyConfig.forEach(el=>{
+          if(el.paramType=='level'){
+            let dim=dimensionLevelItems.find(ele=>ele.systemDimId==el.paramDimItem.systemDimId&&el.blockLevel==ele.dimLevel)
+            console.log("jjjjj---",dim)
+            selfFiler.push(
+              {
+                "orderType":"",
+                "systemDimLevelId":dim.systemDimLevelId,
+                "dimPartitionFlag":null,
+                "filterCheckType":"1",
+                "colNameCn":dim.colNameCn,
+                "groupflag":true,
+                "colAlias":"",
+                "systemDimId":dim.systemDimId,
+                "dimId":dim.dimId,
+              "condition":[
+                {
+                  "groupInnerLogicType":"and",
+                  "values":Array.isArray(el.paramValueSingle)?el.paramValueSingle:[el.paramValueSingle],
+                  "blockLevel":1,
+                  "filterLevel":"-1",
+                  "conditionOperator":el.multiple?"IN":'EQ',
+                  "showType":"2",
+                  "filterType":"1",
+                  "isfill":false,
+                  "conditionValueType":"-1"
+                }
+              ],
+              "dimLevelId":dim.dimLevelId,
+              "colId":dim.colId,
+              "isCover":"1",
+              "dimLevel":dim.dimLevel,
+              "clumType":"dimension",
+              "group":""
+            })
+          }
+        })
+      }
+      chartInstDataConfigModel.filter = [
+        {
+          groupGroupLogicType: "and",
+          groupName: "过滤分组",
+          config: selfFiler,
+        },
+      ];
+
+      console.log(`${this.$t("i18n71")}=====================`, chartInstDataConfigModel);
+      return chartInstDataConfigModel;
+    },
+    packageFilter: function () {},
+    filterConditionsForSearch: function (searchFilterCondition, curromFilterCondition) {
+      for (let i = 0; i < searchFilterCondition.length; i++) {
+        let isCover = searchFilterCondition[i].isCover;
+        //判断是否覆盖
+        if (isCover == "0") {
+          continue;
+        } else {
+          let searchFilterConditionColId = searchFilterCondition[i].colId;
+          for (let j = 0; j < curromFilterCondition.length; j++) {
+            let curromFilterConditionColId = curromFilterCondition[j].colId;
+            if (searchFilterConditionColId == curromFilterConditionColId) {
+              if (searchFilterCondition[i].filterCheckType == "1") {
+                //判断搜索框条件中条件长度是否等于0
+                if (
+                  searchFilterCondition[i].condition.length == 0 ||
+                  !searchFilterCondition[i].condition[0].values ||
+                  searchFilterCondition[i].condition[0].values.length == 0
+                ) {
+                  return;
+                }
+                //若等于1，直接替换值
+                if (searchFilterCondition[i].condition.length == 1) {
+                  let conditionOperator = "IN";
+                  let conditionValueType = "-1";
+                  let values = [];
+                  let fileId = "";
+                  let fileName = "";
+                  let fileValue = {};
+                  fileValue.fileId = fileId;
+                  fileValue.fileName = fileName;
+                  if (
+                    searchFilterCondition[i].filterCheckType == 1 &&
+                    searchFilterCondition[i].condition[0].values.length > 0
+                  ) {
+                    conditionOperator =
+                      searchFilterCondition[i].condition[0].conditionOperator;
+                    conditionValueType =
+                      searchFilterCondition[i].condition[0].conditionValueType;
+                    values = searchFilterCondition[i].condition[0].values;
+                    fileValue = searchFilterCondition[i].condition[0].fileValue;
+                  } else if (searchFilterCondition[i].filterCheckType == 2) {
+                    if (searchFilterCondition[i].filterCheckRadio == 2) {
+                      values = searchFilterCondition[i].filterCheckOption.valueArr;
+                    } else {
+                      values.push(searchFilterCondition[i].filterCheckOption.values);
+                    }
+                  }
+                  if (curromFilterCondition[j].condition[0]) {
+                    curromFilterCondition[
+                      j
+                    ].condition[0].conditionOperator = conditionOperator;
+                    curromFilterCondition[
+                      j
+                    ].condition[0].conditionValueType = conditionValueType;
+                    curromFilterCondition[j].condition[0].values = values;
+                    curromFilterCondition[j].condition[0].fileValue = fileValue;
+                  } else {
+                    curromFilterCondition[j].condition.push({
+                      conditionOperator: conditionOperator,
+                      conditionValueType: conditionValueType,
+                      values: values,
+                      fileValue: fileValue,
+                    });
+                  }
+                }
+                //若大于1，则产生组概念
+                if (searchFilterCondition[i].condition.length > 1) {
+                  let groupCondition = {
+                    config: [],
+                    groupGroupLogicType:
+                      curromFilterCondition[j].condition[0].groupInnerLogicType,
+                    groupName: "",
+                    clumType: "group",
+                  };
+                  groupCondition.config.push(searchFilterCondition[i]);
+                  curromFilterCondition[j] = groupCondition;
+                }
+                /*searchFilterCondition.splice(i,1);
+            i--;*/
+              } else {
+                if (searchFilterCondition[i].filterCheckRadio == "1") {
+                  //判断搜索框条件中条件长度是否等于0
+                  if (searchFilterCondition[i].filterCheckOption.values == "") {
+                    return;
+                  }
+                } else {
+                  if (searchFilterCondition[i].filterCheckOption.valueArr.length == 0) {
+                    return;
+                  }
+                }
+                //若等于1，直接替换值
+                if (searchFilterCondition[i].condition.length == 1) {
+                  let conditionOperator = "IN";
+                  let conditionValueType = "-1";
+                  let values = [];
+                  let fileId = "";
+                  let fileName = "";
+                  let fileValue = {};
+                  fileValue.fileId = fileId;
+                  fileValue.fileName = fileName;
+                  if (
+                    searchFilterCondition[i].filterCheckType == 1 &&
+                    searchFilterCondition[i].condition[0].values.length > 0
+                  ) {
+                    conditionOperator =
+                      searchFilterCondition[i].condition[0].conditionOperator;
+                    conditionValueType =
+                      searchFilterCondition[i].condition[0].conditionValueType;
+                    values = searchFilterCondition[i].condition[0].values;
+                    fileValue = searchFilterCondition[i].condition[0].fileValue;
+                  } else if (searchFilterCondition[i].filterCheckType == 2) {
+                    if (searchFilterCondition[i].filterCheckRadio == 2) {
+                      values = searchFilterCondition[i].filterCheckOption.valueArr;
+                    } else {
+                      values.push(searchFilterCondition[i].filterCheckOption.values);
+                    }
+                  }
+                  curromFilterCondition[
+                    j
+                  ].condition[0].conditionOperator = conditionOperator;
+                  curromFilterCondition[
+                    j
+                  ].condition[0].conditionValueType = conditionValueType;
+                  curromFilterCondition[j].condition[0].values = values;
+                  curromFilterCondition[j].condition[0].fileValue = fileValue;
+                }
+                //若大于1，则产生组概念
+                if (searchFilterCondition[i].condition.length > 1) {
+                  let groupCondition = {
+                    config: [],
+                    groupGroupLogicType:
+                      curromFilterCondition[j].condition[0].groupInnerLogicType,
+                    groupName: "",
+                    clumType: "group",
+                  };
+                  groupCondition.config.push(searchFilterCondition[i]);
+                  curromFilterCondition[j] = groupCondition;
+                }
+                /*searchFilterCondition.splice(i,1);
+            i--;*/
+              }
+            }
+          }
+        }
+      }
+    },
+    //判断当前字段是否为自定义的枚举
+    isSelfOption: function (clumCode, filterCheckOptionArrModel) {
+      if (filterCheckOptionArrModel && filterCheckOptionArrModel.length > 0) {
+        for (let i = 0; i < filterCheckOptionArrModel.length; i++) {
+          //当前字段名称和code同时相等，改选项为自定义类型
+          if (
+            filterCheckOptionArrModel[i].code == clumCode &&
+            filterCheckOptionArrModel[i].name == clumCode
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+
+    //获取上一层级的选项值
+    getParentDimLeveCode: function (filterItem) {
+      let filterModel = this.config.options.setData.dataConfig.filter;
+      let isOnly = true;
+      for (let i = 0; i < filterModel.length; i++) {
+        if (filterModel[i] && filterModel[i].config && isOnly) {
+          for (let j = 0; j < filterModel[i].config.length; j++) {
+            if (filterItem.systemDimId == filterModel[i].config[j].systemDimId) {
+              if (
+                filterItem.systemDimLevelId ==
+                filterModel[i].config[j].systemDimLevelId + 1
+              ) {
+                let parentCode = filterModel[i].config[j].condition[0]
+                  ? filterModel[i].config[j].condition[0].values[0]
+                  : "";
+                return { parentCode: parentCode };
+              }
+            }
+          }
+        }
+      }
+      return false;
+    },
+
+    remoteMethod(query, dimId, dimLevel, colId, filterItem) {
+      //判断是否选中组件
+      let that = this;
+      if (!this.chartDatas.currentModel) {
+        this.$message({
+          showClose: true,
+          message: that.$t("i18n198"),
+          type: "warning",
+        });
+        return;
+      }
+      let _this = this;
+      if (query !== "") {
+        let parentCode = this.getParentDimLeveCode(filterItem);
+        this.conditionLoading = true;
+        let param = new URLSearchParams();
+        param.append("likeName", query);
+        param.append("userId", this.sessionUserId);
+        param.append(
+          "dataSetId",
+          this.chartDatas.currentModel.options.setData.dataConfig.dataSetId
+        );
+        param.append("dimLevelId", colId);
+        param.append("pageStart", 1);
+        param.append("pageSize", this.limitSize);
+        if (parentCode) {
+          if (!parentCode.parentCode) {
+            //未选父级的时候，不允许查询，将所有数据清空，这里只清空选项，不清空已选择的选项记录
+            this.config.options.setData.dimensionOptionSession[
+              dimId + "_" + dimLevel
+            ] = [];
+            return;
+          }
+          param.append("parentCode", parentCode.parentCode);
+        }
+        this.$common.requireBackData({
+          type: "post",
+          url: "/ssa/biReport/searchDimLevelValue.action",
+          param: param,
+          successCallBack: function (response) {
+            if (response.data.status == 1) {
+              _this.config.options.setData.dimensionOptionSession[
+                dimId + "_" + dimLevel
+              ] = response.data.data;
+              _this.conditionLoading = false;
+            } else {
+              _this.$message({
+                showClose: true,
+                message: _this.$t("i18n199") + response.data.msg,
+                type: "error",
+              });
+            }
+          },
+          errorCallBack: function (error) {
+            _this.$message({
+              showClose: true,
+              message: _this.$t("i18n200"),
+              type: "error",
+            });
+          },
+        });
+      } else {
+        if (_this.dimensionOptionSession) {
+          _this.$set(_this.dimensionOptionSession, dimId + "_" + dimLevel, []);
+        }
+      }
+    },
+    unionList: function (config, list2) {
+      var list1 = config.selectedItem;
+      if (list2 == undefined) {
+        list2 = [];
+      }
+      return this.addSet(list1, list2);
+    },
+    addSet: function (list1, list2) {
+      let returnArr = [];
+      let newArr = list1.concat(list2);
+      for (let a = 0; a < newArr.length; a++) {
+        let flag = true;
+        let acode = newArr[a].code;
+        for (let b = 0; b < returnArr.length; b++) {
+          let bcode = returnArr[b].code;
+          if (acode == bcode) {
+            flag = false;
+          }
+        }
+        if (flag) {
+          returnArr.push(newArr[a]);
+        }
+      }
+      let myData = [],
+        indexArr = [];
+      for (let i = 0; i < returnArr.length; i++) {
+        if (indexArr.indexOf(returnArr[i].code) == -1) {
+          myData.push(returnArr[i]);
+          indexArr.push(returnArr[i].code);
+        }
+      }
+      return myData;
+    },
+    saveSelect: function (param, item, indexFlag, filterItem) {
+      var selectedList = item.selectedItem;
+      var optitionList = this.config.options.setData.dimensionOptionSession[indexFlag];
+      for (var a = 0; a < param.length; a++) {
+        var aCode = param[a];
+        for (var b = 0; b < optitionList.length; b++) {
+          var bCode = optitionList[b].code;
+          if (aCode == bCode) {
+            selectedList.push(optitionList[b]);
+          }
+        }
+      }
+      let _this = this;
+      this.$nextTick(function () {
+        _this.$forceUpdate();
+        //更新下一层级选项
+        this.updateNextLeveOption(filterItem);
+      });
+    },
+    //获取后台刷新数据
+    doReflushData: function (dataConfig, chartInst) {
+      let that = this;
+      let dataConfigModel = this._.cloneDeep(dataConfig);
+      // todo 传递参数给后台执行搜索，数据返回前台，赋值给控件对象，控件对象watch相关属性，发生变化，执行图表刷新
+      this.$set(chartInst.options.setData, "enableData", "loading");
+      let param = new URLSearchParams(),
+        _this = this;
+      if (!!this.sessionUserId) {
+        param.append("userId", this.sessionUserId);
+      } else {
+        param.append("rep_rul", this.chartDatas.rep_url_value);
+      }
+      if (
+        chartInst.options.setStyle.newTable &&
+        chartInst.options.setStyle.tableDesing.tableOpt.type == "colTable"
+      ) {
+        chartInst.options.setData.dataConfig.pageParam.pageIndex = 1;
+      }
+      this.$common.rebuildDataConfig(this, dataConfigModel);
+      if (chartInst.options.setStyle.table) {
+        if (!chartInst.options.setStyle.table.isUserPage) {
+          dataConfigModel.pageParam.pageSize = dataConfigModel.pageParam.defaultPageSize;
+        } else {
+          dataConfigModel.pageParam.pageSize = chartInst.options.setStyle.table.pageSize;
+        }
+        dataConfigModel.report.size = true;
+      }
+
+      //测试汇总表格接口
+      if (chartInst.type == "summaryTable") {
+        dataConfigModel.subAggParam = {
+          open: true,
+          functionCode: "SUM",
+          scale: "ALL",
+          resultType: 1,
+        };
+         //针对汇总表格，输出的维度顺序会决定数据的正确性，故需特殊处理维度的顺序
+      }
+       let summaryTableDims=  this.$controlDataUtil.repackageSummaryTableDims(dataConfig,chartInst)
+       dataConfigModel.dimension=summaryTableDims
+       
+      
+      
+
+      param.append("requestJson", JSON.stringify(dataConfigModel));
+      _this.$set(chartInst.options.setData, "chartDataArr", []);
+      console.log(`${_this.$t("i18n201")}=================`, dataConfigModel);
+      //判断是否要查询列汇总数据
+      if (dataConfigModel.isSum) {
+        this.$common.requireBackData({
+          type: "post",
+          url: "/ssa/biReport/search.action",
+          param: param,
+          timeout: 180000,
+          successCallBack: function (response) {
+            if (_this.chartDatas.currentModel.options.setData.enableData) {
+              if (response.data.status == 1) {
+                _this.$set(
+                  chartInst.options.setData.dataConfig.report,
+                  "sumData",
+                  response.data.data.data || []
+                );
+              } else {
+                // _this.$message.error('根据配置条件查询数据失败：' + response.data.msg);
+                console.log(_this.$t("i18n76") + response.data.msg);
+                _this.$message({
+                  showClose: true,
+                  message: _this.$t("i18n202"),
+                  type: "error",
+                });
+              }
+            }
+          },
+          errorCallBack: function (error) {
+            // _this.$message.error('根据配置条件查询数据失败：查询接口失败');
+            console.log(_this.$t("i18n78"));
+            _this.$set(chartInst.options.setData, "enableData", "error");
+            _this.$message({
+              showClose: true,
+              message: _this.$t("timeOut"),
+              type: "error",
+            });
+          },
+        });
+      }
+
+      let countParam = new URLSearchParams();
+      countParam.append("userId", this.chartDatas.userId);
+      countParam.append("searchType", dataConfigModel.searchType);
+      dataConfigModel.isSum = false;
+      countParam.append("requestJson", JSON.stringify(dataConfigModel));
+      //判断是否需要查询总条数
+      if (dataConfigModel.report.size == true) {
+        this.$common.requireBackData({
+          type: "post",
+          url: "/ssa/biReport/search.action",
+          param: countParam,
+          timeout: 180000,
+          successCallBack: function (response) {
+            if (chartInst.options.setData.enableData) {
+              if (chartInst.stopSearchData) {
+                console.log(`---${_this.$t("i18n72")}`);
+                return;
+              }
+
+              if (response.data.status == 1) {
+                chartInst.options.setData.dataConfig.report.count =
+                  response.data.data.dataReport.SIZE;
+                // document.getElementById("dataCount_div_" + chartInst.id).innerHTM = response.data.data.dataReport.SIZE;
+              } else {
+                // _this.$message.error('根据配置条件查询数据失败：' + response.data.msg);
+                console.log(_this.$t("i18n76") + response.data.msg);
+                _this.$message({
+                  showClose: true,
+                  message: _this.$t("i18n77"),
+                  type: "error",
+                });
+              }
+            }
+            delete chartInst.stopSearchData;
+          },
+          errorCallBack: function (error) {
+            // _this.$message.error('根据配置条件查询数据失败：查询接口失败');
+            console.log(_this.$t("i18n78"));
+            _this.$set(chartInst.options.setData, "enableData", "error");
+            _this.$message({
+              showClose: true,
+              message: _this.$t("timeOut"),
+              type: "error",
+            });
+            delete chartInst.stopSearchData;
+          },
+        });
+      }
+      let sizeParam = new URLSearchParams();
+      if (!!this.sessionUserId) {
+        sizeParam.append("userId", this.sessionUserId);
+      } else {
+        sizeParam.append("rep_rul", this.chartDatas.rep_url_value);
+      }
+      dataConfigModel.report.size = false;
+      dataConfigModel.isSum = false;
+      sizeParam.append("requestJson", JSON.stringify(dataConfigModel));
+      this.$common.requireBackData({
+        type: "post",
+        timeout: 180000,
+        url: "/ssa/biReport/search.action",
+        param: sizeParam,
+        successCallBack: function (response) {
+          chartInst["newRender"] = false;
+          if (response.data.status == 1) {
+            if (chartInst.stopSearchData) {
+              console.log(`---${_this.$t("i18n72")}`);
+              return;
+            }
+            chartInst.sqlText = response.data.data.sql;
+            let chartDataArr;
+            if (["table", "newTable"].indexOf(chartInst.type) > -1) {
+              chartDataArr = response.data.data.data;
+            } else if (chartInst.global.type == "summaryTable") {
+              chartDataArr = _this.$controlDataUtil.buildSummaryData(
+                response.data.data.data,
+                chartInst.options,
+                { total: _this.$t("i18n1848"), subTotal: _this.$t("i18n1847") }
+              );
+            } else {
+              chartDataArr = _this.$common.buildChartData(
+                response.data.data.data,
+                chartInst.options.setData.dataConfig
+              );
+            }
+            if (!chartInst.options.setData["chartDataArrOriginal"]) {
+              chartInst.options.setData["chartDataArrOriginal"] = [];
+            }
+            chartInst.options.setData["chartDataArrOriginal"].push.apply(
+              chartInst.options.setData["chartDataArrOriginal"],
+              response.data.data.data
+            );
+            _this.$set(chartInst.options.setData, "chartDataArr", chartDataArr);
+            _this.$set(chartInst.options.setData, "enableData", true);
+            _this.$nextTick(function () {
+              _this.$set(chartInst.options.setData, "isReflush", true);
+              //添加水印
+              for (let i of _this.chartDatas.tempChartLists) {
+                if (i.type != "search") {
+                  let msg = _this.$common.getPringMsg();
+                  _this.$common.waterMaker(i.id, msg);
+                }
+              }
+            });
+            if (response.data.data.data.length == 0) {
+              _this.$set(chartInst.options.setData, "enableData", "noData");
+            }
+          } else {
+            // _this.$message.error('刷新数据失败：' + response.data.msg);
+            _this.$set(chartInst.options.setData, "enableData", true);
+            console.log(_this.$t("i18n203") + response.data.msg);
+            _this.$message({
+              showClose: true,
+              message: response.data.msg,
+              type: "error",
+            });
+            _this.$set(chartInst.options.setData, "chartDataArr", []);
+          }
+          delete chartInst.stopSearchData;
+        },
+        errorCallBack: function (error) {
+          chartInst["newRender"] = false;
+          _this.$message({
+            showClose: true,
+            message: _this.$t("timeOut"),
+            type: "error",
+          });
+          console.log(_this.$t("i18n205"));
+          //  _this.$message('请稍等');
+          _this.$set(chartInst.options.setData, "enableData", "error");
+          delete chartInst.stopSearchData;
+        },
+      });
+    },
+
+    buildSearchFilterOptionsMap: function () {
+      this.config.options.setData.searchFilterOptionsMap = {};
+      this.$common.buildSearchFilterOptionsMap(
+        this.config.options.setData.searchFilterOptionsMap,
+        this.config.options.setData.operatorbylabel
+      );
+      this.$nextTick(function () {
+        this.$forceUpdate();
+      });
+    },
+    getSelectedDataSetInfo: function (dataSetId) {
+      if (!dataSetId || dataSetId == "") {
+        return;
+      }
+      if (dataSetId instanceof Array) {
+        dataSetId = dataSetId[dataSetId.length - 1];
+        this.config.options.setData.dataConfig.dataSetId = dataSetId;
+      }
+      let param = new URLSearchParams(),
+        _this = this;
+      param.append("userId", this.sessionUserId);
+      param.append("dataSetId", dataSetId);
+      this.$common.requireBackData({
+        type: "post",
+        url: "/ssa/biReport/searchViewReportDataSetInfo.action",
+        param: param,
+        successCallBack: function (response) {
+          if (response.data.status == 1) {
+            _this.config.options.setData.operatorbylabel =
+              response.data.data.operatorByLabel; //过滤，汇总条件 选项
+            _this.config.options.setData.valueCtrTypeByDimLevelId =
+              response.data.data.valueCtrTypeByDimLevelId; //过滤条件类型对照关系
+            _this.buildSearchFilterOptionsMap(); //创建字段类型条件对照关系
+          } else {
+            //_this.$message.error('获取数据集信息失败：' + response.data.message);
+            console.log(`${_this.$t("i18n206")}=====`, response.data.message);
+          }
+        },
+        errorCallBack: function (error) {
+          //_this.$message.info('暂无数据');
+          console.log(`${_this.$t("i18n206")}=====`, error);
+        },
+      });
+    },
+
+    //判断当前使用的维度是否还有最上一层被使用，如果没有需要初始化加载选项，后续层级切换为级联选项
+    isFirstDimLeve: function (filterModel, filterItem) {
+      for (let i = 0; i < filterModel.length; i++) {
+        if (filterModel[i] && filterModel[i].config) {
+          for (let j = 0; j < filterModel[i].config.length; j++) {
+            if (filterItem.systemDimId == filterModel[i].config[j].systemDimId) {
+              if (
+                filterItem.systemDimLevelId > filterModel[i].config[j].systemDimLevelId
+              ) {
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+    },
+
+    /**
+     * 加载维度字段可用选项
+     */
+    dobuildDemosionSession: function (filterModel) {
+      if (filterModel) {
+        for (let i = 0; i < filterModel.length; i++) {
+          if (filterModel[i] && filterModel[i].config) {
+            for (let j = 0; j < filterModel[i].config.length; j++) {
+              if (
+                filterModel[i].config[j].clumType == "dimension"
+                // && filterModel[i].config[j].filterCheckType == "2"
+              ) {
+                if (this.isFirstDimLeve(filterModel, filterModel[i].config[j])) {
+                  this.freshDimensionOptionSession(filterModel[i].config[j]);
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    //获取维度可用选项
+    freshDimensionOptionSession: function (filterItem, parentCode) {
+      //dimensionOptionSession
+      if (!this.config.options.setData.dimensionOptionSession) {
+        this.config.options.setData.dimensionOptionSession = {};
+      }
+      if (
+        filterItem.clumType == "dimension"
+        //&&
+        //!this.config.options.setData.dimensionOptionSession[filterItem.dimId + "_" + filterItem.dimLevel]
+      ) {
+        let param = new URLSearchParams(),
+          _this = this;
+        param.append("userId", this.sessionUserId);
+        param.append("dataSetId", this.config.options.setData.dataConfig.dataSetId);
+        let findNewColId=this.config.options.setData.dataConfig.dimensionLevelItems.find(el=>el.dimId==filterItem.dimId&&el.dimLevel==filterItem.dimLevel);
+        param.append("dimLevelId", findNewColId?findNewColId.colId:filterItem.colId);
+        if (parentCode) {
+          param.append("parentCode", parentCode);
+        }
+        if (
+          !filterItem.condition ||
+          filterItem.condition.length == 0 ||
+          filterItem.condition[0].showType == 1
+        ) {
+          param.append("pageStart", 1);
+          param.append("pageSize", this.limitSize);
+        }
+        this.$common.requireBackData({
+          type: "post",
+          url: "/ssa/biReport/searchDimLevelValue.action",
+          param: param,
+          successCallBack: function (response) {
+            if (response.data.status == 1) {
+              console.log(
+                `${_this.$t("i18n207")}=========================`,
+                response.data
+              );
+              _this.$set(
+                _this.config.options.setData.dimensionOptionSession,
+                filterItem.dimId + "_" + filterItem.dimLevel,
+                response.data.data
+              );
+              // _this.config.options.setData.dimensionOptionSession[filterItem.dimId + "_" + filterItem.dimLevel] = response.data.data;
+              _this.$nextTick(function () {
+                _this.$forceUpdate();
+              });
+            } else {
+              _this.$message({
+                showClose: true,
+                message: _this.$t("i18n208") + response.data.msg,
+                type: "error",
+              });
+            }
+          },
+          errorCallBack: function (error) {
+            _this.$message({
+              showClose: true,
+              message: _this.$t("i18n209"),
+              type: "error",
+            });
+          },
+        });
+      }
+    },
+    /**
+     * 获取系统维度内容
+     */
+    getSysDimensionOption(paramDimItem) {
+      let that = this;
+      if (
+        !!paramDimItem &&
+        !this.sysDimensionOptionSession[paramDimItem.dimId + "_" + paramDimItem.dimLevel]
+      ) {
+        let param = new URLSearchParams();
+        param.append("userId", this.sessionUserId);
+        param.append("dimLevelId", paramDimItem.dimLevelId);
+        this.$common.requireBackData({
+          type: "post",
+          url: "/ssa/biReport/searchSysDimLevelValueNew.action",
+          param: param,
+          successCallBack: (response) => {
+            if (response.data.status == 1) {
+              this.sysDimensionOptionSession[
+                paramDimItem.dimId + "_" + paramDimItem.dimLevel
+              ] = response.data.data;
+              this.$forceUpdate();
+            } else {
+              that.$message({
+                showClose: true,
+                message: that.$t("i18n199") + response.data.msg,
+                type: "error",
+              });
+            }
+          },
+          errorCallBack: (error) => {
+            that.$message({
+              showClose: true,
+              message: that.$t("i18n210"),
+              type: "error",
+            });
+          },
+        });
+      }
+    },
+    /**
+     * 拿到系统维度，并去除账期
+     */
+    getSystemDims() {
+      let param = new URLSearchParams();
+      param.append("type", "name");
+      param.append("keyWord", "");
+      param.append("pageStart", 1);
+      param.append("pageSize", 100);
+      this.$common.requireBackData({
+        type: "post",
+        url: "/ssa/biDim/queryDim.action",
+        param: param,
+        successCallBack: (response) => {
+          if (response.data.status == 1) {
+            this.systemDims = response.data.data.data.filter(
+              (item) => item.datasource_ins_id != null
+            );
+            //查询所有维度层级并缓存
+            this.getAllSysDimLevels(this.systemDims);
+          } else {
+            this.$message({
+              showClose: true,
+              message: response.data.msg || "error",
+              type: "error",
+            });
+          }
+        },
+      });
+    },
+    /**
+     * 查询所以系统维度层级
+     */
+    getAllSysDimLevels(dims) {
+      dims.forEach((item) => {
+        if (!this.systemDimsLevels[item.dim_id]) {
+          this.$set(this.systemDimsLevels, item.dim_id, []);
+        }
+        if (this.systemDimsLevels[item.dim_id].length == 0) {
+          let param = new URLSearchParams();
+          param.append("dim_id", item.dim_id);
+          this.$common.requireBackData({
+            type: "post",
+            url: "/ssa/biDim/queryDimLevelById.action",
+            param: param,
+            successCallBack: (response) => {
+              if (response.data.status == 1) {
+                let _tmp = [];
+                response.data.data.forEach((obj) => {
+                  _tmp.push({
+                    dimId: obj.dim_id,
+                    dimLevel: obj.dim_level,
+                    dimLevelId: obj.dim_level_id,
+                    colId: obj.dim_level_id,
+                    dimLevelName: obj.dim_level_name,
+                    dimName: obj.dim_level_code,
+                    dimPartitionFlag: null,
+                    dimScale: obj.dim_level_scale,
+                    group: true,
+                    reMark: null,
+                    systemDimId: obj.dim_id,
+                    systemDimLevelId: obj.dim_level,
+                  });
+                });
+                this.$set(this.systemDimsLevels, item.dim_id, _tmp);
+              }
+            },
+          });
+        }
+      });
+    },
+    downLoadControlsDataWindowOpen: function () {
+      //判断是否填写完整信息
+      let that = this;
+      if (this.filterMsgisFull()) {
+        this.$message({
+          showClose: true,
+          message: that.$t("i18n197"),
+          type: "warning",
+        });
+        return;
+      }
+      //this.downLoadDataParam.dirName = this.chartDatas.repname||'报表下载'
+      let chartList = this.getDownLoadChartsIns();
+      console.log('chartList888',chartList)
+      console.log('this.chartDatas.chartLists',this.chartDatas.chartLists)
+      this.downLoadDataParam.downLoadControlId = chartList[0].id;
+      this.downLoadDataParam.dirName =
+        (chartList[0].global.name || chartList[0].id || chartList[0].tableName) +
+        "-" +
+        this.$common.dateFormat("yyyyMMddhhmmss", new Date());
+      this.downLoadDataParam.showDownLoadControlItemDataWindow = true;
+
+      // 打开之前重置下载层级配置参数
+      this.levelParams = {
+        isNeedLevelSelect:false,//控制是否展示显示选择层级  
+        blockLevel:null,//当前所在的层级编码
+        levelOpts:[],//层级选项数据
+        levelData:[],//层级多选数据-父级
+        haveChooseLevel:[],//已选条件数据
+        datasetId:null,//用于请求层级数据的datasetId
+        nowClickDimLevel:null,//当前单击选择的层级
+      }
+      let dimensionListId = chartList[0].id
+      this.setLevelInfo(dimensionListId,'open')
+      console.log('chartList888',chartList)
+      console.log('this.chartDatas.chartLists',this.chartDatas.chartLists)
+    },
+    //下载
+    downLoadControlsData: function () {
+      console.log("this.levelParams.haveChooseLevel888",this.levelParams.haveChooseLevel);
+      let that = this;
+      if (
+        (!this.config.unionCharts || this.config.unionCharts.length == 0) &&
+        (!this.config.options.setData.dataConfig.dyConfig ||
+          this.config.options.setData.dataConfig.dyConfig.length == 0)
+      ) {
+        this.$message({
+          showClose: true,
+          message: that.$t("i18n211"),
+          type: "error",
+        });
+        return;
+      }
+      if (!this.downLoadDataParam.dirName || this.downLoadDataParam.dirName == "") {
+        this.$message({
+          showClose: true,
+          message: that.$t("i18n212"),
+          type: "error",
+        });
+        return;
+      }
+      /*
+        table:普通表格
+        newTable：通用表格
+        summaryTable：汇总表格
+
+        20223-03-13 对于复杂表头的下载，只针对普通表格和汇总表格进行配置header参数
+      */
+      let tableType = null;
+      let tablePosition = [];
+      let theadData = [];
+      let configData = [];
+      let conTableId = "";
+      let treeLeaf = []
+      let findNowTable = this.chartDatas.chartLists.find(
+        (v) => v.id == this.downLoadDataParam.downLoadControlId
+      );
+      if (findNowTable) {
+        tableType = findNowTable.type;
+        conTableId = findNowTable.id;
+        if (
+          findNowTable.options &&
+          findNowTable.options.setStyle &&
+          findNowTable.options.setStyle.table &&
+          findNowTable.options.setStyle.table.theadData
+        ) {
+          // theadData = findNowTable.options.setStyle.table.theadData;
+          let tData = this._.cloneDeep(findNowTable.options.setStyle.table.theadData);
+          theadData = this.$common.deleteObj(tData)
+          treeLeaf = this.$common.findLeaf(theadData)
+          console.log("cells-treeLeaf", treeLeaf);
+          console.log("cells-theadData", theadData);
+        }
+      }
+      if (tableType == "table" || tableType == "summaryTable") {
+        let tableId = conTableId + "_content";
+        let ids = document.querySelector("#" + tableId);
+        let className = ".el-table__header";
+        let headers = ids.querySelectorAll(className);
+        let wb = XLSX.utils.table_to_book(headers[0], { sheet: "tableData", raw: true });
+        if (wb.Sheets.tableData["!merges"]) {
+          let offset = findNowTable.options.setStyle.table.serialNumberEnable ? 1 : 0;
+          tablePosition = getCoordinate(
+            wb.Sheets.tableData["!merges"],
+            tableType,
+            offset
+          );
+        }
+        configData = getConfig(theadData);
+      }
+      console.log("region8888", tablePosition);
+      console.log("cells-configData", configData);
+      console.log("this.chartDatas.chartLists888", this.chartDatas.chartLists);
+
+      // return
+      // let unionChartsModel = this.config.unionCharts;//所关联的控件
+      // if (unionChartsModel) {
+      let param = new URLSearchParams(),
+        _this = this;
+      let downLoadJson = {
+        downloadName: this.downLoadDataParam.dirName,
+        downloadUserId: this.sessionUserId,
+        downloadMethod: this.downLoadDataParam.download_method,
+        downloadObjType: "4", //下载对象类型(2:搜索联动下载，3:控件下载)
+        downloadFileType: this.downLoadDataParam.downloadType,
+        downloadObjId: [], //this._.cloneDeep(unionChartsModel),
+        filter: [],
+        repId: this.chartDatas.rep_id,
+        repUrl: this.chartDatas.rep_url_value,
+      };
+      let controlInstModel = null;
+      let m = {};
+      //组装查询条件，参数
+      let resultFilterData = [];
+      for (let i = 0; i < this.chartDatas.chartLists.length; i++) {
+        //存在该对象
+        if (
+          this.downLoadDataParam.downLoadControlId == this.chartDatas.chartLists[i].id
+        ) {
+          //下载指定对象
+          downLoadJson.downloadObjId.push(this.downLoadDataParam.downLoadControlId);
+          controlInstModel = this.chartDatas.chartLists[i];
+          // 如果有动态参数配置，先把动态参数写入dyParam
+
+          if (
+            this.config.options.setData.dataConfig.dyConfig &&
+            this.config.options.setData.dataConfig.dyConfig.length > 0
+          ) {
+            controlInstModel.options.setData.dataConfig.dyParam = [];
+            this.config.options.setData.dataConfig.dyConfig.forEach((item) => {
+              let _tmpObj = {};
+              _tmpObj[item.relationParamKey] = item.paramValueSingle;
+              controlInstModel.options.setData.dataConfig.dyParam.push(_tmpObj);
+            });
+          }
+
+          //先解析是否有自定义枚举选项，如果有{code:"nnnn",name:'nnnn'},名字和code一样，将这部分数据重新组装为-1:条件过滤
+          let filterItemModel = this._.cloneDeep(
+            this.config.options.setData.dataConfig.filter[0]
+          );
+          //去除between，防止下载失败
+          filterItemModel &&
+            filterItemModel.config.forEach((el) => {
+              let bIndex = el.condition.findIndex(
+                (ele) => ele.conditionOperator == "BETWEEN"
+              );
+              if (bIndex != -1) {
+                el.condition.splice(bIndex, 1);
+              }
+            });
+          let dataConfigModel =
+            controlInstModel.drillCloneQuery || controlInstModel.searchFilter;
+          let chartInstDataConfigModel = this.doFilterDataBuild(
+            filterItemModel,
+            controlInstModel,
+            resultFilterData,
+            dataConfigModel
+          );
+          if (
+            this.chartDatas.chartLists[i].options.setStyle.table &&
+            this.chartDatas.chartLists[i].options.setStyle.table.theadData
+          ) {
+            let theadData2 = this.chartDatas.chartLists[i].options.setStyle.table
+              .theadData;
+            this.$common.buildHideColByTableHead(chartInstDataConfigModel, theadData2);
+          }
+
+          chartInstDataConfigModel = this.$common.rseSetDataConfig(
+            chartInstDataConfigModel
+          );
+
+          //添加重点项过滤条件
+          let weightFilter = this.chartDatas.chartLists[i].options.setData.dataConfig
+            .weightFilter;
+          if (weightFilter) {
+            chartInstDataConfigModel.filter.push({
+              config: [weightFilter],
+              groupName: "重点项过滤",
+              groupGroupLogicType: "and",
+            });
+          }
+
+          let control_inst_config_data = this._.cloneDeep(
+            controlInstModel.options.setData
+          );
+          if (this.downLoadDataParam.detailedList) {
+            //如果是下载清单
+            chartInstDataConfigModel["polOrDet"] = "-1";
+          }
+          this.$common.rebuildDataConfig(this, chartInstDataConfigModel);
+          if (tableType == "table" || tableType == "summaryTable") {
+            chartInstDataConfigModel["sheet"] = {
+              header: {
+                cells: configData,
+                region: tablePosition,
+              },
+            };
+          }
+          if (tableType == "summaryTable") {
+            chartInstDataConfigModel["subAggParam"] = {
+              open: true,
+              functionCode: "SUM",
+              scale: "ALL",
+              resultType: 1,
+            };
+            let summaryTableDims= this.$controlDataUtil.repackageSummaryTableDims(chartInstDataConfigModel,controlInstModel)
+            chartInstDataConfigModel.dimension=summaryTableDims;
+          }
+          chartInstDataConfigModel.isSum = false
+          control_inst_config_data.dataConfig = chartInstDataConfigModel;
+          delete control_inst_config_data.dimensionOptionSession;
+          delete control_inst_config_data.chartDataArrOriginal;
+          delete control_inst_config_data.chartDataArr;
+          if (control_inst_config_data.dataConfig.dataSetInfo) {
+            delete control_inst_config_data.dataConfig.dataSetInfo.sql;
+          }
+          let controllerId = controlInstModel.id;
+          let control_inst_name =
+            this.downLoadDataParam.dirName ||
+            controlInstModel.tableName ||
+            controlInstModel.global.name;
+          let n = {};
+          n.control_inst_name = control_inst_name;
+          if (tableType == "table" || tableType == "summaryTable"){
+          //注意，这里需要删除没有用在组件上的指标和维度，防止下载被使用
+              let columnsAll=getAllColumns(theadData);
+              console.log(columnsAll)
+              control_inst_config_data.dataConfig.indicator=control_inst_config_data.dataConfig.indicator.filter(el=> columnsAll.findIndex(ele=>ele.prop==el.colAlias)!=-1)
+              control_inst_config_data.dataConfig.dimension=control_inst_config_data.dataConfig.dimension.filter(el=>columnsAll.findIndex(ele=>ele.prop==el.colAlias)!=-1)
+              control_inst_config_data.expression=control_inst_config_data.dataConfig.expression.filter(el=>columnsAll.findIndex(ele=>ele.prop==el.colAlias&&ele.clumType == "expression")!=-1)
+          }
+
+          //页面上表头的数据根据配置好的顺序传给后端-别名字段 orderedDataAlias 2023.4.17
+          let idxDim = [
+            ...control_inst_config_data.dataConfig.indicator,
+            ...control_inst_config_data.dataConfig.dimension,
+            ...control_inst_config_data.dataConfig.expression
+          ]
+          let orderedDataAlias = []
+          treeLeaf.forEach(item =>{
+            let propSpilt = item.prop.split('_')
+            let find = null
+            if(item.clumType == "indicator"||item.clumType == "expression"){//指标-临时指标
+              find = idxDim.find(v => v.colId == propSpilt[1])
+            }else{//维度
+              find = idxDim.find(v => v.dimId == propSpilt[0] &&v.dimLevel == propSpilt[1])
+            }
+            if(find) orderedDataAlias.push(find.colAlias)
+          })
+
+          control_inst_config_data.dataConfig.orderedDataAlias = orderedDataAlias
+
+          console.log('orderedDataAlias888',orderedDataAlias)
+          console.log('control_inst_config_data.dataConfig',control_inst_config_data.dataConfig)
+          console.log('idxDim888',idxDim)
+
+
+          n.control_inst_config_data = JSON.stringify(
+            control_inst_config_data.dataConfig
+          );
+          m[controllerId] = n;
+          break;
+        }
+      }
+      if (controlInstModel) {
+        if (
+          resultFilterData.length > 0 ||
+          controlInstModel.options.setData.dataConfig.dyParam.length > 0
+        ) {
+          //downLoadJson.filter = resultFilterData;
+          downLoadJson.repControlInsByObjId = m;
+          
+          console.log(`${that.$t("i18n213")}==`, downLoadJson);
+          //  return
+          param.append("downloadObjVoStr", JSON.stringify(downLoadJson));
+          this.$common.requireBackData({
+            type: "post",
+            url: "/ssa/reportManagementController/pushDownloadTask.action",
+            param: param,
+            successCallBack: function (response) {
+              if (response.data.status == 1) {
+                _this.$message({
+                  showClose: true,
+                  message: _this.$t("addSuccess"),
+                  type: "success",
+                });
+                for (var i = 0; i < _this.chartDatas.chartLists.length; i++) {
+                  let model = _this.chartDatas.chartLists[i];
+                  let id = model.id;
+                  if (id == _this.config.id) {
+                    _this.$set(
+                      _this.chartDatas.chartLists[i],
+                      "download_id",
+                      response.data.data.download_ID
+                    );
+                    break;
+                  }
+                }
+                if (_this.downLoadDataParam.download_method == 0) {
+                  let notify = _this.$notify({
+                    title: _this.$t("tips"),
+                    message: `${_this.downLoadDataParam.dirName}${_this.$t("i18n214")}……`,
+                    duration: 0,
+                  });
+                  _this.downNotifyRel[response.data.data.download_ID] = notify;
+                  _this.setTime(_this.config.id, response.data.data.download_ID);
+                }
+                //添加下载任务之后，重置数据
+                _this.downLoadDataParam = {
+                  showDownLoadControlItemDataWindow: false,
+                  download_method: "1",
+                  downloadType: "0",
+                  dirName: "",
+                  detailedList: false,
+                };
+              } else {
+                _this.$message({
+                  showClose: true,
+                  message: _this.$t("i18n215") + response.data.msg,
+                  type: "error",
+                });
+              }
+            },
+            errorCallBack: function (error) {
+              _this.$message({
+                showClose: true,
+                message: _this.$t("i18n216"),
+                type: "error",
+              });
+            },
+          });
+        }
+      }
+      // }
+    },
+    groupInnerLogicTypeChange: function () {
+      this.$nextTick(function () {
+        this.$forceUpdate();
+      });
+    },
+    setTime(
+      popMeanId,
+      download_id //设置定时器
+    ) {
+      this.showData(popMeanId, download_id);
+      this.clearTimeSet = setInterval(() => {
+        this.showData(popMeanId, download_id);
+      }, 3000);
+    },
+    showData(popMeanId, download_id) {
+      let param = new URLSearchParams(),
+        _this = this;
+      param.append("downloadId", download_id);
+      this.$common.requireBackData({
+        type: "post",
+        url: "/ssa/reportManagementController/searchRepDownload.action",
+        param: param,
+        successCallBack: function (response) {
+          console.log("response", response);
+          if (response.data.status == 1) {
+            for (var i = 0; i < _this.chartDatas.chartLists.length; i++) {
+              let model = _this.chartDatas.chartLists[i];
+              let id = model.id;
+              if (id == popMeanId) {
+                _this.$set(
+                  _this.chartDatas.chartLists[i],
+                  "download_PRO_STATE",
+                  response.data.data.download_PRO_STATE
+                );
+                _this.$set(
+                  _this.chartDatas.chartLists[i],
+                  "file_ID",
+                  response.data.data.file_ID
+                );
+                break;
+              }
+            }
+            if (response.data.data.download_PRO_STATE == 2) {
+              _this.clearTime(download_id);
+              _this.$controlDataUtil.downloadFile(
+                response.data.data.file_ID,
+                response.data.data.download_ID,
+                response.data.data.download_OBJ_ID
+              );
+            }
+            if (response.data.data.download_PRO_STATE == 3) {
+              _this.clearTime(download_id);
+              _this.$message({
+                showClose: true,
+                message: _this.$t("i18n217"),
+                type: "error",
+              });
+            }
+          } else {
+            _this.$message({
+              showClose: true,
+              message: _this.$t("i18n218") + response.data.msg,
+              type: "error",
+            });
+          }
+        },
+        errorCallBack: function (error) {
+          _this.$message({
+            showClose: true,
+            message: _this.$t("i18n216"),
+            type: "error",
+          });
+          _this.clearTime(download_id);
+        },
+      });
+    },
+    clearTime(
+      download_id //清除定时器
+    ) {
+      clearInterval(this.clearTimeSet);
+      if (this.downNotifyRel[download_id]) {
+        this.downNotifyRel[download_id].close();
+        delete this.downNotifyRel[download_id];
+      }
+    },
+    preViewFileData: function (item) {
+      console.log(item);
+      let param = new URLSearchParams(),
+        _this = this;
+      param.set(
+        "tableId",
+        this.chartDatas.currentModel.options.setData.dataConfig.dataSetId
+      );
+      param.set("fileId", item.file_id);
+      param.set("pageStart", 1);
+      param.set("pageSize", 20);
+      this.$common.requireBackData({
+        type: "post",
+        url: "/ssa/biFile/getFileDataListPage.action",
+        param: param,
+        successCallBack: function (response) {
+          if (response.data.status == 1) {
+            _this.setFileContextHeader(response.data.data.data);
+            _this.setFileContextBodyer(response.data.data.data);
+            _this.isShowFileContext = true;
+          } else {
+            _this.$message({
+              showClose: true,
+              message: _this.$t("i18n219") + response.data.msg,
+              type: "error",
+            });
+          }
+        },
+        errorCallBack: function (error) {
+          _this.$message({
+            showClose: true,
+            message: _this.$t("i18n200"),
+            type: "error",
+          });
+        },
+      });
+    },
+    setFileContextHeader: function (arr) {
+      this.fileContext.contextHead = [];
+      if (arr.length > 0) {
+        for (let key in arr[0]) {
+          this.fileContext.contextHead.push({ label: key, prop: key });
+        }
+      }
+    },
+    setFileContextBodyer: function (arr) {
+      this.fileContext.contextBody = [];
+      if (arr.length > 0) {
+        for (let i = 0; i < arr.length; i++) {
+          this.fileContext.contextBody[i] = {};
+          for (let key in arr[i]) {
+            this.fileContext.contextBody[i][key] = arr[i][key];
+          }
+        }
+      }
+    },
+    unitHeightSet: function () {
+      if (!this.$refs["cso_" + this.config.i] || !this.$refs["csi_" + this.config.i]) {
+        return;
+      }
+      let ha = this.$refs["cso_" + this.config.i].offsetHeight;
+      let hb = this.$refs["csi_" + this.config.i].offsetHeight;
+      if (hb > ha) {
+        let tmp = Math.ceil((hb - ha) / 15);
+        this.$set(this.config, "h", this.config.h + tmp);
+      }
+    },
+    showRepInfo() {
+      //todo 请注意，此处采用了最low的方法，后续修改
+      this.$parent.$parent.$parent.$parent.$parent.drawer = true;
+    },
+    bdatePicker(v) {
+      let datePickers = {
+        10: { type: "yearrange", formate: "yyyy" },
+        11: { type: "monthrange", formate: "yyyyMM" },
+        12: { type: "daterange", formate: "yyyyMMdd" },
+      };
+      let defaultDt = datePickers[v];
+      if (defaultDt) {
+        return defaultDt;
+      }
+      return false;
+    },
+    changeFormVal(e, item) {
+      if (item.conditionOperator == "IN" || item.conditionOperator == "NOTIN") {
+        item.values = e.code;
+        item.labels = e.name;
+      } else {
+        item.values = e.code[0];
+        item.labels = e.name[0];
+      }
+      if (e.blockLevel) {
+        item.blockLevel = e.blockLevel;
+      }
+      item.selectDimId = e.dimId;
+      item.selectedItem = [];
+    },
+    changeFormVal2(e, item, config) {
+      if (item.multiple) {
+        let selected = e.code.filter((el) => el && el != undefined);
+        let nameSelected = e.name.filter((el) => el && el != undefined);
+        item.paramValueSingle = selected;
+        item.paramLabelSingle = nameSelected;
+      } else {
+        item.paramValueSingle = e.code[0];
+        item.paramLabelSingle = e.name[0];
+      }
+    },
+    updataTopData(data) {
+      this.config.options.setData.dimensionOptionSession[
+        this.filtersConfig.filterItem.dimId + "_" + this.filtersConfig.filterItem.dimLevel
+      ] = data;
+    },
+    getOperatorLevels(obj) {
+      let _key = "";
+      if (obj.clumType == "indicator") {
+        _key = "indicator";
+      } else {
+        _key = this.config.options.setData.valueCtrTypeByDimLevelId[obj.colId] + "";
+      }
+      let temp = this.config.options.setData.searchFilterOptionsMap[_key];
+
+      return temp;
+    },
+    getDownLoadChartsIns() {
+      let chartList = [];
+      let chartListsLen = this.chartDatas.chartLists.length;
+      if (
+        this.config.options.setData.dataConfig.dyConfig &&
+        this.config.options.setData.dataConfig.dyConfig.length > 0
+      ) {
+        for (let i = 0; i < chartListsLen; i++) {
+          let currObj = this.chartDatas.chartLists[i];
+          // 存在动态参数关联的同dataSet
+          if (
+            currObj.type != "search" &&
+            currObj.options.setData.dataConfig.dataSetId ==
+              this.config.options.setData.dataConfig.dataSetId &&
+            this.config.options.setData.dataConfig.dyConfig &&
+            this.config.options.setData.dataConfig.dyConfig.length > 0
+          ) {
+            chartList.push(currObj);
+          }
+        }
+      }
+      for (let i = 0; i < chartListsLen; i++) {
+        let currObj = this.chartDatas.chartLists[i];
+        (this.config.unionCharts || []).forEach((unionChart) => {
+          if (
+            currObj.type != "search" &&
+            currObj.options.setData.dataConfig.dataSetId ==
+              this.config.options.setData.dataConfig.dataSetId
+          ) {
+            if (unionChart == currObj.id) {
+              let index = chartList.findIndex((el) => el.id == currObj.id);
+              if (index == -1) {
+                chartList.push(currObj);
+              }
+            }
+          }
+        });
+      }
+      return chartList;
+    },
+  },
+  computed: {
+    ...mapGetters(["chartDatas", "sceneType"]),
+    getIcon() {
+      return function (type, name, id) {
+        let _this = this;
+        let nameArr = name.split(".");
+        let nameStyle = nameArr[nameArr.length - 1].toLowerCase();
+        if (type == "class") {
+          let obj = {
+            iconfont: true,
+            "icon-excel": true,
+            "icon-csv": false,
+          };
+          if (nameStyle == "csv") {
+            obj["icon-excel"] = false;
+            obj["icon-csv"] = true;
+          }
+          return obj;
+        } else {
+          let obj = {
+            active: false,
+            fileBox: true,
+            orange: true,
+            blue: false,
+          };
+          if (nameStyle == "csv") {
+            obj["orange"] = false;
+            obj["blue"] = true;
+          }
+          if (_this.filtersConfig.filterConItem.fileValue.fileId == id) {
+            obj["active"] = true;
+          }
+          return obj;
+        }
+      };
+    },
+    //当前关联查询控件状态
+    isLoadingControl() {
+      return function () {
+        if (!this.config.unionCharts) return false;
+        for (let j = 0; j < this.config.unionCharts.length; j++) {
+          for (let i = 0; i < this.chartDatas.chartLists.length; i++) {
+            //存在该对象
+            if (this.chartDatas.chartLists[i].id == this.config.unionCharts[j]) {
+              if (this.chartDatas.chartLists[i].options.setData.enableData == "loading") {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      };
+    },
+    isShowBtn() {
+      return (
+        (this.config.options.setData.dataConfig.filter[0] &&
+          this.config.options.setData.dataConfig.filter[0].config.length > 0) ||
+        (this.config.options.setData.dataConfig.dyConfig &&
+          this.config.options.setData.dataConfig.dyConfig.length > 0)
+      );
+    },
+    getNextDimParams() {
+      return function (val) {
+        return {
+          userId: this.chartDatas.userId,
+          dataSetId: this.config.options.setData.dataConfig.dataSetId,
+          dimLevelId: val,
+        };
+      };
+    },
+    getDownLoadCharts() {
+      let chartList = [];
+      let chartListsLen = this.chartDatas.chartLists.length;
+      if (
+        this.config.options.setData.dataConfig.dyConfig &&
+        this.config.options.setData.dataConfig.dyConfig.length > 0
+      ) {
+        for (let i = 0; i < chartListsLen; i++) {
+          let currObj = this.chartDatas.chartLists[i];
+          // 存在动态参数关联的同dataSet
+          if (
+            currObj.type != "search" &&
+            currObj.options.setData.dataConfig.dataSetId ==
+              this.config.options.setData.dataConfig.dataSetId &&
+            this.config.options.setData.dataConfig.dyConfig &&
+            this.config.options.setData.dataConfig.dyConfig.length > 0
+          ) {
+            chartList.push(currObj);
+          }
+        }
+      }
+      for (let i = 0; i < chartListsLen; i++) {
+        let currObj = this.chartDatas.chartLists[i];
+        (this.config.unionCharts || []).forEach((unionChart) => {
+          if (
+            currObj.type != "search" &&
+            currObj.options.setData.dataConfig.dataSetId ==
+              this.config.options.setData.dataConfig.dataSetId
+          ) {
+            if (unionChart == currObj.id) {
+              let index = chartList.findIndex((el) => el.id == currObj.id);
+              if (index == -1) {
+                chartList.push(currObj);
+              }
+            }
+          }
+        });
+      }
+      return chartList;
+    },
+  },
+};
+</script>
+
+<style scoped>
+.have-choose >>> .el-tag{
+  padding: 3px 5px !important;
+  height: auto !important;
+  margin-bottom: 5px !important;
+  margin-right: 5px !important;
+  line-height: 0 !important;
+}
+.have-choose >>> .el-icon-close{
+  right: -3px !important;
+}
+.have-choose >>> .el-button{
+  padding: 4px 8px !important;
+  cursor: auto !important;
+}
+
+.dialog-style{
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dialog-style >>> .el-radio--mini.is-bordered{
+  padding: 4px 8px !important;
+  border-radius: 3px !important;
+  height: auto !important;
+  margin-bottom: 5px !important;
+  margin-left: 0 !important;
+  margin-right: 5px !important;
+}
+.dialog-style >>> .el-radio__label{
+  padding-left: 5px !important;
+}
+.fieldName {
+  font-size: 12px;
+  padding: 0 5px;
+}
+.input-number >>> .el-input__inner {
+  text-align: left !important;
+}
+.change-input-icon >>> .el-input__icon {
+  display: flex;
+  align-items: center;
+}
+
+.change-input-icon >>> .el-input__inner {
+  height: 28px;
+}
+
+.showFields {
+  height: calc(100% - 108px);
+  overflow: hidden;
+}
+
+.fieldsList {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(50% - 3px);
+}
+
+.outList li {
+  height: 22px;
+  line-height: 22px;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  background: transparent;
+  margin-left: 20px;
+  padding-left: 6px;
+}
+
+.outList li:hover {
+  border: 1px solid #475c80;
+}
+
+.overlayer {
+  display: none;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 2;
+}
+
+.overlayer.show {
+  display: block;
+}
+
+.el-icon-files.configured,
+.configured {
+  color: #00ff0f;
+}
+
+.current {
+  color: #ff5252;
+  background: #c4daff;
+}
+
+.el-icon-files {
+  color: #eee;
+}
+
+.filterFieldList,
+.filterConfigList {
+  /*border:1px solid #d6d6d6;*/
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.filterFieldList {
+  border-right: 1px solid #ddd;
+}
+
+.popFieldLists {
+  background: #f9f9f9;
+}
+
+.popFieldLists li {
+  line-height: 24px;
+  cursor: pointer;
+  padding-left: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popFieldLists li:hover {
+  background: #f0f0f0;
+}
+
+.popFieldLists li.active {
+  background: #d8f1fa;
+}
+
+.cfrow {
+  line-height: 32px;
+}
+
+.filterItemActive,
+li.filterItemActive:hover {
+  background: #d7e2f8;
+}
+
+.activeFileClass {
+  background: black !important;
+}
+
+.popFieldHead {
+  line-height: 32px;
+  display: block;
+  border-bottom: 1px solid #ddd;
+}
+
+.clumsFilterClass {
+  background: #ece9e9;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.drillUl:not(:last-child) {
+  margin-bottom: 6px;
+  border-bottom: 1px dotted #4d86e3;
+}
+
+.selfFilterOptionDiv {
+  width: 320px;
+  padding: 5px;
+  border-radius: 4px;
+  /* background: red; */
+  margin-top: 5px;
+  padding: 5px;
+  height: 270px;
+  /* background: #fbfbfb; */
+  border: 1px solid #eae4e4;
+}
+
+.selfFilterOptionDivItem {
+  width: 340px;
+  background: #f3eaea;
+  height: 30px;
+  text-align: left;
+  padding: 2px;
+  line-height: 30px;
+  border-radius: 4px;
+}
+
+.selfFilterOptionDivItemDisplay {
+  display: inline-block;
+  width: 47%;
+  background: #f7efef;
+  height: 210px;
+  border-radius: 4px;
+}
+
+.fileSearchInput {
+  background: transparent !important;
+  color: #000 !important;
+  border-color: #e1e4e8 !important;
+}
+
+.iconbtn {
+  cursor: pointer;
+}
+
+.iconbtn:hover {
+  color: #3a90f8;
+}
+
+.iconbtn.el-icon-delete:hover {
+  color: red;
+}
+
+.fileBox {
+  display: inline-block;
+  position: relative;
+  font-size: 12px;
+  width: 175px;
+  border: 2px solid #eaeaea66;
+  box-sizing: border-box;
+  height: 150px;
+  padding: 5px;
+  margin: 0 0 7px 7px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.fileBox:hover {
+  border-color: #2bc048;
+}
+
+.fileBox:hover .controlBox {
+  display: block;
+}
+
+.fileBox .checkBox {
+  display: none;
+  width: 60px;
+  z-index: 9;
+  height: 60px;
+  position: absolute;
+  background-color: #2bc048;
+  color: #fff;
+  transform: rotate(40deg);
+  border-color: #2bc048;
+  top: -41px;
+  right: -26px;
+  text-align: right;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+
+.fileBox .checkBox i {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 125px;
+  transform: rotate(320deg);
+  display: block;
+  z-index: 9;
+}
+
+.fileBox .controlBox {
+  position: absolute;
+  display: none;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: #00000055;
+  top: 0;
+  left: 0;
+  font-size: 0;
+}
+
+.controlBox .controlIcon {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  line-height: 146px;
+  vertical-align: top;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.controlBox .controlTools {
+  z-index: 2;
+  left: 0;
+  top: 0;
+  background: #bcffc9;
+  float: left;
+  height: 20px;
+}
+
+.controlBox .controlTools i {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  color: #128f2a;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.controlBox .controlTools i:hover {
+  background: #08ed34;
+  color: #ff4e4e;
+}
+
+.controlBox .controlIcon i {
+  display: inline-block;
+  /*font-size: 36px;*/
+}
+
+.fileBox.active {
+  border-color: #2bc048;
+}
+
+.fileBox.active .checkBox {
+  display: block;
+}
+
+.fileBox .fileIcon {
+  height: 110px;
+  line-height: 120px;
+  background-color: rgb(255, 135, 70);
+  color: #fff;
+  line-height: 110px;
+  text-align: center;
+}
+
+.fileBox.blue .fileIcon {
+  background-color: rgb(0, 186, 255);
+}
+
+.fileBox .fileIcon i {
+  font-size: 54px;
+}
+
+.fileBox p {
+  line-height: 30px;
+  padding: 0 10px;
+}
+
+.fileNameSpan {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-filter-control-home {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: none !important;
+}
+.search-item-bt-home {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  height: calc(100% - 30px);
+}
+.search-item-tip{
+    line-height: 28px;
+    display: inline-block;
+    vertical-align: middle;
+}
+</style>

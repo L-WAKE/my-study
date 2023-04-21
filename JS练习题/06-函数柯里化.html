@@ -10,6 +10,7 @@
 
 <body>
     <script>
+        // 06-函数柯里化
         function add(...outerArgs) {
             let inner = (...innerArgs) => add(...outerArgs, ...innerArgs)
             inner.toString = () => outerArgs.reduce((acc, cur) => acc + cur)

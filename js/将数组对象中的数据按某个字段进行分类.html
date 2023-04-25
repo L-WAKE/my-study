@@ -128,7 +128,6 @@
 
         const getTypeData = (list, type) => {
             let resultData = {}
-            const dataArr = []
             list.forEach(item => {
                 if (!resultData.hasOwnProperty(item[type])) {
                     resultData[item[type]] = []

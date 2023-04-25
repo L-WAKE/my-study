@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 已知一棵树，将这棵树的所有子节点扁平化
+        let res =
+        {
+            code: 1,
+            name: "湖北省",
+            children: [
+                {
+                    code: 1,
+                    name: "武汉市",
+                    children: [{
+                        code: 1,
+                        name: "汉阳区",
+                        children: [{
+                            code: 1,
+                            name: "水上分局1"
+                        }]
+                    }, {
+                        code: 1,
+                        name: "武昌区",
+                        children: [{
+                            code: 1,
+                            name: "水上分局2"
+                        }]
+                    }, {
+                        code: 1,
+                        name: "汉口区",
+                        children: [{
+                            code: 1,
+                            name: "水上分局3"
+                        }]
+                    }]
+                },
+                {
+                    code: 1,
+                    name: "十堰市",
+                    children: [{
+                        code: 1,
+                        name: "郧阳区",
+                        children: [{
+                            code: 1,
+                            name: "安阳镇"
+                        }]
+                    }, {
+                        code: 1,
+                        name: "茅箭区",
+                        children: [{
+                            code: 1,
+                            name: "小川乡"
+                        }]
+                    }]
+                }
+            ]
+        }
+
+
+        const flattenTree = (tree) => {
+            const result = [];
+            function traverse(node) {
+                result.push(node);
+                if (node.children && node.children.length) {
+                    node.children.forEach(child => {
+                        traverse(child);
+                    });
+                }
+            }
+            traverse(tree);
+            return result;
+        }
+        console.log(flattenTree(res))
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 将数组对象中的数据按某个字段进行分类
+        const dataList = [
+            {
+                code: "510000",
+                pCode: null,
+                name: "四川省",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 1,
+            },
+            {
+                code: "510100",
+                pCode: "510000",
+                name: "成都市",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 2,
+            },
+            {
+                code: "510107",
+                pCode: "510100",
+                name: "武侯区",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 3,
+            },
+            {
+                code: "510107014",
+                pCode: "510107",
+                name: "簇锦街道",
+                isLeaf: true,
+                isSelected: false,
+                dimLevel: 4,
+            },
+            {
+                code: "510121",
+                pCode: "510100",
+                name: "金堂县",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 3,
+            },
+            {
+                code: "510121110",
+                pCode: "510121",
+                name: "福兴镇",
+                isLeaf: true,
+                isSelected: false,
+                dimLevel: 4,
+            },
+            {
+                code: "510900",
+                pCode: "510000",
+                name: "遂宁市",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 2,
+            },
+            {
+                code: "510904",
+                pCode: "510900",
+                name: "安居区",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 3,
+            },
+            {
+                code: "510904106",
+                pCode: "510904",
+                name: "白马镇",
+                isLeaf: true,
+                isSelected: false,
+                dimLevel: 4,
+            },
+            {
+                code: "530000",
+                pCode: null,
+                name: "云南省",
+                isLeaf: false,
+                isSelected: true,
+                dimLevel: 1,
+            },
+        ];
+
+
+        const test = {
+            '1': [
+                {
+                    code: "510000",
+                    pCode: null,
+                    name: "四川省",
+                    isLeaf: false,
+                    isSelected: true,
+                    dimLevel: 1,
+                },
+                {
+                    code: "530000",
+                    pCode: null,
+                    name: "云南省",
+                    isLeaf: false,
+                    isSelected: true,
+                    dimLevel: 1,
+                },
+            ],
+            '2': [
+                {
+                    code: "510100",
+                    pCode: "510000",
+                    name: "成都市",
+                    isLeaf: false,
+                    isSelected: true,
+                    dimLevel: 2,
+                },
+            ]
+        }
+
+        const getTypeData = (list, type) => {
+            let resultData = {}
+            const dataArr = []
+            list.forEach(item => {
+                if (!resultData.hasOwnProperty(item[type])) {
+                    resultData[item[type]] = []
+                }
+                for (let key in resultData) {
+                    item[type] == key && resultData[key].push(item)
+                }
+            })
+            return resultData
+        }
+
+        const result = getTypeData(dataList, 'dimLevel')
+        console.log('result', result)
+    </script>
+</body>
+
+</html>

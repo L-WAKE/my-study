@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <div>
+        <a href="#/">page</a>
+        <a href="#/page1">page1</a>
+        <a href="#/page2">page2</a>
+        <a href="#/o-my-god">not-fount</a>
+    </div>
+    <script src="./JS/hashrouter.JS"></script>
+    <script>
+        const hashRouter = new HashRouter()
+        hashRouter.init()
+        const changeHtml = function (text) {
+            document.getElementById('root').innerText = text
+        }
+        hashRouter.registry('/', () => changeHtml('page'))
+        hashRouter.registry('/page1', () => changeHtml('page1'))
+        hashRouter.registry('/page2', () => changeHtml('page2'))
+        hashRouter.registry('/not-found', () => changeHtml('没有找打页面'))
+    </script>
+</body>
+
+</html>

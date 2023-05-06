@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <!-- 根据parentId和id生成树 -->
+    <!-- 根据parentId和id生成树 根据父id生成树 -->
     <script>
         // 模拟数据
         const ary = [
@@ -74,26 +74,23 @@
             let treeList = loopTree(forefather)
             return treeList
         }
-        console.log(getTheTree(ary2))
+        console.log('我的生成', getTheTree(ary2))
 
-        /*
-          function getAllTree(ary) {
-            const setTree = (parentArr, ary) => {
-                parentArr.forEach(item => {
-                    let children = ary.filter(child => child.parent_id == item.id) || []
-                    if (children.length > 0) {
-                        item.children = children
-                        setTree(item.children, ary)
+        function getAllTree(arr) {
+            const loop = (rootArr) => {
+                rootArr.forEach(item => {
+                    const child = arr.filter(v => v.parent_id == item.id)
+                    if (child && child.length > 0) {
+                        item.children = child
+                        loop(child)
                     }
                 })
-                return parentArr
             }
-            let parentArr = ary.filter(item => !item.parent_id) || []
-            let treeList = setTree(parentArr, ary)
-            return treeList
+            let rootArr = arr.filter(v => !v.parent_id)
+            loop(rootArr)
+            return rootArr
         }
-        console.log('生成的树', getAllTree(ary2))
-        */
+        console.log('测试生成', getAllTree(JSON.parse(JSON.stringify(ary2))), ary2)
     </script>
 </body>
 

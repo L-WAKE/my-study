@@ -59,6 +59,7 @@
         }
         console.log('高级生成', getTrees())
 
+        const copyData = JSON.parse(JSON.stringify(ary2))
         const getTheTree = (ary2) => {
             const loopTree = (father = []) => {
                 father.forEach(item => {
@@ -74,7 +75,7 @@
             let treeList = loopTree(forefather)
             return treeList
         }
-        console.log('我的生成', getTheTree(ary2))
+        console.log('我的生成', getTheTree(copyData))
 
         function getAllTree(arr) {
             const loop = (rootArr) => {
@@ -90,7 +91,8 @@
             loop(rootArr)
             return rootArr
         }
-        console.log('测试生成', getAllTree(JSON.parse(JSON.stringify(ary2))), ary2)
+        const copyData2 = JSON.parse(JSON.stringify(ary2))
+        console.log('测试生成', getAllTree(copyData2), ary2)
     </script>
 </body>
 

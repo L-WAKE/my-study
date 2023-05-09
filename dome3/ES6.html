@@ -21,6 +21,14 @@
         // console.log('sortArr', sortArr)
         // console.log('flatArr', flatArr)
         console.log('hanldArr', hanldArr)
+
+        // set方法
+        const arrs = ['post', 'get', 'delete', 'post', 'get', 'put', 'get']
+        const keys = new Set()
+        arrs.forEach(item => keys.add(item))
+        console.log('keys', Array.from(keys))
+        // const setarray = Array.from(new Set(arrs))
+        // console.log('setarray', setarray)
     </script>
 </body>
 

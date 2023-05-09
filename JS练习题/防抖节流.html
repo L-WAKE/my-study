@@ -10,8 +10,14 @@
 
 <body>
     <div>
-        <input type="text">
-        <div id="test" style="width: 200px;height: 200px;background-color: pink;"></div>
+        <input type="text" id="debounce">
+        <div id="test" style="width: 200px;height: 200px;background-color: gray;"></div>
+
+
+        <div>=============防抖函数=================</div>
+        <input type="text" id="debouncefun">
+        <div>=============节流函数=================</div>
+        <div id="throttlefun" style="width: 200px;height: 200px;background-color: blanchedalmond;"></div>
     </div>
 </body>
 <script>
@@ -20,7 +26,8 @@
 
         /***************防抖**************/
 
-        let inp = document.querySelector('input')
+        // let inp = document.querySelector('input')
+        let inp = document.getElementById('debounce')
         // let time = null
         // inp.oninput = function (e) {
         //     if (time !== null) {
@@ -66,6 +73,45 @@
             testThrottleFn(e.type); // 给节流函数传参
         }
     }
+
+
+
+    // 优化版本 替换apply 为call方法改变this指向 
+
+    // 防抖
+    const debounceFun = (fun, delay) => {
+        let time = null
+        return function () {
+            let args = arguments
+            if (time) clearTimeout(time)
+            time = setTimeout(function () {
+                fun.call(this, ...args)
+            }, delay)
+        }
+    }
+    const debounceEl = document.getElementById('debouncefun')
+    debounceEl.oninput = debounceFun(function (e) {
+        console.log(e.target.value)
+    }, 500)
+
+    // 节流
+    const throttleFun = (fun, delay) => {
+        let time = null
+        return function () {
+            let args = arguments
+            if (!time) {
+                time = setTimeout(function () {
+                    fun.call(this, ...args)
+                    clearTimeout(time)
+                    time = null;
+                }, delay)
+            }
+        }
+    }
+    const throttleEl = document.getElementById('throttlefun')
+    throttleEl.onclick = throttleFun(function (e) {
+        console.log(e.type)
+    }, 800)
 </script>
 
 </html>

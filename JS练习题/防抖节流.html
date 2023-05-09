@@ -65,13 +65,10 @@
                 }
             }
         }
-        function testThrottle(content) { console.log('节流', content); }
-        let testThrottleFn = throttle(testThrottle, 500); // 节流函数
-
         let testId = document.getElementById("test")
-        testId.onclick = function (e) {
-            testThrottleFn(e.type); // 给节流函数传参
-        }
+        testId.onclick = throttle(function (e) {
+            console.log(e.type, 555)
+        }, 800)
     }
 
 

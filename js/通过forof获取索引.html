@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        // 通过forof获取索引
+
+        const arr = [1, 2, 3];
+        for (const key of arr.keys()) {
+            //可以遍历所有的索引
+            console.log(key);
+        }
+
+        /*
+            entries()方法 返回一个给定对象自身可枚举属性的键值对数组，
+            其排列与使用for...in 循环遍历该对象时返回的顺序一致（区别在于for...in循环也枚举原型链中的属性）
+            简单说就是Object.entries()可以把一个对象的键值以数组的形式遍历出来，
+            结果和for...in一致，但不会遍历原型属性
+        
+        */
+
+        let arr2 = [1, 2, 3, 4];
+        for (let [index, value] of arr2.entries()) {
+            arr2[index] = value * 10;
+        }
+        console.log(arr2); // [ 10, 20, 30, 40 ]
+
+        const obj = { key: "测试的", val: "vvval" };
+        console.log(Object.entries(obj));
+        console.log(arr2.entries());
+
+    </script>
+</body>
+
+</html>

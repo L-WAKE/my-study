@@ -19,6 +19,7 @@
             id: 'app',
             class: 'index'
         },
+        content: 'root',
         children: [
             {
                 tag: 'div',
@@ -57,7 +58,28 @@
         return dom
     }
 
-    document.body.appendChild(renderHtml(vnode))
+    // document.body.appendChild(renderHtml(vnode))
+
+
+    // practice
+    const renderDom = (vnode) => {
+        if (!vnode.tag) return
+        const dom = document.createElement(vnode.tag)
+        if (vnode.attrs) {
+            for (const key in vnode.attrs) {
+                const val = vnode.attrs[key]
+                dom.setAttribute(key, val)
+            }
+        }
+        if (vnode.content) dom.innerHTML = vnode.content
+        if (vnode.children && vnode.children.length > 0) {
+            vnode.children.forEach(child => {
+                dom.appendChild(renderDom(child))
+            })
+        }
+        return dom
+    }
+    document.body.appendChild(renderDom(vnode))
 </script>
 
 </html>

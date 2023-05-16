@@ -19,17 +19,13 @@ function longestIncreasingSubsequence(nums) {
         current.length === 0 || // 如果current为空，则只要该数字比nums[0]大则可以加入
         nums[i] > current[current.length - 1]
       ) {
-        // 将符合条件的数字加入current中
-        current.push(nums[i]);
-        // 继续搜索
-        backtrack(current, i + 1);
-        // 回溯，移除新增的数字
-        current.pop();
+        current.push(nums[i]); // 将符合条件的数字加入current中
+        backtrack(current, i + 1); // 继续搜索
+        current.pop(); // 回溯，移除新增的数字
       }
     }
   };
-  // 开始回溯
-  backtrack([], 0);
+  backtrack([], 0); // 开始回溯
   return result;
 }
 
@@ -53,4 +49,21 @@ const lengthOfLIS = (nums) => {
 };
 const arrays = [10, 9, 2, 5, 3, 7, 101, 18];
 const result = lengthOfLIS(arrays);
-console.log(result);
+console.log(result);//4
+
+//动态规划
+function longestIncreasingSubsequenced(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1);
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
+    }
+  }
+  return Math.max(...dp);
+}
+const numsd = [10, 9, 2, 5, 3, 7, 101, 18];
+const subsequenced = longestIncreasingSubsequenced(numsd);
+console.log(subsequenced); // 输出: 4

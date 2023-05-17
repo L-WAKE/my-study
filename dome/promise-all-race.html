@@ -30,7 +30,7 @@
             setTimeout(() => { resolve('p1的返回值') }, 500)
         })
         const p2 = new Promise((resolve, reject) => {
-            setTimeout(() => { resolve('p2的返回值') }, 400)
+            setTimeout(() => { reject('p2的返回值') }, 400)
         })
         const p3 = new Promise((resolve, reject) => {
             setTimeout(() => { resolve('p3的返回值') }, 600)
@@ -54,6 +54,8 @@
             Promise 对象都发生状态变更（不管是fulfilled还是 rejected），返回的 Promise 对象才会发生状态变更。
         */
         const allSettled = async () => {
+            // Promise.allSettled([p1, p2, p3]).then(res => console.log(res))
+            
             const results = await Promise.allSettled([p1, p2, p3])
             console.log('所有的请求results', results)
 

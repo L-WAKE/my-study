@@ -73,3 +73,47 @@ async function sendRequestRace(requestList, limits, callback) {
   // 注意这里其实是在微任务当中了，当前的promises里面是能确保所有的promise都在其中(前提是await那里命中了if)
   Promise.allSettled(promises).then(callback, callback);
 }
+
+function concurrentRequest(urls, maxConcurrent, callback) {
+  const results = [];
+  let currentIndex = 0;
+  let activeRequests = 0;
+  function makeRequest(url, index) {
+    activeRequests++;
+    // 发起请求
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        results[index] = data;
+        activeRequests--;
+        checkComplete();
+      })
+      .catch((error) => console.error(`Request failed: ${error}`));
+  }
+  function checkComplete() {
+    while (activeRequests < maxConcurrent && currentIndex < urls.length) {
+      makeRequest(urls[currentIndex], currentIndex);
+      currentIndex++;
+    }
+    if (activeRequests === 0 && currentIndex === urls.length) {
+      callback(results);
+    }
+  }
+  checkComplete();
+}
+
+// Promise.all实现并发请求
+function handleConcurrentRequests(requests) {
+  // 创建一个Promise数组，用于存储每个请求的Promise对象
+  const promiseArray = requests.map((request) => request());
+  // 使用Promise.all()方法等待所有请求完成
+  return Promise.all(promiseArray);
+}
+// const requests = [request1, request2, request3];
+// handleConcurrentRequests(requests)
+//   .then((results) => {
+//     console.log("所有请求都已完成", results);
+//   })
+//   .catch((error) => {
+//     console.error("至少一个请求失败", error);
+//   });

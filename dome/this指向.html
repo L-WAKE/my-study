@@ -11,6 +11,8 @@
 <body>
     <script>
         // this指向
+        // 在普通函数中的this总是代表它的直接调用者，在默认情况下，this指的是window
+        // 箭头函数this的指向的是其父级函数
         const obj = {
             name: '张三',
             getName() {
@@ -27,10 +29,10 @@
             return this.name
         }
         console.log('obj', obj)
-        console.log('普通函数', obj.getName())
-        console.log('普通函数', obj.getName2())
-        console.log('箭头函数', obj.getName1())
-        console.log('箭头函数', obj.getName3())
+        console.log('普通函数', obj.getName())//张三
+        console.log('普通函数', obj.getName2())//张三
+        console.log('箭头函数', obj.getName1())//nudefined
+        console.log('箭头函数', obj.getName3())//nudefined
     </script>
 </body>
 

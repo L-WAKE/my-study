@@ -10,6 +10,7 @@
 
 <body>
     <script>
+        // 将原生的Ajax封装成promise
         var myNewAjax = function (url) {
             return new Promise(function (resolve, reject) {
                 let xhr = new XMLHttpRequest()

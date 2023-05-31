@@ -23,6 +23,12 @@
     </div>
 </body>
 <script>
+    const isShow = () => {
+        return
+        (content.offsetTop + content.offsetHeight > scrollTop)
+            && (content.offsetTop < scrollTop + clientHeight);
+    };
+    
     // 图片懒加载
     window.onload = () => {
         // 获取某节点与浏览器顶部的距离

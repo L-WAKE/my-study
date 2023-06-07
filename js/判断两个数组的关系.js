@@ -48,16 +48,11 @@ const flag = earr.every(function (v, i) {
 });
 console.log("flag", flag);
 
-// 判断两个数组是否相等
+/*
+  some方法的使用
+  如果有一个元素满足条件，则表达式返回true , 剩余的元素不会再执行检测。
+  如果没有满足条件的元素，则返回false。
+*/
 const earr1 = [200, 120, 600, 50];
-const earr2 = [200, 120, 60, 50];
-const arrIsEqual = (arr1, arr2) => {
-  return (
-    arr1.length == arr2.length &&
-    arr1.every(function (v, i) {
-      return v === arr2[i];
-    })
-  );
-};
-
-console.log("arrIsEqual", arrIsEqual(earr1, earr2));
+const sFlag = earr1.some((item) => item == 50);
+console.log("some", sFlag);

@@ -21,5 +21,5 @@ const getInclude = (arr1, arr2) => {
   return notTmp.length > 0 ? false : true;
 };
 const garr1 = ["2", "3"];
-const garr2 = ["3"];
+const garr2 = ["3"]; 
 console.log("getInclude", getInclude(garr1, garr2));

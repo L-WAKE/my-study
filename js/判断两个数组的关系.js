@@ -43,9 +43,7 @@ console.log("findElement", findElement(farr1, farr2));
   剩余的项将不会再执行检测；如果遍历完数组后，每一项都符合条，则返回true。
 */
 const earr = [200, 120, 600, 50];
-const flag = earr.every(function (v, i) {
-  return v > 20;
-});
+const flag = earr.every((v) => v >= 50);
 console.log("flag", flag);
 
 /*

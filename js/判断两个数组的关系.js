@@ -47,3 +47,17 @@ const flag = earr.every(function (v, i) {
   return v > 20;
 });
 console.log("flag", flag);
+
+// 判断两个数组是否相等
+const earr1 = [200, 120, 600, 50];
+const earr2 = [200, 120, 60, 50];
+const arrIsEqual = (arr1, arr2) => {
+  return (
+    arr1.length == arr2.length &&
+    arr1.every(function (v, i) {
+      return v === arr2[i];
+    })
+  );
+};
+
+console.log("arrIsEqual", arrIsEqual(earr1, earr2));

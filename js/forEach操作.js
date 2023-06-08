@@ -22,10 +22,10 @@ async function testForeach(arr) {
   //   });
   for (let item of arr) {
     const res = await asyncFunc(item);
-    console.log("res", res);
+    console.log("res", res); 
   }
 }
-// testForeach(testArr);
+// testForeach(testArr); 
 
 // 2.跳出循环
 function breakForeach(arr) {

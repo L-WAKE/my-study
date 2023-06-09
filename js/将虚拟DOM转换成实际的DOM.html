@@ -63,7 +63,7 @@
 
     // practice
     const renderDom = (vnode) => {
-        if (!vnode.tag) return
+        if (!vnode.tag) return 
         const dom = document.createElement(vnode.tag)
         if (vnode.attrs) {
             for (const key in vnode.attrs) {

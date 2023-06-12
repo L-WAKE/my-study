@@ -27,7 +27,7 @@ async function testForeach(arr) {
 }
 // testForeach(testArr); 
 
-// 2.跳出循环
+// 2.跳出循环 
 function breakForeach(arr) {
   try {
     arr.forEach((item) => {

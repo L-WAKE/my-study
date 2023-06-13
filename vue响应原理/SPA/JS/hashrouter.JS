@@ -8,7 +8,7 @@ class HashRouter {
   registry(hash, callback = () => {}) {
     this.routers[hash] = callback;
   }
-  // 刷新
+  // 刷新 
   refresh() {
     // 没有hash 默认 /
     const hash = location.hash.slice(1) || "/";

@@ -1,0 +1,99 @@
+/* 混入预定义 */
+@import "./theme.scss";
+
+/*
+    用于拷贝方便使用
+    @include border_color(left,5px,solid,"commonButtonColor");
+    @include font_color("commonButtonColor");
+    @include background_color("commonButtonColor");
+    @include background("commonButtonColor");
+*/
+
+//切换主题时 获取不同的主题色值
+@mixin themeify {
+
+    @each $theme-name,
+    $theme-map in $themes {
+        //!global 把局部变量强升为全局变量
+        $theme-map: $theme-map !global;
+
+        //判断html的data-theme的属性值  #{}是sass的插值表达式
+        //& sass嵌套里的父容器标识   @content是混合器插槽，像vue的slot
+        [data-theme="#{$theme-name}"] & {
+            @content;
+        }
+    }
+}
+
+//从主题色map中取出对应颜色
+@function themed($key) {
+    @return map-get($theme-map, $key);
+}
+
+//获取背景颜色 background-color
+@mixin background_color($color) {
+    @include themeify {
+        background-color: themed($color) !important;
+    }
+}
+
+//获取背景颜色 background-不支持if-else
+@mixin background($color,$type:no) {
+    @if $type == 'center' {
+        @include themeify { background: themed($color) center no-repeat !important;}
+    }
+    @if $type != 'center' {
+        @include themeify { background: themed($color)  !important;}
+    }
+}
+
+//获取字体颜色
+@mixin font_color($color) {
+    @include themeify {
+        color: themed($color) !important;
+    }
+}
+
+//获取边框颜色
+@mixin border_color($position:left,$size:1px,$type:solid,$color:'frameColor') {
+    @if $position == 'left' {
+        @include themeify { border-left: $size $type themed($color) !important; }
+    }
+    @if $position == 'right' {
+        @include themeify { border-right: $size $type themed($color) !important; }
+    }
+    @if $position == 'top' {
+        @include themeify { border-top: $size $type themed($color) !important; }
+    }
+    @if $position == 'bottom' {
+        @include themeify { border-bottom: $size $type themed($color) !important; }
+    }
+    @if $position == 'no' {
+        @include themeify { border: $size $type themed($color) !important; }
+    }
+}
+
+
+
+@mixin layout-flex {   /* flex布局 */
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@mixin layout-flex-center {   /* flex布局 */
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin layout-flex-start {   /* flex布局 */
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* 函数指令 */
+@function grid-width($n) {  /* 列宽度自动计算 */
+    @return calc(100% / $n);
+}

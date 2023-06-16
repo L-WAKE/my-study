@@ -1,0 +1,11 @@
+$darkTabActiveBg:url('@/assets/image/svg/dark/chromtab.svg');
+$lightTabActiveBg:url('@/assets/image/svg/chromtab.svg');
+$darkHoverBg:url('@/assets/image/svg/dark/chromtab-hover.svg');
+$lightHoverBg:url('@/assets/image/svg/chromtab-hover.svg');
+
+:export {
+    darkTabActiveBg: $darkTabActiveBg;
+    lightTabActiveBg: $lightTabActiveBg;
+    darkHoverBg:$darkHoverBg;
+    lightHoverBg:$lightHoverBg
+}

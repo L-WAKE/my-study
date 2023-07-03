@@ -51,7 +51,7 @@ module.exports = {
     pageBgColor: "#FFFFFF",
     menuTagTextColor: "#2e302e",
     menuTagBgImg: "$lightTabActiveBg",
-    menuTagHoverBgImg: "$lightHoverBg",
+    menuTagHoverBgImg: "$lightHoverBg", 
     menuActiveBgColor: "#0357a2",
     menuActiveColor: "#FFFFFF",
     titleBorderColor: "#0671BE" /*标题边框颜色*/,

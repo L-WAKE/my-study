@@ -1,3 +1,5 @@
+// 事件循环
+
 console.log("1");
 setTimeout(function () {
   console.log("2");

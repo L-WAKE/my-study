@@ -48,7 +48,7 @@ module.exports = {
     mainBgColor: "#eeeeee" /* 主体部分背景色与部分阴影色 */,
     ctrlElementBorderColor: "#e0e0e6" /* 表单控件元素边框颜色 */,
     confirmBtnBgColor: "#409eff" /* 确认按钮背景颜色 */,
-    pageBgColor: "#FFFFFF",
+    pageBgColor: "#FFFFFF",/*页码颜色*/
     menuTagTextColor: "#2e302e",
     menuTagBgImg: "$lightTabActiveBg",
     menuTagHoverBgImg: "$lightHoverBg", 

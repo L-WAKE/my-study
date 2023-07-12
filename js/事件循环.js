@@ -1,4 +1,4 @@
-// 事件循环
+// 事件循环 process.nextTick优先于Promise.then方法 都属于微任务
 
 // 1.
 console.log("1");

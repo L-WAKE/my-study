@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .test {
+        width: 200px;
+        height: 200px;
+        background-color: gray;
+    }
+</style>
+
+<body>
+    <div class="test" id="throttle">节流</div>
+    <input type="text" id="shake" />
+    <script>
+        // 测试防抖-节流-根据父id生成树-深拷贝  测试手写常用工具代码
+        // 1.节流
+        function throttle(fun, delay) {
+            let time = null
+            return function () {
+                const args = arguments
+                if (!time) {
+                    time = setTimeout(function () {
+                        fun.apply(this, args)
+                        clearTimeout(time)
+                        time = null
+                    }, delay)
+                }
+            }
+        }
+        const throEl = document.getElementById('throttle')
+        throEl.onclick = throttle(function (e) {
+            console.log('节流', e.type)
+        }, 800)
+
+        // 2.防抖
+        function shakeFun(fun, delay) {
+            let time = null
+            return function () {
+                const args = arguments
+                if (time) clearTimeout(time)
+                time = setTimeout(function () {
+                    fun.call(this, ...args)
+                }, delay)
+            }
+        }
+        const shakeEl = document.getElementById('shake')
+        shakeEl.oninput = shakeFun(function (e) {
+            console.log('防抖', e.target.value)
+        }, 500)
+
+        // 3.深拷贝
+        function deepClone(obj) {
+            if ([NaN, null, undefined].includes(obj)) return obj
+            if (typeof obj != "function" && typeof obj != "object") return obj
+            let clone = Array.isArray(obj) ? [] : {}
+            for (let keys in obj) {
+                if (obj.hasOwnProperty(keys)) {
+                    clone[keys] = typeof obj[keys] == "object" ? deepClone(obj[keys]) : obj[keys]
+                }
+            }
+            return clone
+        }
+        const oriObj = {
+            name: '张三',
+            habit: {
+                list: {
+                    habit1: '打篮球',
+                    habit2: '跑步',
+                    habit3: '骑单车'
+                },
+                normal: "写代码"
+            },
+            age: 20,
+            sex: '男'
+        }
+        const cloneObj = deepClone(oriObj)
+        cloneObj.name = '李四'
+        console.log('cloneObj', cloneObj)
+        console.log('oriObj', oriObj)
+
+        // 4.根据父id生成树
+        function listToTree(list) {
+            const loop = (pArr) => {
+                for (let item of pArr) {
+                    const findChild = list.filter(v => v.parent_id == item.id)
+                    if (findChild && findChild.length > 0) {
+                        item.children = findChild
+                        loop(item.children)
+                    }
+                }
+            }
+            const rootArr = list.filter(v => !v.parent_id || v.pid == -1)
+            loop(rootArr)
+            return rootArr
+        }
+        const platList = [
+            { id: '1', name: '11', parent_id: '' },
+            { id: '2', name: '22', parent_id: '' },
+            { id: '3', name: '33', parent_id: '' },
+            { id: '11', name: '11-11', parent_id: '1' },
+            { id: '12', name: '11-12', parent_id: '1' },
+            { id: '21', name: '22-21', parent_id: '2' },
+            { id: '31', name: '33-31', parent_id: '3' },
+            { id: '111', name: '1-11', parent_id: '11' },
+            { id: '111', name: '1-11', parent_id: '31' },
+        ]
+        const newPlatList = deepClone(platList)
+        const result = listToTree(newPlatList)
+        console.log('platList', platList)
+        console.log('result', result)
+    </script>
+</body>
+
+</html>

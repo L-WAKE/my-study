@@ -36,11 +36,11 @@
         }
         //测试代码
         var mm = new PromiseM(function (resolve, reject) {
-            // resolve('123');
-            reject('reject');
+            resolve('success');
+            // reject('reject');
         });
         mm.then(function (success) {
-            console.log(success);
+            console.log('success',success);
         }, function (err) {
             console.log('fail!', err);
         });

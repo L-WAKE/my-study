@@ -33,7 +33,7 @@ const nums = [10, 9, 2, 5, 3, 7, 101, 18];
 const subsequence = longestIncreasingSubsequence(nums);
 console.log(subsequence); // 输出: [2, 5, 7, 101]
 
-// 第二种  动态规划法
+// 第二种  动态规划法 
 const lengthOfLIS = (nums) => {
   let dp = Array(nums.length).fill(1);
   let result = 1;

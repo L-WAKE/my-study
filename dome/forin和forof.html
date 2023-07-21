@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <script>
         // forin和forof   of输出值 in输出下标
-        let testObj={
-            name:"超级管理员",
-            age:18,
-            sex:"男",
-            options:"test"
+        let testObj = {
+            name: "超级管理员",
+            age: 18,
+            sex: "男",
+            options: "test"
         }
-        let testArr = [3,5,7,1]
+        let testArr = [3, 5, 7, 1]
         let keyData = []
         let valData = []
-        for(let key in testObj){
+        for (let key in testObj) {
             keyData.push(key)
             // valData.push(testObj[key])
         }
-        for(let key of testArr){
-            console.log(key)
+        for (let key of testArr) {
+            if (key == 5) break
+            console.log('forof', key)
         }
-        console.log('keyData',keyData)
+        console.log('keyData', keyData)
         // console.log('valData',valData)
     </script>
 </body>
+
 </html>

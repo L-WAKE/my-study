@@ -3,7 +3,7 @@
 /**
  * 求解指定数组的最长递增子序列 回溯法
  * @param {number[]} nums 输入数组
- * @return {number[]} 最长递增子序列
+ * @return {number[]} 最长递增子序列 
  */
 function longestIncreasingSubsequence(nums) {
   // 初始化结果为一个空数组

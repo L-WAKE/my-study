@@ -11,10 +11,10 @@ module.exports = {
   id: 1847, // i18n 自增变量 id
   translation: true, // 是否需要自动翻译中文
   to: 'en', // 中文翻译的目标语言
-  mode: 0, // 0 翻译所有 i18n 数据，1 只翻译新数据
+  mode: 1, // 0 翻译所有 i18n 数据，1 只翻译新数据
   loader: 'loader.js',
   pluginPrefix: '$t', // i18n 插件前缀 例如 vue-i18n: $t， react-i18next: t
-  include: ['src/assets/alli18nFile'], // 需要翻译的目录或文件 多个文件
+  include: ['solomon/src/source'], // 需要翻译的目录或文件 多个文件
   exclude: [], // 不需要翻译的目录或文件 如果 exclude include 同时存在同样的目录或文件 则 exclude 优先级高
   extra: /(\.a)|(\.b)$/, // 默认支持 .vue 和 .js 文件 如果需要支持其他类型的文件，请用正则描述 例如这个示例额外支持 .a .b 文件
 }

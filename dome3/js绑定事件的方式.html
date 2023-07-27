@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="btn">点击</button>
+    <button id="remove">移除</button>
+
+    <div id="box">
+        <p id="demo">冒泡</p>
+    </div>
+    <br />
+    <div id="div">
+        <p id="px">捕获</p>
+    </div>
+    <!--  2.在 HTML 中直接指定 -->
+    <button id="btn888" onclick="Htmlfunction()">HTML中指定</button>
+    <!-- <button id="btn888">HTML中指定</button> -->
+
+    <!-- 3. 在 Javascript 中 通过获取元素绑定 -->
+    <!-- <button id="btn888">获取元素绑定</button> -->
+    <script>
+        /*
+          1. addEventListener(event,function,useCapture);
+          第一个参数event：指事件的类型（如’click’,‘mousedown’）
+          第二个参数function：事件触发后调用的函数
+          第三个参数useCapture：设置传递的类型，默认值为false，即冒泡传递（可省略）；值为true时，捕获传递。
+        */
+        //   它允许给一个事件注册多个监听器，且不会覆盖已存在的事件 事件监听
+        document.getElementById("btn").addEventListener("click", one)
+        document.getElementById("btn").addEventListener("click", function () {
+            console.log("我是第二个冒泡传递");
+        })
+        function one() {
+            console.log("我是第一个冒泡传递");
+        };
+        // removeEventListener(),用来移除事件的监听
+        document.getElementById("remove").removeEventListener("click", one);
+
+
+        // 在冒泡中，内部元素的事件会先被触发，然后再触发外部元素； 【从里到外】
+        // 在捕获中，外部元素的事件会被先触发，然后才会触发内部元素的事件。【从外到里】
+        document.getElementById("demo").addEventListener("click", function () {
+            console.log("p元素被点击");
+        });//false可省略
+        document.getElementById("box").addEventListener("click", function () {
+            console.log("div元素被点击");
+        });
+
+        document.getElementById("px").addEventListener("click", function () {
+            console.log("第二个p元素被点击");
+        }, true);
+        document.getElementById("div").addEventListener("click", function () {
+            console.log("第二个div元素被点击");
+        }, true);
+
+
+        document.getElementById('btn888').addEventListener("click", function () {
+            console.log('通过addEventListener绑定')
+        })
+        function Htmlfunction() {
+            console.log('Htmlfunction绑定')
+        }
+
+
+        // 3.在 Javascript 中 通过获取元素绑定
+        document.getElementById('btn888').onclick = function () {
+            console.log('通过获取元素绑定')
+        };
+
+    </script>
+</body>
+
+</html>

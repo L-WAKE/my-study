@@ -1,6 +1,6 @@
 module.exports = {
   delay: 1500, // 自动翻译延时，必须大于 1000 ms，否则调用百度翻译 API 会失败
-  mapFile: 'i18nmap.js', // 需要生成默认 map 的文件 映射文件
+  mapFile: 'i18nmap.js', // 需要生成默认 map 的文件 映射文件-表示已有的文件去找
   appid: '', // 百度翻译 appid
   key: '', // 百度翻译密钥
   output: 'i18n.data.js', // i18n 输出文件

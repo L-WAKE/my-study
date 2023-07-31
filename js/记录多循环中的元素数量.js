@@ -13,5 +13,5 @@ const primaryArr = [
 ];
 
 let number = 0;
-primaryArr.map((val) => val.child.map((v) => (number = number + 1)));
+primaryArr.map((val) => val.child.map((v) => number++));
 console.log(number);

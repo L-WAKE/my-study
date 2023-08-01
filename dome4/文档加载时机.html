@@ -17,7 +17,7 @@
         //  1.DOMContentLoaded DOM已经完成加载，此时可以为这些DOM元素绑定事件，初始化接口等
         //  2.onload 其他外部资源均已加载完成，可以正确读出这些资源的信息，如图片的宽高等
 
-        window.onload = function (e) {
+        window.onload = function (e) { 
             console.log('执行onload', e)
         }
         document.addEventListener("DOMContentLoaded", function (e) {

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/test.css">
+</head>
+
+<body>
+    <div class="box">
+        测试样式
+    </div>
+    <script>
+        // 两个事件标识了两种不同的时刻：
+        //  1.DOMContentLoaded DOM已经完成加载，此时可以为这些DOM元素绑定事件，初始化接口等
+        //  2.onload 其他外部资源均已加载完成，可以正确读出这些资源的信息，如图片的宽高等
+
+        window.onload = function (e) {
+            console.log('执行onload', e)
+        }
+        document.addEventListener("DOMContentLoaded", function (e) {
+            console.log('执行DOMContentLoaded', e)
+        });
+    </script>
+</body>
+
+</html>

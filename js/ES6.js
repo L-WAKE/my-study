@@ -18,3 +18,10 @@ console.log("Object.keys", Object.keys(obj));
 console.log("Object.getOwnPropertyNames", Object.getOwnPropertyNames(obj));
 console.log("Object.getOwnPropertySymbols", Object.getOwnPropertySymbols(obj));
 console.log("Reflect.ownKeys", Reflect.ownKeys(obj));
+
+// 3.Object.fromEntries(),用于将一个键值对数组转为对象
+let fromEntries = Object.fromEntries([
+  ["foo", "bar"],
+  ["baz", 42],
+]);
+console.log("fromEntries", fromEntries); // { foo: "bar", baz: 42 }

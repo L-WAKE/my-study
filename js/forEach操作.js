@@ -1,4 +1,4 @@
-// forEach操作.js
+// forEach操作
 
 /*
     测试forEach的async-await

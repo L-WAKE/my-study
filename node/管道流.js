@@ -1,4 +1,4 @@
-//writeStream.js
+//writeStream.js 管道流
 var fs = require("fs");
 var data = "我是从数据库获取的数据，我要保存起来11\n";
 
@@ -8,7 +8,7 @@ for (var i = 0; i < 100; i++) {
   writerStream.write(data, "utf8");
 }
 
-//标记写入完成
+//标记写入完成 
 writerStream.end();
 
 writerStream.on("finish", function () {

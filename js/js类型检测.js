@@ -49,7 +49,7 @@ console.log(objHas.hasOwnProperty("name")); //true
 console.log(objHas.hasOwnProperty("lxw")); //false
 
 /*
-    5、Object.portotype.toString （最好的）
+    5、Object.portotype.toString （最好的）  
     语法: Object.prototype.toString.call([value])
 */
 console.log("==================toString=============================");

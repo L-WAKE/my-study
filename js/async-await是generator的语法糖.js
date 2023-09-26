@@ -18,7 +18,7 @@ f.next();
 f.next();
 // 1 2 3
 
-// async/await 写法
+// async/await 写法  
 async function test() {
   let a = await fn(1);
   let b = await fn(2);

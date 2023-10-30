@@ -1,4 +1,4 @@
-// 并发请求
+// 并发请求 1
 function sendRequest(requestList, limits, callback) {
   const promises = requestList.slice(); // 取得请求list（浅拷贝一份）
   // 得到开始时，能执行的并发数

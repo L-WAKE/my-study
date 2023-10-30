@@ -103,7 +103,7 @@ function concurrentRequest(urls, maxConcurrent, callback) {
   checkComplete();
 }
 
-// Promise.all实现并发请求
+// Promise.all实现并发请求3
 function handleConcurrentRequests(requests) {
   // 创建一个Promise数组，用于存储每个请求的Promise对象
   const promiseArray = requests.map((request) => request());

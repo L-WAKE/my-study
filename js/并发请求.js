@@ -47,7 +47,7 @@ function sendRequest(requestList, limits, callback) {
   // 入口执行
   runTaskNeeded();
 }
-
+// 2
 async function sendRequestRace(requestList, limits, callback) {
   // 维护一个promise队列
   const promises = [];

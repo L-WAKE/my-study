@@ -1,5 +1,4 @@
 // 两个数组求交集
-
 const array = [5, 6, 9, 4, 5, 4, 2];
 const arrayOther = [5, 2, 8];
 

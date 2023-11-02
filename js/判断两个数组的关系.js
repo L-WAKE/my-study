@@ -1,4 +1,4 @@
-// 判断两个数组是否完全相等 
+// 判断两个数组是否完全相等  
 const scalarArrayEquals = (array1, array2) => {
   return (
     array1.length == array2.length &&

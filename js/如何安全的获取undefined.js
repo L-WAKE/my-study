@@ -1,4 +1,4 @@
-// 如何安全的获取undefined
+//  如何安全的获取undefined   
 
 const test = undefined;
 let other;

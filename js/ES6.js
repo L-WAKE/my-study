@@ -4,7 +4,7 @@ console.log(Object.is(+0, -0)); // false
 console.log(NaN === NaN); // false
 console.log(Object.is(NaN, NaN)); // true
 
-//2. 属性的遍历
+//2. 属性的遍历 
 /*
     首先遍历所有数值键，按照数值升序排列
     其次遍历所有字符串键，按照加入时间升序排列

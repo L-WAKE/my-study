@@ -4,7 +4,7 @@ function fn(num) {
   });
 }
 
-// generator 写法
+// generator 写法 
 function* testGen() {
   fn(1);
   yield;

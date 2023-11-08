@@ -51,7 +51,7 @@ console.log(c2Call.hobbies);
 console.log(c1Call instanceof ParentCall);
 console.log(c1Call instanceof ChildCall);
 
-console.log(
+console.log(  
   "============================组合模式继承=================================="
 );
 /*

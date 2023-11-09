@@ -53,7 +53,7 @@ console.log(objHas.hasOwnProperty("lxw")); //false
     语法: Object.prototype.toString.call([value])
 */
 console.log("==================toString=============================");
-console.log("基本类型");
+console.log("基本类型" );
 console.log(Object.prototype.toString.call(12)); //[object Number]
 console.log(Object.prototype.toString.call(NaN)); //[object Number]
 console.log(Object.prototype.toString.call("122")); //[object String]

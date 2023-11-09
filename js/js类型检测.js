@@ -63,7 +63,7 @@ console.log(Object.prototype.toString.call(undefined)); //[object undefined]
 console.log(Object.prototype.toString.call(null)); //[object Null]
 console.log(Object.prototype.toString.call(999999999n)); //[object BigInt]
 
-console.log("引用类型");
+console.log("引用类型 ");
 console.log(Object.prototype.toString.call(bCon)); //[object Function]
 console.log(Object.prototype.toString.call([])); //[object Array]
 console.log(Object.prototype.toString.call({})); //[object Object]

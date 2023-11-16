@@ -34,7 +34,13 @@
         searchParams.delete("topic");
         searchParams.toString(); // "q=URLUtils.searchParams"
 
-
+        let hobby = {
+            option: '打篮球',
+            option2: '打乒乓球',
+            option3: '打羽毛球'
+        }
+        var params4 = new URLSearchParams(hobby);
+        console.log('params4', params4.toString());
     </script>
 </body>
 

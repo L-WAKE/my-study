@@ -16,8 +16,8 @@
         console.log(params.toString())
 
 
-        var paramsString = "q=URLUtils.searchParams&topic=api"
-        var searchParams = new URLSearchParams(paramsString);
+        let paramsString = "q=URLUtils.searchParams&topic=api"
+        let searchParams = new URLSearchParams(paramsString);
 
         for (let p of searchParams) {
             console.log(p); // [q, URLUtils.searchParams]、[topic, api]
@@ -39,8 +39,9 @@
             option2: '打乒乓球',
             option3: '打羽毛球'
         }
-        var params4 = new URLSearchParams(hobby);
+        let params4 = new URLSearchParams(hobby);
         console.log('params4', params4.toString());
+
     </script>
 </body>
 

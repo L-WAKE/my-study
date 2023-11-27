@@ -45,6 +45,28 @@
             console.log('params', params)
         }
         testArgs('test1', 'test2', 33)
+
+
+        // ES7
+        console.log('ES7', 2 ** 10)
+
+
+        // ES8
+        function asyncFun() {
+            return new Promise((resolve, reject) => {
+                resolve('成功的方法')
+                // reject('失败了')
+            })
+        }
+        async function testAsync() {
+            try {
+                const result = await asyncFun()
+                console.log('result', result)
+            } catch (e) {
+                console.log('reject', e)
+            }
+        }
+        testAsync() 
     </script>
 </body>
 

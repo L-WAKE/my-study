@@ -10,7 +10,12 @@
 
 <body>
     <div>
+        <div>
+            <p id="nameStr"></p>
+            <p id="byname"></p>
+        </div>
         <button onClick="changeNumber()">点击修改Property </button>
+        <br />
         <button onClick="changeProxy()">点击修改Proxy </button>
     </div>
     <script>
@@ -22,6 +27,8 @@
             name: '张三',
             sex: '女'
         }
+        document.getElementById('nameStr').innerText = nameStr
+        document.getElementById('byname').innerText = person.byname
         Object.defineProperty(person, 'byname', {
             // value: 18, // 属性值
             // enumerable: true, //控制属性是否可以枚举，默认值是false
@@ -43,7 +50,11 @@
             // person.age = person.age+1
             // console.log('number', number)
 
-            person.byname = '曹贼'
+            person.byname = Math.random()
+
+            document.getElementById('nameStr').innerText = nameStr
+            document.getElementById('byname').innerText = person.byname
+
             // nameStr = '李四'
             console.log('nameStr', nameStr)
             console.log('person', person)

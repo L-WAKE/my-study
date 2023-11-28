@@ -15,6 +15,12 @@
         async function async1() {
             console.log('1');
             await async2();
+            new Promise(function (resolve) {
+                console.log('9')
+                resolve();
+            }).then(function () {
+                console.log('10')
+            })
             console.log('2');
         }
         async function async2() {

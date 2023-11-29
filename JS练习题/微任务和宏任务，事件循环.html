@@ -13,17 +13,17 @@
     <script>
         // 微任务和宏任务 事件循环
         new Promise((resolve) => {
-            console.log('外层宏事件2');
+            console.log('1');
             resolve()
         }).then(() => {
-            console.log('微事件1');
+            console.log('2');
         }).then(() => {
-            console.log('微事件2')
+            console.log('3')
         })
-        console.log('外层宏事件1');
+        console.log('4');
         setTimeout(() => {
             //执行后 回调一个宏事件
-            console.log('内层宏事件3')
+            console.log('5')
         }, 0)
     </script>
 </body>

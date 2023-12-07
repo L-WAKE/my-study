@@ -3,7 +3,7 @@
     语法：typeof 后面加不加括号都是可以用的
     注意：正则、{}、[]、null输出结果为object
 */
-// js类型检测  
+// 类型检测
 console.log("==================typeof=============================");
 console.log(typeof /\d/); //object
 console.log(typeof {}); //object

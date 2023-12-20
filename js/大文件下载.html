@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    这是我的页面元素
+  </div>
+  <script>
+    async function loadData() {
+      const url =
+        "https://lf3-csp.bytetos.com/obj/ies-csp-resource/ies/helpcenter_web/common/vendor.76e67201.js";
+      const response = await fetch(url);
+
+      // const text2 = await response.text()
+      // console.log('text2', text2)
+
+      const reader = response.body.getReader();
+      let utfBdecoder = new TextDecoder();
+      for (; ;) {
+        const { value, done } = await reader.read();
+        if (done) {
+          break;
+        }
+        const text = utfBdecoder.decode(value);
+        console.log(text);
+      }
+    }
+    loadData();
+
+  </script>
+</body>
+
+</html>

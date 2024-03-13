@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function getBase64(url, callback) {
+            var Img = new Image(),
+                dataURL = '';
+            Img.src = url + '?v=' + Math.random();
+            Img.setAttribute('crossOrigin', 'Anonymous');
+            Img.onload = function () {
+                var canvas = document.createElement('canvas'),
+                    width = Img.width,
+                    height = Img.height;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(Img, 0, 0, width, height);
+                dataURL = canvas.toDataURL('image/jpeg');
+                return callback ? callback(dataURL) : null;
+            };
+        }
+        let url = "https://newqft.quanfangtongvip.com/qft/images/testTwo/app/company_1/notice_cover/20240313141748129296050.jpg"
+        console.log('原来的url', url)
+        console.log('转成base64后1', getBase64(url, function (res) {
+            console.log('转成base64后2', res)
+        }))
+    </script>
+</body>
+
+</html>

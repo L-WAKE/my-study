@@ -25,3 +25,7 @@ let fromEntries = Object.fromEntries([
   ["baz", 42],
 ]);
 console.log("fromEntries", fromEntries); // { foo: "bar", baz: 42 }
+
+
+
+
